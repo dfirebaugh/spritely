@@ -7,6 +7,7 @@ void init_color_picker()
     color_picker_ctx.row_size = COLORPICKER_ROW_SIZE;
     color_picker_ctx.x_offset = COLORPICKER_XOFFSET;
     color_picker_ctx.y_offset = 0;
+    color_picker_ctx.canvas = color_picker_canvas;
 
     int i;
 
@@ -15,12 +16,12 @@ void init_color_picker()
         color_picker_canvas[i].color = i;
     }
 
-    init_context(color_picker_ctx, color_picker_canvas);
+    init_context(color_picker_ctx);
 }
 
 void render_color_picker()
 {
-    render_context(color_picker_ctx, color_picker_canvas);
+    render_context(color_picker_ctx);
 }
 
 void color_picker_click()

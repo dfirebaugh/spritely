@@ -1,6 +1,6 @@
 #include "context.h"
 
-void init_context(context ctx, pixel *canvas)
+void init_context(context ctx)
 {
     char i;
     char col = 0;
@@ -13,7 +13,7 @@ void init_context(context ctx, pixel *canvas)
         {
             if (i == 0)
             {
-                canvas[i].rect.y = 0;
+                ctx.canvas[i].rect.y = 0;
             }
             else
             {
@@ -22,19 +22,20 @@ void init_context(context ctx, pixel *canvas)
             col = 0;
         }
 
-        canvas[i].rect.x = ctx.x_offset + col * ctx.pixel_size;
-        canvas[i].rect.y = ctx.y_offset + row * ctx.pixel_size;
-        canvas[i].rect.w = ctx.pixel_size;
-        canvas[i].rect.h = ctx.pixel_size;
+        ctx.canvas[i].rect.x = ctx.x_offset + col * ctx.pixel_size;
+        ctx.canvas[i].rect.y = ctx.y_offset + row * ctx.pixel_size;
+        ctx.canvas[i].rect.w = ctx.pixel_size;
+        ctx.canvas[i].rect.h = ctx.pixel_size;
+        
     }
 }
 
-void render_context(context ctx, pixel *canvas)
+void render_context(context ctx)
 {
     char i;
     for (i = 0; i < ctx.canvas_size; i++)
     {
-        pixel p = canvas[i];
+        pixel p = ctx.canvas[i];
 
         set_pixel_render_color(p);
 

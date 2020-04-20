@@ -7,13 +7,14 @@ void init_sprite_canvas()
     sprite_canvas_ctx.row_size = SPRIT_CANVAS_ROW_SIZE;
     sprite_canvas_ctx.x_offset = 0;
     sprite_canvas_ctx.y_offset = 0;
+    sprite_canvas_ctx.canvas = sprite_canvas;
 
-    init_context(sprite_canvas_ctx, sprite_canvas);
+    init_context(sprite_canvas_ctx);
 }
 
 void render_sprite_ctx()
 {
-    render_context(sprite_canvas_ctx, sprite_canvas);
+    render_context(sprite_canvas_ctx);
 }
 
 void sprite_canvas_left_click()
