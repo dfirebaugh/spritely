@@ -1,6 +1,7 @@
-#include "defs.h"
 #include "globals.h"
 
 #include "init.h"
 #include "render.h"
 #include "input.h"
+#include "canvas.h"
+#include "color_picker.h"

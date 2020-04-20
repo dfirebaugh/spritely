@@ -2,11 +2,11 @@
 
 void render()
 {
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-    // Clear winow
+    SDL_SetRenderDrawColor(renderer, 74, 50, 110, 255);
     SDL_RenderClear(renderer);
-    // Set render color to blue ( rect will be rendered in this color )
-    SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
-    SDL_RenderFillRect(renderer, &playerPos);
+
+    render_sprite_canvas();
+    render_color_picker();
+
     SDL_RenderPresent(renderer);
 }

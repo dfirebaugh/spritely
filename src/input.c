@@ -14,6 +14,25 @@ void process_inputs()
         case SDL_QUIT:
             exit(0);
             break;
+        case SDL_MOUSEMOTION:
+            mouse.x = event.motion.x;
+            mouse.y = event.motion.y;
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+            switch (event.button.button)
+            {
+            case SDL_BUTTON_LEFT:
+                sprite_canvas_left_click();
+                color_picker_click();
+                break;
+            case SDL_BUTTON_RIGHT:
+                sprite_canvas_right_click();
+                color_picker_click();
+                break;
+            default:
+                break;
+            }
+            break;
 
         case SDL_KEYDOWN:
             switch (event.key.keysym.sym)
@@ -24,22 +43,18 @@ void process_inputs()
 
             case SDLK_s:
             case SDLK_DOWN:
-                ++playerPos.y;
                 break;
 
             case SDLK_d:
             case SDLK_RIGHT:
-                ++playerPos.x;
                 break;
 
             case SDLK_a:
             case SDLK_LEFT:
-                --playerPos.x;
                 break;
 
             case SDLK_w:
             case SDLK_UP:
-                --playerPos.y;
                 break;
 
             case SDLK_r:

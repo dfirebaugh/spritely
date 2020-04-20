@@ -6,5 +6,17 @@
 SDL_Window *window;
 SDL_Renderer *renderer;
 
-SDL_Rect playerPos;
+struct mouse {
+    int x;
+    int y;
+} mouse;
+
+typedef struct pixel {
+    unsigned int color;
+    SDL_Rect rect;
+} pixel;
+
+
+char main_color;
+
 #endif
