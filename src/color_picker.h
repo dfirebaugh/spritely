@@ -1,7 +1,9 @@
 #include "globals.h"
 #include "util.h"
+#include "context.h"
 
-/* an 8x8 grid for drawing a sprite */
+context color_picker_ctx;
+
 pixel color_picker_canvas[SPRITE_CANVAS_SIZE];
 
 void init_color_picker();

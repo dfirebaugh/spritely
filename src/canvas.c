@@ -1,47 +1,19 @@
 #include "canvas.h"
 
-void set_pixel_render_color(pixel p);
-
 void init_sprite_canvas()
 {
-    char i;
-    char col = 0;
-    char row = 0;
-    for (i = 0; i < SPRITE_CANVAS_SIZE; i++)
-    {
-        col++;
+    sprite_canvas_ctx.pixel_size = SPRITE_CANVAS_PIXEL_SIZE;
+    sprite_canvas_ctx.canvas_size = SPRITE_CANVAS_SIZE;
+    sprite_canvas_ctx.row_size = SPRIT_CANVAS_ROW_SIZE;
+    sprite_canvas_ctx.x_offset = 0;
+    sprite_canvas_ctx.y_offset = 0;
 
-        if (i % 8 == 0)
-        {
-            if (i == 0)
-            {
-                sprite_canvas[i].rect.y = 0;
-            }
-            else
-            {
-                row++;
-            }
-            col = 0;
-        }
-
-        sprite_canvas[i].rect.x = col * SPRITE_CANVAS_PIXEL_SIZE;
-        sprite_canvas[i].rect.w = SPRITE_CANVAS_PIXEL_SIZE;
-        sprite_canvas[i].rect.h = SPRITE_CANVAS_PIXEL_SIZE;
-        sprite_canvas[i].rect.y = row * SPRITE_CANVAS_PIXEL_SIZE;
-    }
+    init_context(sprite_canvas_ctx, sprite_canvas);
 }
 
-void render_sprite_canvas()
+void render_sprite_ctx()
 {
-    char i;
-    for (i = 0; i < SPRITE_CANVAS_SIZE; i++)
-    {
-        pixel p = sprite_canvas[i];
-
-        set_pixel_render_color(p);
-
-        SDL_RenderFillRect(renderer, &p.rect);
-    }
+    render_context(sprite_canvas_ctx, sprite_canvas);
 }
 
 void sprite_canvas_left_click()

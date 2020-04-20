@@ -2,44 +2,25 @@
 
 void init_color_picker()
 {
-    char i;
-    char col = 0;
-    char row = 0;
-    for (i = 0; i < COLORPICKER_CANVAS_SIZE; i++)
+    color_picker_ctx.pixel_size = COLORPICKER_PIXEL_SIZE;
+    color_picker_ctx.canvas_size = COLORPICKER_CANVAS_SIZE;
+    color_picker_ctx.row_size = COLORPICKER_ROW_SIZE;
+    color_picker_ctx.x_offset = COLORPICKER_XOFFSET;
+    color_picker_ctx.y_offset = 0;
+
+    int i;
+
+    for (i = 0; i < color_picker_ctx.canvas_size; i++)
     {
-        col++;
-
-        if (i % 4 == 0)
-        {
-            if (i == 0)
-            {
-                color_picker_canvas[i].rect.y = 0;
-            }
-            else
-            {
-                row++;
-            }
-            col = 0;
-        }
-
         color_picker_canvas[i].color = i;
-        color_picker_canvas[i].rect.x = COLORPICKER_OFFSET + col * COLORPICKER_PIXEL_SIZE;
-        color_picker_canvas[i].rect.w = COLORPICKER_PIXEL_SIZE;
-        color_picker_canvas[i].rect.h = COLORPICKER_PIXEL_SIZE;
-        color_picker_canvas[i].rect.y = row * COLORPICKER_PIXEL_SIZE;
     }
+
+    init_context(color_picker_ctx, color_picker_canvas);
 }
 
 void render_color_picker()
 {
-    char i;
-    for (i = 0; i < SPRITE_CANVAS_SIZE; i++)
-    {
-        pixel p = color_picker_canvas[i];
-
-        set_pixel_render_color(p);
-        SDL_RenderFillRect(renderer, &p.rect);
-    }
+    render_context(color_picker_ctx, color_picker_canvas);
 }
 
 void color_picker_click()

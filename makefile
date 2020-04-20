@@ -3,7 +3,7 @@ LDFLAGS  = `sdl2-config --libs` -lSDL2 -lm
 PROG = spritely
 CXX = gcc
 
-OBJS = main.o input.o init.o render.o canvas.o color_picker.o util.o
+OBJS = main.o input.o init.o render.o canvas.o color_picker.o util.o context.o
 
 # top-level rule to create the program.
 all: $(PROG)
