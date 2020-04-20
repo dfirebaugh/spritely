@@ -1,12 +1,8 @@
-#include "defs.h"
-
 #ifndef _GLOBALS
 #define _GLOBALS
 
-typedef struct pixel {
-    unsigned int color;
-    SDL_Rect rect;
-} pixel;
+#include "defs.h"
+#include "pixel.h"
 
 SDL_Window *window;
 SDL_Renderer *renderer;
@@ -16,7 +12,8 @@ struct mouse {
     int y;
 } mouse;
 
-
 char main_color;
 
+#include "context.h"
+#include "util.h"
 #endif

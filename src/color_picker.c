@@ -7,13 +7,17 @@ void init_color_picker()
     color_picker_ctx.row_size = COLORPICKER_ROW_SIZE;
     color_picker_ctx.x_offset = COLORPICKER_XOFFSET;
     color_picker_ctx.y_offset = 0;
-    color_picker_ctx.canvas = color_picker_canvas;
+    color_picker_ctx.canvas = (pixel *)color_picker_canvas;
 
-    int i;
-
-    for (i = 0; i < color_picker_ctx.canvas_size; i++)
+    char i, j;
+    char index = 0;
+    for (i = 0; i < COLORPICKER_ROW_SIZE; i++)
     {
-        color_picker_canvas[i].color = i;
+        for (j = 0; j < COLORPICKER_ROW_SIZE; j++)
+        {
+            color_picker_canvas[i][j].color = index;
+            index++;
+        }
     }
 
     init_context(color_picker_ctx);
@@ -26,10 +30,15 @@ void render_color_picker()
 
 void color_picker_click()
 {
-    int i;
-    for (i = 0; i < SPRITE_CANVAS_SIZE; i++)
+    char i, j;
+    char index = 0;
+    for (i = 0; i < COLORPICKER_ROW_SIZE; i++)
     {
-        if(XYInRect(color_picker_canvas[i].rect))
-            main_color = i;
+        for (j = 0; j < COLORPICKER_ROW_SIZE; j++)
+        {
+            if (XYInRect(color_picker_canvas[i][j].rect))
+                main_color = index;
+        index++;
+        }
     }
 }

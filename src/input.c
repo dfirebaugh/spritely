@@ -17,6 +17,20 @@ void process_inputs()
         case SDL_MOUSEMOTION:
             mouse.x = event.motion.x;
             mouse.y = event.motion.y;
+            switch (event.button.button)
+            {
+            case SDL_BUTTON_LEFT:
+                sprite_canvas_left_click();
+                color_picker_click();
+                // select_window_click();
+                break;
+            case SDL_BUTTON_RIGHT:
+                sprite_canvas_right_click();
+                color_picker_click();
+                break;
+            default:
+                break;
+            }
             break;
         case SDL_MOUSEBUTTONDOWN:
             switch (event.button.button)
@@ -24,6 +38,7 @@ void process_inputs()
             case SDL_BUTTON_LEFT:
                 sprite_canvas_left_click();
                 color_picker_click();
+                // select_window_click();
                 break;
             case SDL_BUTTON_RIGHT:
                 sprite_canvas_right_click();

@@ -7,6 +7,7 @@ void render()
 
     render_sprite_ctx();
     render_color_picker();
+    // render_select_window();
 
     SDL_RenderPresent(renderer);
 }

@@ -2,43 +2,30 @@
 
 void init_context(context ctx)
 {
-    char i;
-    char col = 0;
-    char row = 0;
-    for (i = 0; i < ctx.canvas_size; i++)
+    char i, j;
+
+    for (i = 0; i < ctx.row_size; i++)
     {
-        col++;
-
-        if (i % ctx.row_size == 0)
+        for (j = 0; j < ctx.row_size; j++)
         {
-            if (i == 0)
-            {
-                ctx.canvas[i].rect.y = 0;
-            }
-            else
-            {
-                row++;
-            }
-            col = 0;
+            ctx.canvas[j * ctx.row_size + i].rect.x = ctx.x_offset + i * ctx.pixel_size;
+            ctx.canvas[j * ctx.row_size + i].rect.y = ctx.y_offset + j * ctx.pixel_size;
+            ctx.canvas[j * ctx.row_size + i].rect.w = ctx.pixel_size;
+            ctx.canvas[j * ctx.row_size + i].rect.h = ctx.pixel_size;
         }
-
-        ctx.canvas[i].rect.x = ctx.x_offset + col * ctx.pixel_size;
-        ctx.canvas[i].rect.y = ctx.y_offset + row * ctx.pixel_size;
-        ctx.canvas[i].rect.w = ctx.pixel_size;
-        ctx.canvas[i].rect.h = ctx.pixel_size;
-        
     }
 }
 
 void render_context(context ctx)
 {
-    char i;
-    for (i = 0; i < ctx.canvas_size; i++)
+    char i, j;
+    for (i = 0; i < ctx.row_size; i++)
     {
-        pixel p = ctx.canvas[i];
 
-        set_pixel_render_color(p);
-
-        SDL_RenderFillRect(renderer, &p.rect);
+        for (j = 0; j < ctx.row_size; j++)
+        {
+            set_pixel_render_color(ctx.canvas[j * ctx.row_size + i]);
+            SDL_RenderFillRect(renderer, &ctx.canvas[j * ctx.row_size + i].rect);
+        }
     }
 }
