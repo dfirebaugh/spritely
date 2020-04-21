@@ -4,15 +4,16 @@
 #define _CONTEXT
 
 typedef struct context{
-    int pixel_size;
-    int canvas_size;
-    int row_size;
-    int x_offset;
-    int y_offset;
-    pixel *canvas;
+    uint pixel_size;
+    uint canvas_size;
+    uint row_size;
+    uint col_size;
+    uint x_offset;
+    uint y_offset;
+    pixel pixels[64];
 } context;
 
-void init_context(context ctx);
-void render_context(context ctx);
+void context_render(context *ctx);
+context context_make(uint pixel_size, uint row_size, uint col_size, uint x_offset, uint y_offset);
 
 #endif

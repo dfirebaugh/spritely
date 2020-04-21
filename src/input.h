@@ -1,6 +1,4 @@
 #include "globals.h"
-#include "canvas.h"
-#include "color_picker.h"
-#include "select_window.h"
+#include "sprite_sheet.h"
 
 void process_inputs();
