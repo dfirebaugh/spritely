@@ -1,6 +1,11 @@
 #include "input.h"
 
-void print_sprite(const char sprite_sheet_index)
+static int XYInRect(const SDL_Rect rect)
+{
+    return ((mouse.x >= rect.x && mouse.x <= rect.x + rect.w) && (mouse.y >= rect.y && mouse.y <= rect.y + rect.h));
+}
+
+static void print_sprite(const char sprite_sheet_index)
 {
     int i;
     for (i = 0; i < SPRITE_CANVAS_SIZE; i++)
@@ -9,7 +14,7 @@ void print_sprite(const char sprite_sheet_index)
     printf("\n");
 }
 
-void push_to_sprite_sheet(const char sprite_sheet_index, const char *spr)
+static void push_to_sprite_sheet(const char sprite_sheet_index, const char *spr)
 {
     char i;
     for (i = 0; i < SPRITE_CANVAS_SIZE; i++)
@@ -17,7 +22,7 @@ void push_to_sprite_sheet(const char sprite_sheet_index, const char *spr)
     print_sprite(sprite_sheet_index);
 }
 
-uint *get_sprite(const char index)
+static uint *get_sprite(const char index)
 {
     print_sprite(index);
     return sprite_sheet[index];
@@ -29,7 +34,7 @@ static void canvas_to_spritesheet(const char sprite_sheet_index, context *ctx)
     char i;
     for (i = 0; i < (ctx->row_size * ctx->col_size); i++)
     {
-        spr[i] = sprite_canvas_ctx.pixels[i].color;
+        spr[i] = sprite_canvas_ctx.pixels[i];
     }
     push_to_sprite_sheet(sprite_sheet_index, spr);
 }
@@ -41,11 +46,12 @@ static void sprite_canvas_left_click(context *ctx)
     char i;
     for (i = 0; i < (ctx->row_size * ctx->col_size); i++)
     {
-        if (XYInRect(ctx->pixels[i].rect))
+        if (XYInRect(ctx->rects[i]))
         {
-            ctx->pixels[i].color = main_color;
-            current_cell->pixels[i].color = main_color;
-            canvas_to_spritesheet(i, ctx);
+            ctx->pixels[i] = main_color;
+
+            /* copy pixels from canvas to spritesheet */
+            memcpy(current_cell->pixels, sprite_canvas_ctx.pixels, sizeof(ctx->pixels));
         }
     }
 }
@@ -55,23 +61,24 @@ static void sprite_canvas_right_click(context *ctx)
     char i;
     for (i = 0; i < (ctx->row_size * ctx->col_size); i++)
     {
-        if (XYInRect(ctx->pixels[i].rect))
+        if (XYInRect(ctx->rects[i]))
         {
-            main_color = sprite_canvas_ctx.pixels[i].color;
+            main_color = sprite_canvas_ctx.pixels[i];
         }
     }
 }
 
 static void sprite_sheet_left_click(context *ctx)
 {
-
     char i;
     for (i = 0; i < (ctx->row_size * ctx->col_size); i++)
     {
-        if (XYInRect(ctx->pixels[i].rect))
+        if (XYInRect(ctx->rects[i]))
         {
             current_sprite = i;
-            printf("%d\n", current_sprite);
+
+            /* copy pixels from spritesheet to canvas */
+            memcpy(sprite_canvas_ctx.pixels, sprite_sheet_cells[i].pixels, sizeof(ctx->pixels));
         }
     }
 }
@@ -80,11 +87,11 @@ static void color_picker_click(context *ctx)
 {
     char i;
     for (i = 0; i < (ctx->row_size * ctx->col_size); i++)
-        if (XYInRect(ctx->pixels[i].rect))
+        if (XYInRect(ctx->rects[i]))
             main_color = i;
 }
 
-void process_inputs()
+extern void process_inputs()
 {
     SDL_Event event;
 

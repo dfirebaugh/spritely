@@ -1,3 +1,9 @@
 #include "globals.h"
 
-void process_inputs();
+struct mouse
+{
+    int x;
+    int y;
+} mouse;
+
+extern void process_inputs();

@@ -10,7 +10,8 @@ typedef struct context{
     uint col_size;
     uint x_offset;
     uint y_offset;
-    pixel pixels[64];
+    unsigned char pixels[SPRITE_CANVAS_SIZE];
+    SDL_Rect rects[SPRITE_CANVAS_SIZE];
 } context;
 
 void context_render(context *ctx);

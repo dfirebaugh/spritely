@@ -1,5 +1,4 @@
 #include "globals.h"
 
-int XYInRect(const SDL_Rect rect);
+extern void set_pixel_render_color(const unsigned char p);
 
-void set_pixel_render_color(pixel p);

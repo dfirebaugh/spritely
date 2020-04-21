@@ -4,6 +4,10 @@
 #ifndef _GLOBAL_CONSTANTS
 #define _GLOBAL_CONSTANTS
 
+#if 0
+#define __DEBUG_SELECT_WINDOW__
+#endif
+
 #define SCREEN_WIDTH 672
 #define SCREEN_HEIGHT 568
 

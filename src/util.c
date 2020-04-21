@@ -1,13 +1,9 @@
 #include "util.h"
 
-int XYInRect(const SDL_Rect rect)
-{
-    return ((mouse.x >= rect.x && mouse.x <= rect.x + rect.w) && (mouse.y >= rect.y && mouse.y <= rect.y + rect.h));
-}
 
-void set_pixel_render_color(pixel p)
+extern void set_pixel_render_color(const unsigned char p)
 {
-    switch (p.color)
+    switch (p)
     {
     case D_BLUE:
         SDL_SetRenderDrawColor(renderer, 0, 0, 100, 255);
