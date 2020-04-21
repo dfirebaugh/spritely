@@ -1,6 +1,29 @@
 #include "input.h"
 
-void canvas_to_spritesheet(const char sprite_sheet_index, context *ctx)
+void print_sprite(const char sprite_sheet_index)
+{
+    int i;
+    for (i = 0; i < SPRITE_CANVAS_SIZE; i++)
+        printf("%x", sprite_sheet[sprite_sheet_index][i]);
+
+    printf("\n");
+}
+
+void push_to_sprite_sheet(const char sprite_sheet_index, const char *spr)
+{
+    char i;
+    for (i = 0; i < SPRITE_CANVAS_SIZE; i++)
+        sprite_sheet[sprite_sheet_index][i] = spr[i];
+    print_sprite(sprite_sheet_index);
+}
+
+uint *get_sprite(const char index)
+{
+    print_sprite(index);
+    return sprite_sheet[index];
+}
+
+static void canvas_to_spritesheet(const char sprite_sheet_index, context *ctx)
 {
     char spr[SPRITE_CANVAS_SIZE];
     char i;
@@ -11,20 +34,23 @@ void canvas_to_spritesheet(const char sprite_sheet_index, context *ctx)
     push_to_sprite_sheet(sprite_sheet_index, spr);
 }
 
-void sprite_canvas_left_click(context *ctx)
+static void sprite_canvas_left_click(context *ctx)
 {
+    context *current_cell = sprite_sheet_cells+current_sprite;
+
     char i;
     for (i = 0; i < (ctx->row_size * ctx->col_size); i++)
     {
         if (XYInRect(ctx->pixels[i].rect))
         {
             ctx->pixels[i].color = main_color;
+            current_cell->pixels[i].color = main_color;
             canvas_to_spritesheet(i, ctx);
         }
     }
 }
 
-void sprite_canvas_right_click(context *ctx)
+static void sprite_canvas_right_click(context *ctx)
 {
     char i;
     for (i = 0; i < (ctx->row_size * ctx->col_size); i++)
@@ -36,7 +62,21 @@ void sprite_canvas_right_click(context *ctx)
     }
 }
 
-void color_picker_click(context *ctx)
+static void sprite_sheet_left_click(context *ctx)
+{
+
+    char i;
+    for (i = 0; i < (ctx->row_size * ctx->col_size); i++)
+    {
+        if (XYInRect(ctx->pixels[i].rect))
+        {
+            current_sprite = i;
+            printf("%d\n", current_sprite);
+        }
+    }
+}
+
+static void color_picker_click(context *ctx)
 {
     char i;
     for (i = 0; i < (ctx->row_size * ctx->col_size); i++)
@@ -66,7 +106,7 @@ void process_inputs()
             case SDL_BUTTON_LEFT:
                 sprite_canvas_left_click(&sprite_canvas_ctx);
                 color_picker_click(&color_picker_ctx);
-                // select_window_click();
+                sprite_sheet_left_click(&select_window_ctx);
                 break;
             case SDL_BUTTON_RIGHT:
                 sprite_canvas_right_click(&sprite_canvas_ctx);
@@ -82,7 +122,7 @@ void process_inputs()
             case SDL_BUTTON_LEFT:
                 sprite_canvas_left_click(&sprite_canvas_ctx);
                 color_picker_click(&color_picker_ctx);
-                // select_window_click();
+                sprite_sheet_left_click(&select_window_ctx);
                 break;
             case SDL_BUTTON_RIGHT:
                 sprite_canvas_right_click(&sprite_canvas_ctx);
