@@ -41,7 +41,7 @@ static void canvas_to_spritesheet(const char sprite_sheet_index, context *ctx)
 
 static void sprite_canvas_left_click(context *ctx)
 {
-    context *current_cell = sprite_sheet_cells+current_sprite;
+    context *current_cell = sprite_sheet_cells + current_sprite;
 
     char i;
     for (i = 0; i < (ctx->row_size * ctx->col_size); i++)
@@ -68,6 +68,11 @@ static void sprite_canvas_right_click(context *ctx)
     }
 }
 
+static void cursor_move_sprite_selection(context *ctx)
+{
+    memcpy(sprite_selection_cursor.rects, ctx->rects, sizeof(ctx->rects));
+}
+
 static void sprite_sheet_left_click(context *ctx)
 {
     char i;
@@ -79,6 +84,7 @@ static void sprite_sheet_left_click(context *ctx)
 
             /* copy pixels from spritesheet to canvas */
             memcpy(sprite_canvas_ctx.pixels, sprite_sheet_cells[i].pixels, sizeof(ctx->pixels));
+            cursor_move_sprite_selection(&sprite_sheet_cells[i]);
         }
     }
 }
@@ -89,6 +95,17 @@ static void color_picker_click(context *ctx)
     for (i = 0; i < (ctx->row_size * ctx->col_size); i++)
         if (XYInRect(ctx->rects[i]))
             main_color = i;
+}
+
+static void buffer_copy_from_canvas()
+{
+    memcpy(pixel_buffer, sprite_canvas_ctx.pixels, sizeof(sprite_canvas_ctx.pixels));
+}
+
+static void buffer_copy_to_canvas()
+{
+    memcpy(sprite_canvas_ctx.pixels, pixel_buffer, sizeof(sprite_canvas_ctx.pixels));
+    memcpy(sprite_sheet_cells[current_sprite].pixels, pixel_buffer, sizeof(sprite_canvas_ctx.pixels));
 }
 
 extern void process_inputs()
@@ -165,7 +182,19 @@ extern void process_inputs()
 
             case SDLK_r:
                 break;
-
+            case SDLK_LCTRL:
+                lctrl = 1;
+                break;
+            case SDLK_c:
+                if(lctrl)
+                    printf("copy\n");
+                    buffer_copy_from_canvas();
+                break;
+            case SDLK_v:
+                if(lctrl)
+                    printf("paste\n");
+                    buffer_copy_to_canvas();
+                break;
             case SDLK_SPACE:
                 break;
 
@@ -175,7 +204,15 @@ extern void process_inputs()
             break;
 
         case SDL_KEYUP:
-            break;
+            switch (event.key.keysym.sym)
+            {
+            case SDLK_LCTRL:
+                lctrl = 0;
+                break;
+
+            default:
+                break;
+            }
 
         case SDL_USEREVENT:
             break;

@@ -1,6 +1,6 @@
 #include "context.h"
 
-context context_make(uint pixel_size, uint row_size, uint col_size, uint x_offset, uint y_offset)
+extern context context_make(uint pixel_size, uint row_size, uint col_size, uint x_offset, uint y_offset)
 {
     context ctx;
 
@@ -26,7 +26,7 @@ context context_make(uint pixel_size, uint row_size, uint col_size, uint x_offse
     return ctx;
 }
 
-void context_render(context *ctx)
+extern void context_render(context *ctx)
 {
     char i;
 

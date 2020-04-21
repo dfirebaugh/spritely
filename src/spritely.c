@@ -1,9 +1,9 @@
 #include "spritely.h"
 
-static void color_picker_init_colors(context *ctx);
+static void color_picker_init(context *ctx);
 static void sprite_selector_init(context *ctx);
 static void render(context sprite_canvas_ctx, context color_picker_ctx,
-                   context select_window_ctx, context *sprite_sheet_cells);
+                   context select_window_ctx, context *sprite_sheet_cells, context sprite_selection_cursor);
 
 char spritely_initialized = 0;
 
@@ -22,25 +22,30 @@ extern void spritely_run()
 
     sprite_sheet_cells[SPRITESHEET_SIZE];
     sprite_selector_init(sprite_sheet_cells);
-    color_picker_init_colors(&color_picker_ctx);
+    color_picker_init(&color_picker_ctx);
 
     spritely_initialized = 1;
+  sprite_selection_cursor = context_make(0, 1, 1,0, 0);
+  sprite_selection_cursor.pixels[0] = 1;
+  memcpy(sprite_selection_cursor.rects, sprite_sheet_cells[0].rects, sizeof(sprite_selection_cursor.rects));
   }
+
 
   while (1)
   {
     process_inputs();
 
     render(sprite_canvas_ctx, color_picker_ctx, select_window_ctx,
-           sprite_sheet_cells);
+           sprite_sheet_cells, sprite_selection_cursor);
   }
 }
 
 static void render(context sprite_canvas_ctx, context color_picker_ctx,
-                   context select_window_ctx, context *sprite_sheet_cells)
+                   context select_window_ctx, context *sprite_sheet_cells, context sprite_selection_cursor)
 {
   SDL_SetRenderDrawColor(renderer, 74, 50, 110, 255);
   SDL_RenderClear(renderer);
+
 
   context_render(&sprite_canvas_ctx);
   context_render(&color_picker_ctx);
@@ -54,11 +59,12 @@ static void render(context sprite_canvas_ctx, context color_picker_ctx,
 #ifdef __DEBUG_SELECT_WINDOW__
   context_render(&select_window_ctx);
 #endif
+  context_render(&sprite_selection_cursor);
 
   SDL_RenderPresent(renderer);
 }
 
-static void color_picker_init_colors(context *ctx)
+static void color_picker_init(context *ctx)
 {
   char i;
 
