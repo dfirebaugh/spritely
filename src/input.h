@@ -1,5 +1,5 @@
 #include "globals.h"
-
+#include "file.h"
 struct mouse
 {
     int x;

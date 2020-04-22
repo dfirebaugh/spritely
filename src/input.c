@@ -5,40 +5,6 @@ static int XYInRect(const SDL_Rect rect)
     return ((mouse.x >= rect.x && mouse.x <= rect.x + rect.w) && (mouse.y >= rect.y && mouse.y <= rect.y + rect.h));
 }
 
-static void print_sprite(const char sprite_sheet_index)
-{
-    int i;
-    for (i = 0; i < SPRITE_CANVAS_SIZE; i++)
-        printf("%x", sprite_sheet[sprite_sheet_index][i]);
-
-    printf("\n");
-}
-
-static void push_to_sprite_sheet(const char sprite_sheet_index, const char *spr)
-{
-    char i;
-    for (i = 0; i < SPRITE_CANVAS_SIZE; i++)
-        sprite_sheet[sprite_sheet_index][i] = spr[i];
-    print_sprite(sprite_sheet_index);
-}
-
-static uint *get_sprite(const char index)
-{
-    print_sprite(index);
-    return sprite_sheet[index];
-}
-
-static void canvas_to_spritesheet(const char sprite_sheet_index, context *ctx)
-{
-    char spr[SPRITE_CANVAS_SIZE];
-    char i;
-    for (i = 0; i < (ctx->row_size * ctx->col_size); i++)
-    {
-        spr[i] = sprite_canvas_ctx.pixels[i];
-    }
-    push_to_sprite_sheet(sprite_sheet_index, spr);
-}
-
 static void sprite_canvas_left_click(context *ctx)
 {
     context *current_cell = sprite_sheet_cells + current_sprite;
@@ -166,6 +132,8 @@ extern void process_inputs()
 
             case SDLK_s:
             case SDLK_DOWN:
+                if (lctrl)
+                    save_file();
                 break;
 
             case SDLK_d:
@@ -186,14 +154,14 @@ extern void process_inputs()
                 lctrl = 1;
                 break;
             case SDLK_c:
-                if(lctrl)
+                if (lctrl)
                     printf("copy\n");
-                    buffer_copy_from_canvas();
+                buffer_copy_from_canvas();
                 break;
             case SDLK_v:
-                if(lctrl)
+                if (lctrl)
                     printf("paste\n");
-                    buffer_copy_to_canvas();
+                buffer_copy_to_canvas();
                 break;
             case SDLK_SPACE:
                 break;
