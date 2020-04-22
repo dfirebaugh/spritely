@@ -19,7 +19,6 @@ extern context context_make(uint pixel_size, uint row_size, uint col_size, uint 
             ctx.rects[index].w = pixel_size;
             ctx.rects[index].h = pixel_size;
             index++;
-
         }
     }
 
@@ -35,4 +34,27 @@ extern void context_render(context *ctx)
         set_pixel_render_color(ctx->pixels[i]);
         SDL_RenderFillRect(renderer, &ctx->rects[i]);
     }
+}
+
+extern void context_swap_pixels(context *dest, context *source)
+{
+    memcpy(dest->pixels, source->pixels, sizeof(dest->pixels));
+}
+
+extern void context_focus(context *dest, context *source)
+{
+    memcpy(dest->rects, source->rects, sizeof(dest->rects));
+}
+
+static int XYInRect(const SDL_Rect rect)
+{
+    return ((mouse.x >= rect.x && mouse.x <= rect.x + rect.w) && (mouse.y >= rect.y && mouse.y <= rect.y + rect.h));
+}
+
+extern void context_handle_rect_click(const context ctx, void (*fn)(const unsigned char))
+{
+    unsigned char i;
+    for (i = 0; i < (ctx.row_size * ctx.col_size); i++)
+        if (XYInRect(ctx.rects[i]))
+            (*fn)(i);
 }

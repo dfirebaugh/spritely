@@ -1,3 +1,3 @@
 #include "globals.h"
 
-int init_everything();
+extern int init_everything();

@@ -5,7 +5,7 @@
 #define _GLOBAL_CONSTANTS
 
 #if 0
-#define __DEBUG_SELECT_WINDOW__
+#define __DEBUG_SPRITE_SELECTOR__
 #endif
 
 #define SCREEN_WIDTH 672

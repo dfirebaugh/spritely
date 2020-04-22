@@ -1,6 +1,6 @@
 #include "init.h"
 
-int init_SDL()
+static int init_SDL()
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -11,7 +11,7 @@ int init_SDL()
     return 1;
 }
 
-int create_window()
+static int create_window()
 {
     window = NULL;
 
@@ -29,7 +29,7 @@ int create_window()
     return 1;
 }
 
-int create_renderer()
+static int create_renderer()
 {
     renderer = NULL;
 
@@ -44,7 +44,7 @@ int create_renderer()
     return 1;
 }
 
-void setup_renderer()
+static void setup_renderer()
 {
     // Set size of renderer to the same as window
     SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -53,7 +53,7 @@ void setup_renderer()
     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
 }
 
-int init_everything()
+extern int init_everything()
 {
   if (!init_SDL())
     return 0;
