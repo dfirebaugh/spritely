@@ -1,4 +1,8 @@
 
+
+#ifndef _COLORS_
+#define _COLORS_
+
 typedef enum color {
   BLACK,
   GREY1,
@@ -17,3 +21,5 @@ typedef enum color {
   MAGENTA,
   WHITE
 } color_t;
+
+#endif

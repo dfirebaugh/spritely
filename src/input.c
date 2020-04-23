@@ -1,52 +1,72 @@
 #include "input.h"
 
-static void pen(const unsigned char rect_index)
+static void tool_pen(const unsigned char rect_index)
 {
-    context *current_cell = sprite_selector_cells + current_sprite;
-    sprite_canvas_ctx.pixels[rect_index] = pen_color;
-    context_swap_pixels(current_cell, &sprite_canvas_ctx);
+    Context_set_pixel(sprite_canvas_ctx, rect_index, pen_color);
+    Context_T current_cell = sprite_selector_cells[current_sprite_index];
+    Context_swap_pixels(current_cell, sprite_canvas_ctx);
 }
 
-static void alt_pen(const unsigned char rect_index)
+static void tool_alt_pen(const unsigned char rect_index)
 {
-    pen_color = sprite_canvas_ctx.pixels[rect_index];
+    pen_color = Context_get_pixel(sprite_canvas_ctx, rect_index);
 }
 
-static void sprite_selection(const unsigned char rect_index)
+static void tool_sprite_selection(const unsigned char rect_index)
 {
-    current_sprite = rect_index;
-    context_swap_pixels(&sprite_canvas_ctx, &sprite_selector_cells[rect_index]);
-    context_focus(&sprite_selection_indicator, &sprite_selector_cells[rect_index]);
+    current_sprite_index = rect_index;
+    Context_focus(sprite_selection_indicator, sprite_selector_cells[rect_index]);
+    Context_swap_pixels(sprite_canvas_ctx, sprite_selector_cells[rect_index]);
 }
 
-static void color_pick(const unsigned char rect_index)
+static void tool_color_pick(const unsigned char rect_index)
 {
     pen_color = rect_index;
 }
 
 static void left_clicks()
 {
-    context_handle_rect_click(sprite_canvas_ctx, pen);
-    context_handle_rect_click(sprite_selector_ctx, sprite_selection);
-    context_handle_rect_click(color_picker_ctx, color_pick);
+    Context_handle_rect_click(sprite_canvas_ctx, tool_pen);
+    Context_handle_rect_click(color_picker_ctx, tool_color_pick);
+    Context_handle_rect_click(sprite_selector_ctx, tool_sprite_selection);
 }
 
 static void right_clicks()
 {
-    context_handle_rect_click(sprite_canvas_ctx, alt_pen);
-    context_handle_rect_click(sprite_selector_ctx, sprite_selection);
-    context_handle_rect_click(color_picker_ctx, color_pick);
+    Context_handle_rect_click(sprite_canvas_ctx, tool_alt_pen);
+    Context_handle_rect_click(color_picker_ctx, tool_color_pick);
+    Context_handle_rect_click(sprite_selector_ctx, tool_sprite_selection);
 }
 
-static void buffer_copy_from_canvas()
+static void copy_sprite()
 {
-    memcpy(pixel_buffer, sprite_canvas_ctx.pixels, sizeof(sprite_canvas_ctx.pixels));
+    Context_to_pixel_buffer(sprite_canvas_ctx, clipboard_pixel_buffer);
+    Context_swap_pixels(sprite_selector_cells[current_sprite_index], sprite_canvas_ctx);
 }
 
-static void buffer_copy_to_canvas()
+static void paste_sprite()
 {
-    memcpy(sprite_canvas_ctx.pixels, pixel_buffer, sizeof(sprite_canvas_ctx.pixels));
-    memcpy(sprite_selector_cells[current_sprite].pixels, pixel_buffer, sizeof(sprite_canvas_ctx.pixels));
+    Context_from_pixel_buffer(sprite_canvas_ctx, clipboard_pixel_buffer);
+    Context_swap_pixels(sprite_selector_cells[current_sprite_index], sprite_canvas_ctx);
+}
+
+static void free_all_contexts()
+{
+
+    Context_free(sprite_canvas_ctx);
+    Context_free(sprite_selector_ctx);
+    Context_free(color_picker_ctx);
+
+    char i, j;
+    char index = 0;
+    for (i = 0; i < SPRITESHEET_COL_SIZE; i++)
+    {
+        for (j = 0; j < SPRITESHEET_ROW_SIZE; j++)
+        {
+            Context_free(sprite_selector_cells[index]);
+            index++;
+        }
+    }
 }
 
 extern void process_inputs()
@@ -60,6 +80,7 @@ extern void process_inputs()
         {
         /* Closing the Window or pressing Escape will exit the program */
         case SDL_QUIT:
+            free_all_contexts();
             exit(0);
             break;
         case SDL_MOUSEMOTION:
@@ -100,14 +121,15 @@ extern void process_inputs()
             switch (event.key.keysym.sym)
             {
             case SDLK_ESCAPE:
+                free_all_contexts();
                 exit(0);
                 break;
 
             case SDLK_s:
             case SDLK_DOWN:
                 if (lctrl)
-                    save_file();
-                break;
+                    // save_file();
+                    break;
 
             case SDLK_d:
             case SDLK_RIGHT:
@@ -128,13 +150,11 @@ extern void process_inputs()
                 break;
             case SDLK_c:
                 if (lctrl)
-                    printf("copy\n");
-                buffer_copy_from_canvas();
+                    copy_sprite();
                 break;
             case SDLK_v:
                 if (lctrl)
-                    printf("paste\n");
-                buffer_copy_to_canvas();
+                    paste_sprite();
                 break;
             case SDLK_SPACE:
                 break;
