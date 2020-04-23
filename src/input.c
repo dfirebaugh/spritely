@@ -1,9 +1,10 @@
-#include "input.h"
+#include "globals.h"
+#include "file.h"
 
 static void tool_pen(const unsigned char rect_index)
 {
     Context_set_pixel(sprite_canvas_ctx, rect_index, pen_color);
-    Context_T current_cell = sprite_selector_cells[current_sprite_index];
+    Context_t current_cell = sprite_selector_cells[current_sprite_index];
     Context_swap_pixels(current_cell, sprite_canvas_ctx);
 }
 
@@ -69,7 +70,7 @@ static void free_all_contexts()
     }
 }
 
-extern void process_inputs()
+void process_inputs()
 {
     SDL_Event event;
 

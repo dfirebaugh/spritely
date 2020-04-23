@@ -1,4 +1,5 @@
-#include "Context.h"
+#include "globals.h"
+#include "util.h"
 
 struct Context
 {
@@ -12,9 +13,9 @@ struct Context
     SDL_Rect rects[SPRITE_CANVAS_SIZE];
 };
 
-extern Context_T Context_make(uint pixel_size, uint row_size, uint col_size, uint x_offset, uint y_offset)
+Context_t Context_make(uint pixel_size, uint row_size, uint col_size, uint x_offset, uint y_offset)
 {
-    Context_T ctx = malloc(sizeof(struct Context));
+    Context_t ctx = malloc(sizeof(struct Context));
     ;
 
     ctx->row_size = row_size;
@@ -38,12 +39,12 @@ extern Context_T Context_make(uint pixel_size, uint row_size, uint col_size, uin
     return ctx;
 }
 
-extern Context_T Context_free(Context_T ctx)
+Context_t Context_free(Context_t ctx)
 {
     free(ctx);
 }
 
-extern void Context_render(Context_T ctx)
+void Context_render(Context_t ctx)
 {
     char i;
 
@@ -54,12 +55,12 @@ extern void Context_render(Context_T ctx)
     }
 }
 
-extern void Context_swap_pixels(Context_T dest, Context_T source)
+void Context_swap_pixels(Context_t dest, Context_t source)
 {
     memcpy(dest->pixels, source->pixels, sizeof(dest->pixels));
 }
 
-extern void Context_focus(Context_T dest, Context_T source)
+void Context_focus(Context_t dest, Context_t source)
 {
     memcpy(dest->rects, source->rects, sizeof(dest->rects));
 }
@@ -69,7 +70,7 @@ static int XYInRect(const SDL_Rect rect)
     return ((mouse.x >= rect.x && mouse.x <= rect.x + rect.w) && (mouse.y >= rect.y && mouse.y <= rect.y + rect.h));
 }
 
-extern void Context_handle_rect_click(Context_T ctx, void (*fn)(const unsigned char))
+void Context_handle_rect_click(Context_t ctx, void (*fn)(const unsigned char))
 {
     unsigned char i;
     for (i = 0; i < (ctx->row_size * ctx->col_size); i++)
@@ -77,27 +78,27 @@ extern void Context_handle_rect_click(Context_T ctx, void (*fn)(const unsigned c
             (*fn)(i);
 }
 
-extern void Context_from_pixel_buffer(Context_T ctx, color_t *pixel_buffer)
+void Context_from_pixel_buffer(Context_t ctx, color_t *pixel_buffer)
 {
     memcpy(ctx->pixels, pixel_buffer, sizeof(ctx->pixels));
 }
 
-extern void Context_to_pixel_buffer(Context_T ctx, color_t *pixel_buffer)
+void Context_to_pixel_buffer(Context_t ctx, color_t *pixel_buffer)
 {
     memcpy(pixel_buffer, ctx->pixels, sizeof(ctx->pixels));
 }
 
-extern void Context_swap_rect_buffer(Context_T ctx, SDL_Rect *rect_buffer)
+void Context_swap_rect_buffer(Context_t ctx, SDL_Rect *rect_buffer)
 {
     memcpy(ctx->rects, rect_buffer, sizeof(ctx->rects));
 }
 
-extern color_t Context_get_pixel(Context_T ctx, const unsigned char pixel_index)
+color_t Context_get_pixel(Context_t ctx, const unsigned char pixel_index)
 {
     return ctx->pixels[pixel_index];
 }
 
-extern void Context_set_pixel(Context_T ctx, const unsigned char pixel_index, color_t color)
+void Context_set_pixel(Context_t ctx, const unsigned char pixel_index, color_t color)
 {
     ctx->pixels[pixel_index] = color;
 }

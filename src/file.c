@@ -1,4 +1,4 @@
-#include "file.h"
+#include "globals.h"
 
 static void print_sprite_as_hex(FILE *output, const char sprite_index)
 {
@@ -14,7 +14,7 @@ static void print_sprite_as_hex(FILE *output, const char sprite_index)
     //         fprintf(output,", 0x");
     //     }
 
-    //     fprintf(output, "%x", sprite_selector_cells[sprite_index]->pixels[i]);
+    //     //fprintf(output, "%x", sprite_selector_cells[sprite_index]pixels[i]);
 
     //     if (i == SPRITE_CANVAS_SIZE-1)
     //         fprintf(output, " }\n");

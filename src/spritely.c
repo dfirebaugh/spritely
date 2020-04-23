@@ -1,8 +1,9 @@
-#include "spritely.h"
+#include "globals.h"
+#include "input.h"
 
 char spritely_initialized = 0;
 
-static void color_picker_init(Context_T ctx)
+static void color_picker_init(Context_t ctx)
 {
   color_t pixel_buffer[COLORPICKER_PIXEL_SIZE];
 
@@ -17,7 +18,7 @@ static void color_picker_init(Context_T ctx)
 #define SPRITE_SELECTOR_CELL_X_PADDING 6
 #define SPRITE_SELECTOR_CELL_Y_PADDING 2
 
-static void sprite_selector_init(Context_T *ctx)
+static void sprite_selector_init(Context_t *ctx)
 {
   char i, j;
   char index = 0;
@@ -45,10 +46,6 @@ static void render()
   Context_render(sprite_canvas_ctx);
   Context_render(color_picker_ctx);
 
-  // current_time = SDL_GetTicks();
-  // if(last_time + 1000 > current_time)
-  //   printf("time: %d\n", last_time);
-
   char i;
   for (i = 0; i < SPRITESHEET_SIZE; i++)
   {
@@ -63,7 +60,7 @@ static void render()
   SDL_RenderPresent(renderer);
 }
 
-extern void spritely_run()
+void spritely_run()
 {
   if (!spritely_initialized)
   {
@@ -85,6 +82,7 @@ extern void spritely_run()
     // sprite_selection_indicator->pixels[0] = 1;
     Context_set_pixel(sprite_selection_indicator, 0, WHITE);
     Context_focus(sprite_selection_indicator, sprite_selector_cells[0]);
+
     spritely_initialized = 1;
   }
 

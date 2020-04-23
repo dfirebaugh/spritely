@@ -1,4 +1,4 @@
-#include "init.h"
+#include "globals.h"
 
 static int init_SDL()
 {
@@ -53,7 +53,7 @@ static void setup_renderer()
     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
 }
 
-extern int init_everything()
+int init_everything()
 {
   if (!init_SDL())
     return 0;
