@@ -41,12 +41,14 @@ static void right_clicks()
 
 static void copy_sprite()
 {
+    Message_Queue_enqueue(command_message_queue, "copied");
     Context_to_pixel_buffer(sprite_canvas_ctx, clipboard_pixel_buffer);
     Context_swap_pixels(sprite_selector_cells[current_sprite_index], sprite_canvas_ctx);
 }
 
 static void paste_sprite()
 {
+    Message_Queue_enqueue(command_message_queue, "paste");
     Context_from_pixel_buffer(sprite_canvas_ctx, clipboard_pixel_buffer);
     Context_swap_pixels(sprite_selector_cells[current_sprite_index], sprite_canvas_ctx);
 }
@@ -82,12 +84,12 @@ void process_inputs()
         /* Closing the Window or pressing Escape will exit the program */
         case SDL_QUIT:
             free_all_contexts();
+            Message_Queue_free(command_message_queue);
             exit(0);
             break;
         case SDL_MOUSEMOTION:
             mouse.x = event.motion.x;
             mouse.y = event.motion.y;
-            // printf("%d == %d\n", event.button.button, SDL_BUTTON_RIGHT);
             switch (event.button.button)
             {
             case SDL_BUTTON_LEFT:
@@ -122,6 +124,7 @@ void process_inputs()
             switch (event.key.keysym.sym)
             {
             case SDLK_ESCAPE:
+                Message_Queue_free(command_message_queue);
                 free_all_contexts();
                 exit(0);
                 break;

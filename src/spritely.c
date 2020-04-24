@@ -57,6 +57,7 @@ static void render()
 #endif
   Context_render(sprite_selection_indicator);
 
+  Message_box_render(command_message_queue);
   SDL_RenderPresent(renderer);
 }
 
@@ -82,6 +83,8 @@ void spritely_run()
     // sprite_selection_indicator->pixels[0] = 1;
     Context_set_pixel(sprite_selection_indicator, 0, WHITE);
     Context_focus(sprite_selection_indicator, sprite_selector_cells[0]);
+
+    command_message_queue = Message_Queue_create(10);
 
     spritely_initialized = 1;
   }

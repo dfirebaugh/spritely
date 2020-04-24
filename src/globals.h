@@ -9,6 +9,7 @@ struct mouse
 
 #include "defs.h"
 #include "colors.h"
+#include "message_queue.h"
 #include "context.h"
 
 SDL_Window *window;
@@ -27,6 +28,8 @@ Context_t sprite_sheet_current_cell_ctx;
 Context_t sprite_selector_cells[SPRITESHEET_SIZE];
 Context_t sprite_selection_indicator;
 uint sprite_sheet[SPRITESHEET_SIZE][SPRITE_CANVAS_SIZE];
+
+Message_Queue_t command_message_queue;
 
 unsigned int current_time;
 unsigned int last_time;
