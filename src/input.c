@@ -1,6 +1,11 @@
 #include "globals.h"
 #include "file.h"
 
+static void active_color(const unsigned char rect_index)
+{
+    Message_Queue_enqueue(command_message_queue, "active");
+}
+
 static void tool_pen(const unsigned char rect_index)
 {
     Context_set_pixel(sprite_canvas_ctx, rect_index, pen_color);
@@ -23,6 +28,7 @@ static void tool_sprite_selection(const unsigned char rect_index)
 static void tool_color_pick(const unsigned char rect_index)
 {
     pen_color = rect_index;
+    active_color(pen_color);
 }
 
 static void left_clicks()
