@@ -26,7 +26,9 @@ Context_t color_picker_ctx;
 Context_t sprite_selector_ctx;
 Context_t sprite_sheet_current_cell_ctx;
 Context_t sprite_selector_cells[SPRITESHEET_SIZE];
-Context_t sprite_selection_indicator;
+
+SDL_Rect sprite_selection_indicator;
+
 uint sprite_sheet[SPRITESHEET_SIZE][SPRITE_CANVAS_SIZE];
 
 Message_Queue_t command_message_queue;

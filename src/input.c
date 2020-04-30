@@ -21,7 +21,7 @@ static void tool_alt_pen(const unsigned char rect_index)
 static void tool_sprite_selection(const unsigned char rect_index)
 {
     current_sprite_index = rect_index;
-    Context_focus(sprite_selection_indicator, sprite_selector_cells[rect_index]);
+    Context_indicator_focus(&sprite_selection_indicator, sprite_selector_ctx, current_sprite_index);
     Context_swap_pixels(sprite_canvas_ctx, sprite_selector_cells[rect_index]);
 }
 

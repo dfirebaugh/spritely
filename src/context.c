@@ -60,9 +60,9 @@ void Context_swap_pixels(Context_t dest, Context_t source)
     memcpy(dest->pixels, source->pixels, sizeof(dest->pixels));
 }
 
-void Context_focus(Context_t dest, Context_t source)
+void Context_indicator_focus(SDL_Rect *indicator, Context_t ctx, const unsigned char rect_index)
 {
-    memcpy(dest->rects, source->rects, sizeof(dest->rects));
+    memcpy(indicator, &ctx->rects[rect_index], sizeof(SDL_Rect));
 }
 
 static int XYInRect(const SDL_Rect rect)
