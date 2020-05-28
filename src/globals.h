@@ -26,8 +26,10 @@ Context_t color_picker_ctx;
 Context_t sprite_selector_ctx;
 Context_t sprite_sheet_current_cell_ctx;
 Context_t sprite_selector_cells[SPRITESHEET_SIZE];
+Context_t color_selector_cells[COLORPICKER_CANVAS_SIZE];
 
 SDL_Rect sprite_selection_indicator;
+SDL_Rect color_picker_indicator;
 
 uint sprite_sheet[SPRITESHEET_SIZE][SPRITE_CANVAS_SIZE];
 

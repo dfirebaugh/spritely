@@ -57,6 +57,7 @@ static void render()
 #endif
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
   SDL_RenderDrawRect(renderer, &sprite_selection_indicator);
+  SDL_RenderDrawRect(renderer, &color_picker_indicator);
 
   Message_box_render(command_message_queue);
   SDL_RenderPresent(renderer);
