@@ -28,6 +28,7 @@ static void tool_sprite_selection(const unsigned char rect_index)
 static void tool_color_pick(const unsigned char rect_index)
 {
     pen_color = rect_index;
+    Context_indicator_focus(&color_picker_indicator, color_picker_ctx, pen_color);
     active_color(pen_color);
 }
 
