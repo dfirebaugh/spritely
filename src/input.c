@@ -8,7 +8,7 @@
 
 static void help()
 {
-    Message_Queue_enqueue(command_message_queue, " ctrl+c - copy\n ctrl+v - paste\n left click to draw pixel\n right click to select a pixel that is on the  canvas", 1);
+    Message_Queue_enqueue(command_message_queue, "> Ctrl+C - Copy\n> Ctrl+V - Paste\n> Left click to draw pixel\n> Right click to select a colour that is on the  canvas", 1);
 }
 
 static void tool_pen(const unsigned char rect_index)
