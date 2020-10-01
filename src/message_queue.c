@@ -117,7 +117,6 @@ void Message_box_render(Message_Queue_t queue)
         TTF_Font *Sans = TTF_OpenFont("fonts/OpenSans/OpenSans-SemiBold.ttf", 18);
         SDL_Color White = {255, 255, 255};
         SDL_Surface *surfaceMessage = TTF_RenderText_Blended_Wrapped(Sans, Message_Queue_front(queue), White, message_rect.w);
-//         SDL_Surface *surfaceMessage = TTF_RenderText_Solid(Sans, Message_Queue_front(queue), White);
         SDL_Texture *Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 
         SDL_SetRenderDrawColor(renderer, 74, 50, 110, 255);
