@@ -23,6 +23,7 @@ SDL_Rect color_picker_indicator;
 uint sprite_sheet[SPRITESHEET_SIZE][SPRITE_CANVAS_SIZE];
 
 Message_Queue_t command_message_queue;
+Message_Queue_t help_message_queue;
 
 unsigned int current_time;
 unsigned int last_time;
