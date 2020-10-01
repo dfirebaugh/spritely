@@ -20,7 +20,7 @@ Message_Queue_t Message_Queue_create(const unsigned char capacity)
     queue->front = queue->size = 0;
     queue->rear = capacity - 1;
     queue->messages = (char **)malloc(sizeof(char *) * capacity);
-    queue->middle = (char*)malloc(sizeof(char) * capacity+1);
+    queue->middle = (char*)malloc(sizeof(char) * capacity);
     queue->displaying = 0;
     return queue;
 }

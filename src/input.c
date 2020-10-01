@@ -1,14 +1,10 @@
 #include "globals.h"
 #include "file.h"
 
-// static void active_color(const unsigned char rect_index)
-// {
-//     Message_Queue_enqueue(command_message_queue, "active", 0);
-// }
 
 static void help()
 {
-    Message_Queue_enqueue(command_message_queue, "> Ctrl+C - Copy\n> Ctrl+V - Paste\n> Left click to draw pixel\n> Right click to select a colour that is on the  canvas", 1);
+    Message_Queue_enqueue(help_message_queue, "> Ctrl+C - Copy\n> Ctrl+V - Paste\n> Left click to draw pixel\n> Right click to select a colour that is on the  canvas", 1);
 }
 
 static void tool_pen(const unsigned char rect_index)
@@ -34,7 +30,6 @@ static void tool_color_pick(const unsigned char rect_index)
 {
     pen_color = rect_index;
     Context_indicator_focus(&color_picker_indicator, color_picker_ctx, pen_color);
-    //active_color(pen_color);
 }
 
 static void left_clicks()
@@ -97,6 +92,7 @@ void process_inputs()
         case SDL_QUIT:
             free_all_contexts();
             Message_Queue_free(command_message_queue);
+            Message_Queue_free(help_message_queue);
             exit(0);
             break;
         case SDL_MOUSEMOTION:
@@ -137,6 +133,7 @@ void process_inputs()
             {
             case SDLK_ESCAPE:
                 Message_Queue_free(command_message_queue);
+                Message_Queue_free(help_message_queue);
                 free_all_contexts();
                 exit(0);
                 break;
