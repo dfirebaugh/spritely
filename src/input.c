@@ -1,9 +1,10 @@
 #include "globals.h"
 #include "file.h"
 
-static void active_color(const unsigned char rect_index)
+
+static void help()
 {
-    Message_Queue_enqueue(command_message_queue, "active");
+    Message_Queue_enqueue(help_message_queue, "> Ctrl+C - Copy\n> Ctrl+V - Paste\n> Left click to draw pixel\n> Right click to select a colour that is on the  canvas", 1);
 }
 
 static void tool_pen(const unsigned char rect_index)
@@ -29,7 +30,6 @@ static void tool_color_pick(const unsigned char rect_index)
 {
     pen_color = rect_index;
     Context_indicator_focus(&color_picker_indicator, color_picker_ctx, pen_color);
-    active_color(pen_color);
 }
 
 static void left_clicks()
@@ -48,14 +48,14 @@ static void right_clicks()
 
 static void copy_sprite()
 {
-    Message_Queue_enqueue(command_message_queue, "copied");
+    Message_Queue_enqueue(command_message_queue, "copied", 0);
     Context_to_pixel_buffer(sprite_canvas_ctx, clipboard_pixel_buffer);
     Context_swap_pixels(sprite_selector_cells[current_sprite_index], sprite_canvas_ctx);
 }
 
 static void paste_sprite()
 {
-    Message_Queue_enqueue(command_message_queue, "paste");
+    Message_Queue_enqueue(command_message_queue, "paste", 0);
     Context_from_pixel_buffer(sprite_canvas_ctx, clipboard_pixel_buffer);
     Context_swap_pixels(sprite_selector_cells[current_sprite_index], sprite_canvas_ctx);
 }
@@ -92,6 +92,7 @@ void process_inputs()
         case SDL_QUIT:
             free_all_contexts();
             Message_Queue_free(command_message_queue);
+            Message_Queue_free(help_message_queue);
             exit(0);
             break;
         case SDL_MOUSEMOTION:
@@ -132,6 +133,7 @@ void process_inputs()
             {
             case SDLK_ESCAPE:
                 Message_Queue_free(command_message_queue);
+                Message_Queue_free(help_message_queue);
                 free_all_contexts();
                 exit(0);
                 break;
@@ -141,6 +143,10 @@ void process_inputs()
                 if (lctrl)
                     // save_file();
                     break;
+ 
+            case SDLK_F1:
+                help();
+                break;
 
             case SDLK_d:
             case SDLK_RIGHT:
