@@ -1,5 +1,5 @@
 CFLAGS   = -g `sdl2-config --cflags`
-LDFLAGS  = `sdl2-config --libs` -lSDL2 -lSDL2_ttf -lm -z muldefs
+LDFLAGS  = `sdl2-config --libs` -lSDL2 -lSDL2_ttf -lm
 PROG = spritely
 CXX = gcc
 
