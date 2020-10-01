@@ -19,9 +19,6 @@ if (CMAKE_BUILD_TYPE STREQUAL "Release")
     add_definitions(-D__RELEASE__)
 endif (CMAKE_BUILD_TYPE STREQUAL "Release")
 
-# Add spdlog project
-
-# Add mosue project
 file(GLOB_RECURSE spritely_hdrs "src/*.h")
 file(GLOB_RECURSE spritely_srcs "src/*.c")
 
