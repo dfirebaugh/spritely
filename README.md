@@ -5,6 +5,12 @@ Ideally this will make a 64 sprite sprite sheet.  Each sprite will be 8x8 pixels
 
 ![spritely](./docs/spritely.png)
 
+## Build Requirements
+
+```
+$ sudo apt-get install libsdl2-ttf-dev
+```
+
 ## TODO
 - ~~Draw to canvas~~
 - ~~Add color picker~~
