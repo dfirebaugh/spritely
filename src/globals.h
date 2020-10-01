@@ -5,38 +5,41 @@ struct mouse
 {
     int x;
     int y;
-} mouse;
+};
+
+extern struct mouse mouse;
 
 #include "defs.h"
 #include "colors.h"
 #include "message_queue.h"
 #include "context.h"
 
-SDL_Window *window;
-SDL_Renderer *renderer;
+extern SDL_Window *window;
+extern SDL_Renderer *renderer;
 
 //TODO: move these into spritely
-char pen_color;
-int current_sprite_index;
-int copy_index;
-int lctrl;
-color_t clipboard_pixel_buffer[SPRITE_CANVAS_SIZE];
-Context_t sprite_canvas_ctx;
-Context_t color_picker_ctx;
-Context_t sprite_selector_ctx;
-Context_t sprite_sheet_current_cell_ctx;
-Context_t sprite_selector_cells[SPRITESHEET_SIZE];
-Context_t color_selector_cells[COLORPICKER_CANVAS_SIZE];
+extern char pen_color;
+extern int current_sprite_index;
+extern int copy_index;
+extern int lctrl;
+extern color_t clipboard_pixel_buffer[SPRITE_CANVAS_SIZE];
+extern Context_t sprite_canvas_ctx;
+extern Context_t color_picker_ctx;
+extern Context_t sprite_selector_ctx;
+extern Context_t sprite_sheet_current_cell_ctx;
+extern Context_t sprite_selector_cells[SPRITESHEET_SIZE];
+extern Context_t color_selector_cells[COLORPICKER_CANVAS_SIZE];
 
-SDL_Rect sprite_selection_indicator;
-SDL_Rect color_picker_indicator;
+extern SDL_Rect sprite_selection_indicator;
+extern SDL_Rect color_picker_indicator;
 
-uint sprite_sheet[SPRITESHEET_SIZE][SPRITE_CANVAS_SIZE];
+extern uint sprite_sheet[SPRITESHEET_SIZE][SPRITE_CANVAS_SIZE];
 
-Message_Queue_t command_message_queue;
-Message_Queue_t help_message_queue;
+extern Message_Queue_t command_message_queue;
+extern Message_Queue_t help_message_queue;
 
-unsigned int current_time;
-unsigned int last_time;
+extern unsigned int current_time;
+extern unsigned int last_time;
+
 
 #endif
