@@ -15,7 +15,7 @@ struct Message_Queue
 
 Message_Queue_t Message_Queue_create(const unsigned char capacity)
 {
-    Message_Queue_t queue = (Message_Queue_t)malloc(sizeof(Message_Queue_t));
+    Message_Queue_t queue = (Message_Queue_t)malloc(sizeof(struct Message_Queue));
     queue->capacity = capacity;
     queue->front = queue->size = 0;
     queue->rear = capacity - 1;
@@ -85,7 +85,7 @@ void Message_box_render(Message_Queue_t queue)
         queue->displaying = 1;
         return;
     }
-    
+
     int timeToShow = COMMAND_TIME;
     if (queue->middle[queue->rear] == 1)
         timeToShow = HELP_TIME;
