@@ -27,6 +27,8 @@ Message_Queue_t Message_Queue_create(const unsigned char capacity)
 
 void Message_Queue_free(Message_Queue_t queue)
 {
+    free(queue->middle);
+    free(queue->messages);
     free(queue);
 }
 
