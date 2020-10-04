@@ -22,6 +22,7 @@ extern char pen_color;
 extern int current_sprite_index;
 extern int copy_index;
 extern int lctrl;
+extern int lshift;
 extern color_t clipboard_pixel_buffer[SPRITE_CANVAS_SIZE];
 extern Context_t sprite_canvas_ctx;
 extern Context_t color_picker_ctx;

@@ -4,7 +4,7 @@
 
 static void help()
 {
-    Message_Queue_enqueue(help_message_queue, "> Ctrl+C - Copy\n> Ctrl+V - Paste\n> Left click to draw pixel\n> Right click to select a colour that is on the  canvas", 1);
+    Message_Queue_enqueue(help_message_queue, "> Ctrl+C - Copy\n> Ctrl+V - Paste\n> Left click to draw pixel\n> Ctrl+Z - Undo\n> Ctrl+Y | Ctrl+Shift+Z - Redo\n> Right click to select a colour that is on the  canvas", 1);
 }
 
 static void tool_pen(const unsigned char rect_index)
@@ -181,6 +181,9 @@ void process_inputs()
             case SDLK_LCTRL:
                 lctrl = 1;
                 break;
+            case SDLK_LSHIFT:
+                lshift = 1;
+                break;
             case SDLK_c:
                 if (lctrl)
                     copy_sprite();
@@ -194,8 +197,10 @@ void process_inputs()
                     redo();
                 break;
             case SDLK_z:
-                if (lctrl)
+                if (lctrl && !lshift)
                     undo();
+                else if (lctrl && lshift)
+                    redo();
                 break;
             case SDLK_SPACE:
                 break;
@@ -210,6 +215,9 @@ void process_inputs()
             {
             case SDLK_LCTRL:
                 lctrl = 0;
+                break;
+            case SDLK_LSHIFT:
+                lshift = 0;
                 break;
 
             default:
