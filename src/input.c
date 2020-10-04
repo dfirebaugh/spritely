@@ -60,6 +60,22 @@ static void paste_sprite()
     Context_swap_pixels(sprite_selector_cells[current_sprite_index], sprite_canvas_ctx);
 }
 
+static void redo()
+{
+    Message_Queue_enqueue(command_message_queue, "redo", 0);
+    Context_move_commits(sprite_canvas_ctx, 1);
+    Context_t current_cell = sprite_selector_cells[current_sprite_index];
+    Context_swap_pixels(current_cell, sprite_canvas_ctx);
+}
+
+static void undo()
+{
+    Message_Queue_enqueue(command_message_queue, "undo", 0);
+    Context_move_commits(sprite_canvas_ctx, -1);
+    Context_t current_cell = sprite_selector_cells[current_sprite_index];
+    Context_swap_pixels(current_cell, sprite_canvas_ctx);
+}
+
 static void free_all_contexts()
 {
 
@@ -172,6 +188,14 @@ void process_inputs()
             case SDLK_v:
                 if (lctrl)
                     paste_sprite();
+                break;
+            case SDLK_y:
+                if (lctrl)
+                    redo();
+                break;
+            case SDLK_z:
+                if (lctrl)
+                    undo();
                 break;
             case SDLK_SPACE:
                 break;
