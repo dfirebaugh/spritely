@@ -102,3 +102,13 @@ void Context_set_pixel(Context_t ctx, const unsigned char pixel_index, color_t c
 {
     ctx->pixels[pixel_index] = color;
 }
+
+int Context_is_solid_color(Context_t ctx, color_t color) {
+    for (int i = 0; i < SPRITE_CANVAS_SIZE; i += 1) {
+        if (ctx->pixels[i] != color) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
