@@ -6,10 +6,11 @@ static void help()
     Message_Queue_enqueue(help_message_queue,
         "> Ctrl+C - Copy\n"
         "> Ctrl+V - Paste\n"
+        "> Ctrl+S - Save the spritesheet\n"
+        "> Ctrl+Shift+S - Save the spritesheet and images for each sprite\n"
+        "> Ctrl+O - Load a spritesheet from an image file\n"
         "> Left click to draw pixel\n"
-        "> Right click to select a colour that is on the  canvas\n"
-        "> Ctrl+S to save the spritesheet\n"
-        "> Ctrl+Shift+S to save the spritesheet and also output images for each sprite",
+        "> Right click to select a colour that is on the  canvas",
         1
     );
 }
