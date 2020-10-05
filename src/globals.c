@@ -9,6 +9,7 @@ char pen_color;
 int current_sprite_index;
 int copy_index;
 int lctrl;
+int lshift;
 color_t clipboard_pixel_buffer[SPRITE_CANVAS_SIZE];
 Context_t sprite_canvas_ctx;
 Context_t color_picker_ctx;

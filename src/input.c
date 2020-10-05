@@ -1,10 +1,18 @@
 #include "globals.h"
 #include "file.h"
 
-
 static void help()
 {
-    Message_Queue_enqueue(help_message_queue, "> Ctrl+C - Copy\n> Ctrl+V - Paste\n> Left click to draw pixel\n> Right click to select a colour that is on the  canvas", 1);
+    Message_Queue_enqueue(help_message_queue,
+        "> Ctrl+C - Copy\n"
+        "> Ctrl+V - Paste\n"
+        "> Ctrl+S - Save the spritesheet\n"
+        "> Ctrl+Shift+S - Save the spritesheet and images for each sprite\n"
+        "> Ctrl+O - Load a spritesheet from an image file\n"
+        "> Left click to draw pixel\n"
+        "> Right click to select a colour that is on the  canvas",
+        1
+    );
 }
 
 static void tool_pen(const unsigned char rect_index)
@@ -137,33 +145,24 @@ void process_inputs()
                 free_all_contexts();
                 exit(0);
                 break;
-
             case SDLK_s:
-            case SDLK_DOWN:
-                if (lctrl)
-                    // save_file();
-                    break;
- 
+                if (lctrl) {
+                    save_file(lshift);
+                }
+                break;
+            case SDLK_o:
+                if (lctrl) {
+                    open_file();
+                }
+                break;
             case SDLK_F1:
                 help();
                 break;
-
-            case SDLK_d:
-            case SDLK_RIGHT:
-                break;
-
-            case SDLK_a:
-            case SDLK_LEFT:
-                break;
-
-            case SDLK_w:
-            case SDLK_UP:
-                break;
-
-            case SDLK_r:
-                break;
             case SDLK_LCTRL:
                 lctrl = 1;
+                break;
+            case SDLK_LSHIFT:
+                lshift = 1;
                 break;
             case SDLK_c:
                 if (lctrl)
@@ -186,6 +185,9 @@ void process_inputs()
             {
             case SDLK_LCTRL:
                 lctrl = 0;
+                break;
+            case SDLK_LSHIFT:
+                lshift = 0;
                 break;
 
             default:
