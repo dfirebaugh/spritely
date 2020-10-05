@@ -1,3 +1,6 @@
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 #include "globals.h"
 #include "input.h"
 
@@ -64,6 +67,12 @@ static void render()
   SDL_RenderPresent(renderer);
 }
 
+void emscripten_loop(void *arg)
+{
+  process_inputs();
+  render();
+}
+
 void spritely_run()
 {
   if (!spritely_initialized)
@@ -90,10 +99,14 @@ void spritely_run()
     spritely_initialized = 1;
   }
 
+#ifdef __EMSCRIPTEN__
+  emscripten_set_main_loop_arg(emscripten_loop, NULL, -1, 1);
+#else
   while (1)
   {
     process_inputs();
 
     render();
   }
+#endif
 }
