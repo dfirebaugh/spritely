@@ -21,6 +21,6 @@ clean-web:
 	rm web/index.js web/index.wasm
 
 web:
-	emcc src/*.c -s WASM=1 -s USE_SDL=2 -s USE_SDL_TTF=2 -o web/index.js
+	emcc $(SRCS) -s WASM=1 -s USE_SDL=2 -s USE_SDL_TTF=2 -o web/index.js
 
 .PHONY: web
