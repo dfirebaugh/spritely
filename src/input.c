@@ -1,4 +1,5 @@
 #include "globals.h"
+#include "util.h"
 #include "file.h"
 
 static void help()
@@ -10,7 +11,8 @@ static void help()
         "> Ctrl+Shift+S - Save the spritesheet and images for each sprite\n"
         "> Ctrl+O - Load a spritesheet from an image file\n"
         "> Left click to draw pixel\n"
-        "> Right click to select a colour that is on the  canvas",
+        "> Right click to select a colour that is on the  canvas\n"
+        "> Arrow Keys to move sprite selection",
         1
     );
 }
@@ -67,6 +69,39 @@ static void paste_sprite()
     Context_from_pixel_buffer(sprite_canvas_ctx, clipboard_pixel_buffer);
     Context_swap_pixels(sprite_selector_cells[current_sprite_index], sprite_canvas_ctx);
 }
+
+static void increment_sprite_selector()
+{
+    if (sprite_sheet_index_in_range(current_sprite_index + 1)) return;
+
+    current_sprite_index++;
+    tool_sprite_selection(current_sprite_index);
+}
+
+static void decrement_sprite_selector()
+{
+    if (sprite_sheet_index_in_range(current_sprite_index - 1)) return;
+
+    current_sprite_index--;
+    tool_sprite_selection(current_sprite_index);
+}
+
+static void increment_row_sprite_selector()
+{
+    if (sprite_sheet_index_in_range(current_sprite_index + SPRITESHEET_ROW_SIZE)) return;
+
+    current_sprite_index += SPRITESHEET_ROW_SIZE;
+    tool_sprite_selection(current_sprite_index);
+}
+
+static void decrement_row_sprite_selector()
+{
+    if (sprite_sheet_index_in_range(current_sprite_index - SPRITESHEET_ROW_SIZE)) return;
+
+    current_sprite_index -= SPRITESHEET_ROW_SIZE;
+    tool_sprite_selection(current_sprite_index);
+}
+
 
 static void free_all_contexts()
 {
@@ -173,6 +208,18 @@ void process_inputs()
                     paste_sprite();
                 break;
             case SDLK_SPACE:
+                break;
+            case SDLK_LEFT:
+                decrement_sprite_selector();
+                break;
+            case SDLK_RIGHT:
+                increment_sprite_selector();
+                break;
+            case SDLK_DOWN:
+                increment_row_sprite_selector();
+                break;
+            case SDLK_UP:
+                decrement_row_sprite_selector();
                 break;
 
             default:
