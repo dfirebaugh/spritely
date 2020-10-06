@@ -7,7 +7,7 @@ typedef struct Context *Context_t;
 extern Context_t Context_make(uint pixel_size, uint row_size, uint col_size, uint x_offset, uint y_offset);
 
 /* free up the memory that the Context is taking up */
-extern Context_t Context_free(Context_t ctx);
+extern void Context_free(Context_t ctx);
 
 
 /* Context_render renders the pixels based on their size */

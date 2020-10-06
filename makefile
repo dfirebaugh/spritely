@@ -21,6 +21,7 @@ clean-web:
 	rm web/index.js web/index.wasm
 
 web:
-	emcc $(SRCS) -s WASM=1 -s USE_SDL=2 -s USE_SDL_TTF=2 -o web/index.js
+	emcc $(SRCS) -s WASM=1 -s USE_SDL=2 -s USE_SDL_TTF=2 \
+	-s ERROR_ON_UNDEFINED_SYMBOLS=0 -s LLD_REPORT_UNDEFINED -o web/index.js
 
 .PHONY: web
