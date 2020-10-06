@@ -42,4 +42,11 @@ extern Message_Queue_t help_message_queue;
 extern unsigned int current_time;
 extern unsigned int last_time;
 
+typedef enum tool_types {
+  PEN = 0,
+  FILL
+} tool_t;
+
+extern tool_t active_tool;
+
 #endif

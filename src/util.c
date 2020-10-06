@@ -54,7 +54,14 @@ size_t find_last_occurrence(const char *const buf, const size_t buf_len, const c
 
 int sprite_sheet_index_in_range(const unsigned char index)
 {
-    if (index < 0 || index > SPRITESHEET_SIZE - 1) return 1;
+    if (index >= 0 && index < SPRITESHEET_SIZE) return 1;
+
+    return 0;
+}
+
+int canvas_index_in_range(const unsigned char index)
+{
+    if (index >= 0 && index < SPRITE_CANVAS_SIZE) return 1;
 
     return 0;
 }

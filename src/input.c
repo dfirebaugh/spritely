@@ -12,7 +12,9 @@ static void help()
         "> Ctrl+O - Load a spritesheet from an image file\n"
         "> Left click to draw pixel\n"
         "> Right click to select a colour that is on the  canvas\n"
-        "> Arrow Keys to move sprite selection",
+        "> Arrow Keys to move sprite selection"
+        "> F - fill tool"
+        "> Space - pen tool",
         1
     );
 }
@@ -27,6 +29,57 @@ static void tool_pen(const unsigned char rect_index)
 static void tool_alt_pen(const unsigned char rect_index)
 {
     pen_color = Context_get_pixel(sprite_canvas_ctx, rect_index);
+}
+
+/**
+* tool_fill_recurse
+* recursive function that fills in neighbors with the current `pen_color` if the conditions are correct
+*/
+static void tool_fill_recurse(const unsigned char rect_index, color_t original_color)
+{
+    if (original_color == pen_color) return;
+    if (!canvas_index_in_range(rect_index)) return;
+    if (Context_get_pixel(sprite_canvas_ctx, rect_index) != original_color) return;
+
+    tool_pen(rect_index);
+
+    if (canvas_index_in_range(rect_index - 1))
+    {
+        if (!(rect_index % SPRITE_CANVAS_ROW_SIZE == 0))
+        {
+            tool_fill_recurse(rect_index - 1, original_color);
+        }
+    }
+
+    if (canvas_index_in_range(rect_index + 1))
+    {
+        if (!(rect_index % SPRITE_CANVAS_ROW_SIZE == 7))
+        {
+            tool_fill_recurse(rect_index + 1, original_color);
+        }
+    }
+
+    if (canvas_index_in_range(rect_index + SPRITE_CANVAS_ROW_SIZE))
+    {
+        if (!(rect_index + SPRITE_CANVAS_ROW_SIZE % SPRITE_CANVAS_ROW_SIZE == 7))
+        {
+            tool_fill_recurse(rect_index + SPRITE_CANVAS_ROW_SIZE, original_color);
+        }
+    }
+
+    if (canvas_index_in_range(rect_index - SPRITE_CANVAS_ROW_SIZE))
+    {
+        if (!(rect_index - SPRITE_CANVAS_ROW_SIZE % SPRITE_CANVAS_ROW_SIZE == 7))
+        {
+            tool_fill_recurse(rect_index - SPRITE_CANVAS_ROW_SIZE, original_color);
+        }
+    }
+}
+
+static void tool_fill(const unsigned char rect_index)
+{
+    color_t original_color = Context_get_pixel(sprite_canvas_ctx, rect_index);
+    tool_fill_recurse(rect_index, original_color);
 }
 
 static void tool_sprite_selection(const unsigned char rect_index)
@@ -44,7 +97,12 @@ static void tool_color_pick(const unsigned char rect_index)
 
 static void left_clicks()
 {
-    Context_handle_rect_click(sprite_canvas_ctx, tool_pen);
+    if (active_tool == FILL) {
+        Context_handle_rect_click(sprite_canvas_ctx, tool_fill);
+    } else {
+        Context_handle_rect_click(sprite_canvas_ctx, tool_pen);
+    }
+
     Context_handle_rect_click(color_picker_ctx, tool_color_pick);
     Context_handle_rect_click(sprite_selector_ctx, tool_sprite_selection);
 }
@@ -72,7 +130,7 @@ static void paste_sprite()
 
 static void increment_sprite_selector()
 {
-    if (sprite_sheet_index_in_range(current_sprite_index + 1)) return;
+    if (!(sprite_sheet_index_in_range(current_sprite_index + 1))) return;
 
     current_sprite_index++;
     tool_sprite_selection(current_sprite_index);
@@ -80,7 +138,7 @@ static void increment_sprite_selector()
 
 static void decrement_sprite_selector()
 {
-    if (sprite_sheet_index_in_range(current_sprite_index - 1)) return;
+    if (!(sprite_sheet_index_in_range(current_sprite_index - 1))) return;
 
     current_sprite_index--;
     tool_sprite_selection(current_sprite_index);
@@ -88,7 +146,7 @@ static void decrement_sprite_selector()
 
 static void increment_row_sprite_selector()
 {
-    if (sprite_sheet_index_in_range(current_sprite_index + SPRITESHEET_ROW_SIZE)) return;
+    if (!(sprite_sheet_index_in_range(current_sprite_index + SPRITESHEET_ROW_SIZE))) return;
 
     current_sprite_index += SPRITESHEET_ROW_SIZE;
     tool_sprite_selection(current_sprite_index);
@@ -96,7 +154,7 @@ static void increment_row_sprite_selector()
 
 static void decrement_row_sprite_selector()
 {
-    if (sprite_sheet_index_in_range(current_sprite_index - SPRITESHEET_ROW_SIZE)) return;
+    if (!(sprite_sheet_index_in_range(current_sprite_index - SPRITESHEET_ROW_SIZE))) return;
 
     current_sprite_index -= SPRITESHEET_ROW_SIZE;
     tool_sprite_selection(current_sprite_index);
@@ -207,7 +265,13 @@ void process_inputs()
                 if (lctrl)
                     paste_sprite();
                 break;
+            case SDLK_f:
+                active_tool = FILL;
+                Message_Queue_enqueue(command_message_queue, "fill tool", 0);
+                break;
             case SDLK_SPACE:
+                active_tool = PEN;
+                Message_Queue_enqueue(command_message_queue, "pen tool", 0);
                 break;
             case SDLK_LEFT:
                 decrement_sprite_selector();
