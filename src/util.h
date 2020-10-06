@@ -11,3 +11,9 @@ extern void *checked_malloc(size_t size);
 *   else return buf_len if ch is not present
 */
 extern size_t find_last_occurrence(const char *const buf, const size_t buf_len, const char ch);
+
+/*
+* sprite_sheet_index_in_range
+* Return 0 if the index is within the spritesheet range
+*/
+extern int sprite_sheet_index_in_range(const unsigned char index);
