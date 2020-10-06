@@ -54,7 +54,7 @@ Context_t Context_make(uint pixel_size, uint row_size, uint col_size, uint x_off
     return ctx;
 }
 
-Context_t Context_free(Context_t ctx)
+void Context_free(Context_t ctx)
 {
     if (ctx->commit)
     {
@@ -130,8 +130,6 @@ void Context_set_pixel(Context_t ctx, const unsigned char pixel_index, color_t c
     ctx->pixels[pixel_index] = color;
 }
 
-#include <stdio.h>
-
 void Context_free_future_commits(Context_t ctx)
 {
     if (ctx->commit == NULL || ctx->commit->next == NULL)
@@ -194,4 +192,13 @@ void Context_move_commits(Context_t ctx, int offset)
     ctx->previous_direction = direction;
 }
 
+int Context_is_solid_color(Context_t ctx, color_t color) {
+    for (int i = 0; i < SPRITE_CANVAS_SIZE; i += 1) {
+        if (ctx->pixels[i] != color) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
 

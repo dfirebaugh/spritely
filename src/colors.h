@@ -3,8 +3,11 @@
 #ifndef _COLORS_
 #define _COLORS_
 
+#include <stdint.h>
+#include "defs.h"
+
 typedef enum color {
-  BLACK,
+  BLACK = 0,
   GREY1,
   GREY2,
   GREY4,
@@ -21,5 +24,10 @@ typedef enum color {
   MAGENTA,
   WHITE
 } color_t;
+
+// A one-dimensional array holding RGBA components for all color_t values
+// e.g. color_components[color_t value] == Red component of that color
+//  immediately followed by green, blue, and alpha component values
+extern uint8_t color_values[COLOR_VALUES_SIZE];
 
 #endif

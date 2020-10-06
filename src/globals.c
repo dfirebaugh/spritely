@@ -28,3 +28,4 @@ Message_Queue_t help_message_queue;
 
 unsigned int current_time;
 unsigned int last_time;
+tool_t active_tool = PEN;

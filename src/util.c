@@ -1,58 +1,67 @@
 #include "globals.h"
+#include <stdlib.h>
 
-void set_pixel_render_color(const unsigned char p)
+void set_pixel_render_color(color_t p)
 {
-    switch (p)
-    {
-    case D_BLUE:
-        SDL_SetRenderDrawColor(renderer, 0, 0, 100, 255);
-        break;
-    case B_BLUE:
-        SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
-        break;
-    case B_RED:
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-        break;
-    case BLUE:
-        SDL_SetRenderDrawColor(renderer, 0, 0, 200, 255);
-        break;
-    case GREEN:
-        SDL_SetRenderDrawColor(renderer, 0, 200, 0, 255);
-        break;
-    case RED:
-        SDL_SetRenderDrawColor(renderer, 200, 0, 0, 255);
-        break;
-    case BLACK:
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        break;
-    case GREY1:
-        SDL_SetRenderDrawColor(renderer, 224, 224, 224, 255);
-        break;
-    case GREY2:
-        SDL_SetRenderDrawColor(renderer, 192, 192, 192, 255);
-        break;
-    case GREY4:
-        SDL_SetRenderDrawColor(renderer, 160, 160, 160, 255);
-        break;
-    case GREY8:
-        SDL_SetRenderDrawColor(renderer, 96, 96, 96, 255);
-        break;
-    case GREY16:
-        SDL_SetRenderDrawColor(renderer, 32, 32, 32, 255);
-        break;
-    case WHITE:
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        break;
-    case CYAN:
-        SDL_SetRenderDrawColor(renderer, 0, 255, 255, 255);
-        break;
-    case YELLOW:
-        SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
-        break;
-    case MAGENTA:
-        SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
-        break;
-    default:
-        break;
+    const size_t base = p * NUM_COLOR_COMPONENTS;
+    SDL_SetRenderDrawColor(renderer,
+        color_values[base + 0],
+        color_values[base + 1],
+        color_values[base + 2],
+        color_values[base + 3]
+    );
+}
+
+color_t get_pixel_render_color(const uint8_t r, const uint8_t g, const uint8_t b, const uint8_t a) {
+    for (color_t color = 0; color < COLORPICKER_NUM_COLORS; color += 1) {
+        const size_t base = color * NUM_COLOR_COMPONENTS;
+
+        const int r_matches = color_values[base + 0] == r;
+        const int g_matches = color_values[base + 1] == g;
+        const int b_matches = color_values[base + 2] == b;
+        const int a_matches = color_values[base + 3] == a;
+
+        if (r_matches && g_matches && b_matches && a_matches) {
+            return color;
+        }
     }
+
+    // Return black if no exact match found
+    return BLACK;
+}
+
+void *checked_malloc(size_t size) {
+    void *const ptr = malloc(size);
+
+    if (size != 0 && ptr == NULL) {
+        fprintf(
+            stderr,"Ran out of memory. Failed to malloc %zu bytes.\n", size);
+        exit(1);
+    }
+
+    return ptr;
+}
+
+size_t find_last_occurrence(const char *const buf, const size_t buf_len, const char ch) {
+    for (size_t i = buf_len - 1; i >= 0; i -= 1) {
+        if (buf[i] == ch) {
+            return i;
+        }
+    }
+
+    return buf_len;
+}
+
+int sprite_sheet_index_in_range(const unsigned char index)
+{
+    if (index >= 0 && index < SPRITESHEET_SIZE) return 1;
+
+    return 0;
+}
+
+int canvas_index_in_range(const unsigned char index)
+{
+    if (index >= 0 && index < SPRITE_CANVAS_SIZE) return 1;
+
+    return 0;
 }
