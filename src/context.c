@@ -39,7 +39,7 @@ Context_t Context_make(uint pixel_size, uint row_size, uint col_size, uint x_off
     return ctx;
 }
 
-Context_t Context_free(Context_t ctx)
+void Context_free(Context_t ctx)
 {
     free(ctx);
 }
