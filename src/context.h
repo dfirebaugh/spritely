@@ -34,6 +34,10 @@ extern color_t Context_get_pixel (Context_t ctx, const unsigned char pixel_index
 extern void Context_set_pixel(Context_t ctx, const unsigned char pixel_index, color_t color);
 extern void Context_indicator_focus(SDL_Rect *indicator, Context_t ctx, const unsigned char rect_index);
 
+extern void Context_free_future_commits(Context_t ctx);
+extern void Context_new_commit(Context_t ctx, color_t pre_color, color_t post_color, uint position);
+extern void Context_move_commits(Context_t ctx, int offset);
+
 /* Return 1 if the ctx is entirely the given color else return 0 */
 extern int Context_is_solid_color(Context_t ctx, color_t color);
 

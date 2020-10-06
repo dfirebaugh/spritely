@@ -1,6 +1,15 @@
 #include "globals.h"
 #include "util.h"
 
+struct Commit
+{
+    color_t color[2];
+    uint position;
+    struct Commit *previous;
+    struct Commit *next;
+};
+
+
 struct Context
 {
     uint pixel_size;
@@ -11,6 +20,9 @@ struct Context
     uint y_offset;
     color_t pixels[SPRITE_CANVAS_SIZE];
     SDL_Rect rects[SPRITE_CANVAS_SIZE];
+
+    struct Commit *commit;
+    signed char previous_direction;
 };
 
 Context_t Context_make(uint pixel_size, uint row_size, uint col_size, uint x_offset, uint y_offset)
@@ -36,12 +48,26 @@ Context_t Context_make(uint pixel_size, uint row_size, uint col_size, uint x_off
         }
     }
 
+    ctx->commit = NULL;
+    ctx->previous_direction = 0;
+
     return ctx;
 }
 
 void Context_free(Context_t ctx)
 {
+    if (ctx->commit)
+    {
+        while (ctx->commit->previous != NULL)
+            ctx->commit = ctx->commit->previous;
+
+        Context_free_future_commits(ctx);
+        free(ctx->commit);
+        ctx->commit = NULL;
+    }
+
     free(ctx);
+    ctx = NULL;
 }
 
 void Context_render(Context_t ctx)
@@ -100,7 +126,70 @@ color_t Context_get_pixel(Context_t ctx, const unsigned char pixel_index)
 
 void Context_set_pixel(Context_t ctx, const unsigned char pixel_index, color_t color)
 {
+    Context_new_commit(ctx, ctx->pixels[pixel_index], color, pixel_index);
     ctx->pixels[pixel_index] = color;
+}
+
+void Context_free_future_commits(Context_t ctx)
+{
+    if (ctx->commit == NULL || ctx->commit->next == NULL)
+        return;
+
+    struct Commit *commit_iterator = ctx->commit->next;
+    while (commit_iterator != NULL)
+    {
+        struct Commit *commit_to_free = commit_iterator;
+        commit_iterator = commit_iterator->next;
+        free(commit_to_free);
+    }
+    ctx->commit->next = NULL;
+}
+
+void Context_new_commit(Context_t ctx, color_t pre_color, color_t post_color, uint position)
+{
+    if (pre_color == post_color)
+        return;
+
+    Context_free_future_commits(ctx);
+
+    struct Commit *new_commit = (struct Commit *)malloc(sizeof(struct Commit));
+    if (!new_commit)
+        return;
+
+    new_commit->color[0] = pre_color;
+    new_commit->color[1] = post_color;
+    new_commit->position = position;
+    new_commit->previous = ctx->commit;
+    new_commit->next = NULL;
+
+    if (ctx->commit)
+        ctx->commit->next = new_commit;
+
+    ctx->commit = new_commit;
+}
+
+void Context_move_commits(Context_t ctx, int offset)
+{
+    if (offset == 0 || ctx->commit == NULL)
+        return;
+
+    signed char direction = -1 + (2 * (offset > 0));
+
+    for (uint i = 0; i < direction * offset; i++)
+    {
+
+	if (direction == ctx->previous_direction && ctx->previous_direction != 0)
+		if (direction < 0 && ctx->commit->previous != NULL)
+		    ctx->commit = ctx->commit->previous;
+		else if (direction > 0 && ctx->commit->next != NULL)
+		    ctx->commit = ctx->commit->next;
+		else
+		    break;
+
+        ctx->pixels[ctx->commit->position] = ctx->commit->color[direction > 0];
+    }
+
+    ctx->previous_direction = direction;
 }
 
 int Context_is_solid_color(Context_t ctx, color_t color) {
@@ -112,3 +201,4 @@ int Context_is_solid_color(Context_t ctx, color_t color) {
 
     return 1;
 }
+

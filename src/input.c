@@ -7,6 +7,8 @@ static void help()
     Message_Queue_enqueue(help_message_queue,
         "> Ctrl+C - Copy\n"
         "> Ctrl+V - Paste\n"
+        "> Ctrl+Z - Undo\n"
+        "> Ctrl+Shift+Z | Ctrl+Y - Redo\n"
         "> Ctrl+S - Save the spritesheet\n"
         "> Ctrl+Shift+S - Save the spritesheet and images for each sprite\n"
         "> Ctrl+O - Load a spritesheet from an image file\n"
@@ -128,6 +130,22 @@ static void paste_sprite()
     Context_swap_pixels(sprite_selector_cells[current_sprite_index], sprite_canvas_ctx);
 }
 
+static void redo()
+{
+    Message_Queue_enqueue(command_message_queue, "redo", 0);
+    Context_move_commits(sprite_canvas_ctx, 1);
+    Context_t current_cell = sprite_selector_cells[current_sprite_index];
+    Context_swap_pixels(current_cell, sprite_canvas_ctx);
+}
+
+static void undo()
+{
+    Message_Queue_enqueue(command_message_queue, "undo", 0);
+    Context_move_commits(sprite_canvas_ctx, -1);
+    Context_t current_cell = sprite_selector_cells[current_sprite_index];
+    Context_swap_pixels(current_cell, sprite_canvas_ctx);
+}
+
 static void increment_sprite_selector()
 {
     if (!(sprite_sheet_index_in_range(current_sprite_index + 1))) return;
@@ -159,7 +177,6 @@ static void decrement_row_sprite_selector()
     current_sprite_index -= SPRITESHEET_ROW_SIZE;
     tool_sprite_selection(current_sprite_index);
 }
-
 
 static void free_all_contexts()
 {
@@ -265,6 +282,15 @@ void process_inputs()
                 if (lctrl)
                     paste_sprite();
                 break;
+            case SDLK_y:
+                if (lctrl)
+                    redo();
+                break;
+            case SDLK_z:
+                if (lctrl && !lshift)
+                    undo();
+                else if (lctrl && lshift)
+                    redo();
             case SDLK_f:
                 active_tool = FILL;
                 Message_Queue_enqueue(command_message_queue, "fill tool", 0);
