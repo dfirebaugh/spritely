@@ -18,3 +18,20 @@ runing `make web` will build spritely using emscripten. So in order to run it, y
 `make web` will create two file: `index.js` and `index.wasm`. Using the given `index.html` and a simple web server (Chrome doesn't support file:// XHR request), you will be able to use spritely in your web browser !
 
 (you can have a simple web server by going in the `web` folder using python2 with `python2 -m SimpleHTTPServer 8080` or python3 with `python -m http.server 8080`)
+
+# Shortcuts and bindings
+
+Here are some shortcuts/bindings:-
+
+`Ctrl+C` -> Copy\
+`Ctrl+V` -> Paste\
+`Ctrl+Z` -> Undo\
+`Ctrl+Shift+Z` OR `Ctrl+Y`-> Redo\
+`Ctrl+S` -> Save the spritesheet\
+`Ctrl+Shift+S` -> Save the spritesheet and images for each sprite\
+`Ctrl+O` -> Load a spritesheet from an image file\
+`Left click` -> to draw pixel\
+`Right click` -> to select a colour that is on the  canvas\n"
+`Arrow Keys` -> to move sprite selection"\
+`F`-> fill tool\
+`Space` -> pen tool
