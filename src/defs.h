@@ -1,15 +1,12 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #ifndef _GLOBAL_CONSTANTS
 #define _GLOBAL_CONSTANTS
 
-#if 0
-#define __DEBUG_SPRITE_SELECTOR__
-#endif
-
 #define SCREEN_WIDTH 672
-#define SCREEN_HEIGHT 568
+#define SCREEN_HEIGHT 565
 
 #define SPRITE_CANVAS_SIZE 64
 #define SPRITE_CANVAS_PIXEL_SIZE 50
