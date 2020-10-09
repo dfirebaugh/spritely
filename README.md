@@ -1,7 +1,9 @@
 # spritely
 Spritely is a sprite editor for making tiny sprites.
+Spritely makes a 64 sprite sprite sheet in the format of png.  Each sprite is 8x8 pixels with 16 colors.
 
-Ideally this will make a 64 sprite sprite sheet.  Each sprite will be 8x8 pixels with 16 colors.
+## Demo
+A limited demo can be found here: https://dfirebaugh.github.io/spritely/
 
 ![spritely](./docs/spritely.png)
 
