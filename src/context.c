@@ -20,6 +20,13 @@ struct Context
     uint y_offset;
     color_t pixels[SPRITE_CANVAS_SIZE];
     SDL_Rect rects[SPRITE_CANVAS_SIZE];
+    bool has_indicator;
+    SDL_Rect indicator;
+
+    /**
+     * is_transparent - do we render this context?
+     */
+    bool is_transparent;
 
     struct Commit *commit;
     signed char previous_direction;
@@ -28,7 +35,6 @@ struct Context
 Context_t Context_make(uint pixel_size, uint row_size, uint col_size, uint x_offset, uint y_offset)
 {
     Context_t ctx = malloc(sizeof(struct Context));
-    ;
 
     ctx->row_size = row_size;
     ctx->col_size = col_size;
@@ -48,6 +54,8 @@ Context_t Context_make(uint pixel_size, uint row_size, uint col_size, uint x_off
         }
     }
 
+    ctx->is_transparent = false;
+    ctx->has_indicator = false;
     ctx->commit = NULL;
     ctx->previous_direction = 0;
 
@@ -70,15 +78,28 @@ void Context_free(Context_t ctx)
     ctx = NULL;
 }
 
+void Context_make_transparent(Context_t ctx)
+{
+    ctx->is_transparent = true;
+}
+
 void Context_render(Context_t ctx)
 {
     char i;
 
-    for (i = 0; i < (ctx->row_size * ctx->col_size); i++)
+    if(!ctx->is_transparent)
     {
-        set_pixel_render_color(ctx->pixels[i]);
-        SDL_RenderFillRect(renderer, &ctx->rects[i]);
+        for (i = 0; i < (ctx->row_size * ctx->col_size); i++)
+        {
+            set_pixel_render_color(ctx->pixels[i]);
+            SDL_RenderFillRect(renderer, &ctx->rects[i]);
+        }
     }
+
+    if (!ctx->has_indicator) return;
+
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderDrawRect(renderer, &ctx->indicator);
 }
 
 void Context_swap_pixels(Context_t dest, Context_t source)
@@ -86,10 +107,19 @@ void Context_swap_pixels(Context_t dest, Context_t source)
     memcpy(dest->pixels, source->pixels, sizeof(dest->pixels));
 }
 
-void Context_indicator_focus(SDL_Rect *indicator, Context_t ctx, const unsigned char rect_index)
+void Context_indicator_focus(Context_t ctx, unsigned char rect_index)
 {
-    memcpy(indicator, &ctx->rects[rect_index], sizeof(SDL_Rect));
+    if (!ctx->has_indicator) return;
+    memcpy(&ctx->indicator, &ctx->rects[rect_index], sizeof(SDL_Rect));
 }
+
+
+void Context_make_indicator(Context_t ctx)
+{
+    ctx->has_indicator = true;
+    Context_indicator_focus(ctx, 0);
+}
+
 
 static int XYInRect(const SDL_Rect rect)
 {
@@ -101,7 +131,10 @@ void Context_handle_rect_click(Context_t ctx, void (*fn)(const unsigned char))
     unsigned char i;
     for (i = 0; i < (ctx->row_size * ctx->col_size); i++)
         if (XYInRect(ctx->rects[i]))
+        {
             (*fn)(i);
+            Context_indicator_focus(ctx, i);
+        }
 }
 
 void Context_from_pixel_buffer(Context_t ctx, color_t *pixel_buffer)

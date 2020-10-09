@@ -15,11 +15,14 @@ static int create_window()
 {
     window = NULL;
 
+
+    SDL_SetHint(SDL_HINT_EMSCRIPTEN_KEYBOARD_ELEMENT, "#canvas"); /* disable key inputs in wasm */
+
     window = SDL_CreateWindow(
         "spritely",
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
         SCREEN_WIDTH, SCREEN_HEIGHT,
-        SDL_WINDOW_SHOWN);
+        SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     if (window == NULL)
     {
         fprintf(stderr, "could not create window: %s\n", SDL_GetError());

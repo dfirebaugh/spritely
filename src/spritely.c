@@ -6,6 +6,18 @@
 
 char spritely_initialized = 0;
 
+static void toolbar_init(Context_t ctx)
+{
+  color_t pixel_buffer[COLORPICKER_PIXEL_SIZE];
+
+  char i;
+
+  for (i = 0; i < (COLORPICKER_ROW_SIZE * COLORPICKER_ROW_SIZE); i++)
+    pixel_buffer[i] = i;
+
+  Context_from_pixel_buffer(ctx, pixel_buffer);
+}
+
 static void color_picker_init(Context_t ctx)
 {
   color_t pixel_buffer[COLORPICKER_PIXEL_SIZE];
@@ -18,8 +30,8 @@ static void color_picker_init(Context_t ctx)
   Context_from_pixel_buffer(ctx, pixel_buffer);
 }
 
-#define SPRITE_SELECTOR_CELL_X_PADDING 6
-#define SPRITE_SELECTOR_CELL_Y_PADDING 2
+#define SPRITE_SELECTOR_CELL_X_PADDING 0
+#define SPRITE_SELECTOR_CELL_Y_PADDING 0
 
 static void sprite_selector_init(Context_t *ctx)
 {
@@ -29,8 +41,11 @@ static void sprite_selector_init(Context_t *ctx)
   {
     for (j = 0; j < SPRITESHEET_ROW_SIZE; j++)
     {
-      int x = 1 + (j * SPRITESHEET_PIXEL_SIZE * (36 / SPRITESHEET_PIXEL_SIZE) + j) + SPRITE_SELECTOR_CELL_X_PADDING * j;
-      int y = SPRITESHEET_YOFFSET + ((SPRITESHEET_PIXEL_SIZE * (SPRITE_CANVAS_SIZE / 8)) * i) + SPRITE_SELECTOR_CELL_Y_PADDING * i;
+      int sprite_height = SPRITESHEET_PIXEL_SIZE * 8;
+      int sprite_y_pos = sprite_height * i;
+
+      int x = (j * (SPRITESHEET_PIXEL_SIZE * 8) + j) + j;
+      int y = (SPRITESHEET_YOFFSET + sprite_y_pos) + i;
 
       ctx[index] = Context_make(SPRITESHEET_PIXEL_SIZE,
                                 SPRITE_CANVAS_ROW_SIZE,
@@ -48,19 +63,15 @@ static void render()
 
   Context_render(sprite_canvas_ctx);
   Context_render(color_picker_ctx);
+  Context_render(toolbar_ctx);
 
   char i;
   for (i = 0; i < SPRITESHEET_SIZE; i++)
   {
     Context_render(sprite_selector_cells[i]);
   }
+  Context_render(sprite_selector_ctx);
 
-#ifdef __DEBUG_SPRITE_SELECTOR__
-  Context_render(&sprite_selector_ctx);
-#endif
-  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  SDL_RenderDrawRect(renderer, &sprite_selection_indicator);
-  SDL_RenderDrawRect(renderer, &color_picker_indicator);
 
   Message_box_render(command_message_queue);
   Message_box_render(help_message_queue);
@@ -77,8 +88,6 @@ void spritely_run()
 {
   if (!spritely_initialized)
   {
-    // read_file();
-
     pen_color = BLUE;
     sprite_canvas_ctx = Context_make(SPRITE_CANVAS_PIXEL_SIZE,
                                      SPRITE_CANVAS_ROW_SIZE, SPRITE_CANVAS_ROW_SIZE, 0, 0);
@@ -88,10 +97,18 @@ void spritely_run()
                                     COLORPICKER_ROW_SIZE, COLORPICKER_ROW_SIZE,
                                     COLORPICKER_XOFFSET, COLORPICKER_YOFFSET);
 
+    toolbar_ctx = Context_make(COLORPICKER_PIXEL_SIZE, 4, 2, COLORPICKER_XOFFSET, 280);
+
     sprite_selector_init(sprite_selector_cells);
     color_picker_init(color_picker_ctx);
+    toolbar_init(toolbar_ctx);
 
-    Context_indicator_focus(&sprite_selection_indicator, sprite_selector_ctx, 0);
+    Context_make_indicator(color_picker_ctx);
+    Context_make_indicator(sprite_selector_ctx);
+    Context_make_indicator(toolbar_ctx);
+
+    Context_make_transparent(sprite_selector_ctx);
+
 
     command_message_queue = Message_Queue_create(10);
     help_message_queue = Message_Queue_create(10);

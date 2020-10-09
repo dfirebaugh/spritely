@@ -87,14 +87,21 @@ static void tool_fill(const unsigned char rect_index)
 static void tool_sprite_selection(const unsigned char rect_index)
 {
     current_sprite_index = rect_index;
-    Context_indicator_focus(&sprite_selection_indicator, sprite_selector_ctx, current_sprite_index);
+    Context_indicator_focus(sprite_selector_ctx, current_sprite_index);
     Context_swap_pixels(sprite_canvas_ctx, sprite_selector_cells[rect_index]);
+}
+
+static void tool_toolbar_selection(const unsigned char rect_index)
+{
+/**
+ * this is where we can handle which tool is selected based on 
+ * which thing on the toolbar is active
+ */
 }
 
 static void tool_color_pick(const unsigned char rect_index)
 {
     pen_color = rect_index;
-    Context_indicator_focus(&color_picker_indicator, color_picker_ctx, pen_color);
 }
 
 static void left_clicks()
@@ -107,6 +114,7 @@ static void left_clicks()
 
     Context_handle_rect_click(color_picker_ctx, tool_color_pick);
     Context_handle_rect_click(sprite_selector_ctx, tool_sprite_selection);
+    Context_handle_rect_click(toolbar_ctx, tool_toolbar_selection);
 }
 
 static void right_clicks()

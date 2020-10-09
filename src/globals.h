@@ -28,11 +28,9 @@ extern Context_t sprite_canvas_ctx;
 extern Context_t color_picker_ctx;
 extern Context_t sprite_selector_ctx;
 extern Context_t sprite_sheet_current_cell_ctx;
+extern Context_t toolbar_ctx;
 extern Context_t sprite_selector_cells[SPRITESHEET_SIZE];
 extern Context_t color_selector_cells[COLORPICKER_CANVAS_SIZE];
-
-extern SDL_Rect sprite_selection_indicator;
-extern SDL_Rect color_picker_indicator;
 
 extern uint sprite_sheet[SPRITESHEET_SIZE][SPRITE_CANVAS_SIZE];
 
