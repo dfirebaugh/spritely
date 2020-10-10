@@ -35,3 +35,4 @@ add_executable(spritely ${spritely_hdrs} ${spritely_srcs})
 
 target_link_libraries(spritely ${SDL2_LIBRARIES})
 target_link_libraries(spritely ${SDL2TTF_LIBRARY})
+target_link_libraries(spritely -lm)
