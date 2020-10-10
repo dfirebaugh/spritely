@@ -15,9 +15,6 @@ static int create_window()
 {
     window = NULL;
 
-
-    SDL_SetHint(SDL_HINT_EMSCRIPTEN_KEYBOARD_ELEMENT, "#canvas"); /* disable key inputs in wasm */
-
     window = SDL_CreateWindow(
         "spritely",
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,

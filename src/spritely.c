@@ -4,25 +4,25 @@
 #include "globals.h"
 #include "input.h"
 
-char spritely_initialized = 0;
+unsigned int spritely_initialized = 0;
 
-static void toolbar_init(Context_t ctx)
+static void toolbar_render(Context_t ctx)
 {
   color_t pixel_buffer[COLORPICKER_PIXEL_SIZE];
 
-  char i;
+  unsigned int i;
 
-  for (i = 0; i < (COLORPICKER_ROW_SIZE * COLORPICKER_ROW_SIZE); i++)
-    pixel_buffer[i] = i;
-
-  Context_from_pixel_buffer(ctx, pixel_buffer);
+  for (i = 0; i < TOOLBAR_ROW_SIZE; i++)
+  {
+    Context_render_icon(toolbar_ctx, icon_files[i], i);
+  }
 }
 
 static void color_picker_init(Context_t ctx)
 {
   color_t pixel_buffer[COLORPICKER_PIXEL_SIZE];
 
-  char i;
+  unsigned int i;
 
   for (i = 0; i < (COLORPICKER_ROW_SIZE * COLORPICKER_ROW_SIZE); i++)
     pixel_buffer[i] = i;
@@ -35,8 +35,8 @@ static void color_picker_init(Context_t ctx)
 
 static void sprite_selector_init(Context_t *ctx)
 {
-  char i, j;
-  char index = 0;
+  unsigned int i, j;
+  unsigned int index = 0;
   for (i = 0; i < SPRITESHEET_COL_SIZE; i++)
   {
     for (j = 0; j < SPRITESHEET_ROW_SIZE; j++)
@@ -65,12 +65,13 @@ static void render()
   Context_render(color_picker_ctx);
   Context_render(toolbar_ctx);
 
-  char i;
+  unsigned int i;
   for (i = 0; i < SPRITESHEET_SIZE; i++)
   {
     Context_render(sprite_selector_cells[i]);
   }
   Context_render(sprite_selector_ctx);
+  toolbar_render(toolbar_ctx);
 
 
   Message_box_render(command_message_queue);
@@ -97,18 +98,17 @@ void spritely_run()
                                     COLORPICKER_ROW_SIZE, COLORPICKER_ROW_SIZE,
                                     COLORPICKER_XOFFSET, COLORPICKER_YOFFSET);
 
-    toolbar_ctx = Context_make(COLORPICKER_PIXEL_SIZE, 4, 2, COLORPICKER_XOFFSET, 280);
+    toolbar_ctx = Context_make(COLORPICKER_PIXEL_SIZE, TOOLBAR_ROW_SIZE, TOOLBAR_COLUMN_SIZE, TOOLBAR_XOFFSET, TOOLBAR_YOFFSET);
 
     sprite_selector_init(sprite_selector_cells);
     color_picker_init(color_picker_ctx);
-    toolbar_init(toolbar_ctx);
 
     Context_make_indicator(color_picker_ctx);
     Context_make_indicator(sprite_selector_ctx);
     Context_make_indicator(toolbar_ctx);
 
     Context_make_transparent(sprite_selector_ctx);
-
+    Context_make_transparent(toolbar_ctx);
 
     command_message_queue = Message_Queue_create(10);
     help_message_queue = Message_Queue_create(10);

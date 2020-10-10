@@ -16,10 +16,10 @@ extern size_t find_last_occurrence(const char *const buf, const size_t buf_len, 
 * sprite_sheet_index_in_range
 * Return 1 if the index is within the spritesheet range
 */
-extern int sprite_sheet_index_in_range(const unsigned char index);
+extern int sprite_sheet_index_in_range(const unsigned int index);
 
 /*
 * canvas_index_in_range
 * Return 1 if the index is within the spritesheet range
 */
-extern int canvas_index_in_range(const unsigned char index);
+extern int canvas_index_in_range(const unsigned int index);

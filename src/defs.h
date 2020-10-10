@@ -1,12 +1,13 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <stdio.h>
 #include <stdbool.h>
 
 #ifndef _GLOBAL_CONSTANTS
 #define _GLOBAL_CONSTANTS
 
-#define SCREEN_WIDTH 672
-#define SCREEN_HEIGHT 565
+#define SCREEN_WIDTH 670
+#define SCREEN_HEIGHT 625
 
 #define SPRITE_CANVAS_SIZE 64
 #define SPRITE_CANVAS_PIXEL_SIZE 50
@@ -29,6 +30,11 @@
 #define SPRITESHEET_PIXEL_SIZE 5
 #define SPRITESHEET_ROW_SIZE 16
 #define SPRITESHEET_COL_SIZE 4
-#define SPRITESHEET_YOFFSET 400
+#define SPRITESHEET_YOFFSET 460
+
+#define TOOLBAR_ROW_SIZE 8
+#define TOOLBAR_COLUMN_SIZE 1
+#define TOOLBAR_XOFFSET 0
+#define TOOLBAR_YOFFSET 405
 
 #endif

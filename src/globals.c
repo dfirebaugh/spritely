@@ -5,11 +5,11 @@ struct mouse mouse;
 SDL_Window *window;
 SDL_Renderer *renderer;
 
-char pen_color;
-int current_sprite_index;
-int copy_index;
-int lctrl;
-int lshift;
+unsigned int pen_color;
+unsigned int current_sprite_index;
+unsigned int copy_index;
+unsigned int lctrl;
+unsigned int lshift;
 color_t clipboard_pixel_buffer[SPRITE_CANVAS_SIZE];
 Context_t sprite_canvas_ctx;
 Context_t color_picker_ctx;
@@ -27,3 +27,14 @@ Message_Queue_t help_message_queue;
 unsigned int current_time;
 unsigned int last_time;
 tool_t active_tool = PEN;
+
+char icon_files[TOOLBAR_ROW_SIZE][50] = {
+    "assets/icons/Pen.png",
+    "assets/icons/Fill.png",
+    "assets/icons/Drag.png",
+    "assets/icons/Undo.png",
+    "assets/icons/Redo.png",
+    "assets/icons/Load.png",
+    "assets/icons/Save.png",
+    "assets/icons/Info.png"
+  };
