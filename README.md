@@ -10,7 +10,7 @@ A limited demo can be found here: https://dfirebaugh.github.io/spritely/
 ## Build Requirements
 
 ```
-$ sudo apt-get install libsdl2-ttf-dev
+$ sudo apt-get install libsdl2-ttf-dev libsdl2-image-dev
 ```
 
 ## Webassembly build

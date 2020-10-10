@@ -29,7 +29,7 @@ struct Context
     bool is_transparent;
 
     struct Commit *commit;
-    signed char previous_direction;
+    signed int previous_direction;
 };
 
 Context_t Context_make(uint pixel_size, uint row_size, uint col_size, uint x_offset, uint y_offset)
@@ -39,8 +39,8 @@ Context_t Context_make(uint pixel_size, uint row_size, uint col_size, uint x_off
     ctx->row_size = row_size;
     ctx->col_size = col_size;
 
-    char i, j;
-    char index = 0;
+    unsigned int i, j;
+    unsigned int index = 0;
     for (i = 0; i < col_size; i++)
     {
         for (j = 0; j < row_size; j++)
@@ -78,6 +78,16 @@ void Context_free(Context_t ctx)
     ctx = NULL;
 }
 
+void Context_render_icon(Context_t ctx, char *filename, uint index)
+{
+    SDL_Surface* surface = IMG_Load(filename); 
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface); 
+    SDL_FreeSurface(surface);
+
+
+    SDL_RenderCopy(renderer, texture, NULL, &ctx->rects[index]);
+}
+
 void Context_make_transparent(Context_t ctx)
 {
     ctx->is_transparent = true;
@@ -85,7 +95,7 @@ void Context_make_transparent(Context_t ctx)
 
 void Context_render(Context_t ctx)
 {
-    char i;
+    unsigned int i;
 
     if(!ctx->is_transparent)
     {
@@ -107,7 +117,7 @@ void Context_swap_pixels(Context_t dest, Context_t source)
     memcpy(dest->pixels, source->pixels, sizeof(dest->pixels));
 }
 
-void Context_indicator_focus(Context_t ctx, unsigned char rect_index)
+void Context_indicator_focus(Context_t ctx, unsigned int rect_index)
 {
     if (!ctx->has_indicator) return;
     memcpy(&ctx->indicator, &ctx->rects[rect_index], sizeof(SDL_Rect));
@@ -126,9 +136,9 @@ static int XYInRect(const SDL_Rect rect)
     return ((mouse.x >= rect.x && mouse.x <= rect.x + rect.w) && (mouse.y >= rect.y && mouse.y <= rect.y + rect.h));
 }
 
-void Context_handle_rect_click(Context_t ctx, void (*fn)(const unsigned char))
+void Context_handle_rect_click(Context_t ctx, void (*fn)(const unsigned int))
 {
-    unsigned char i;
+    unsigned int i;
     for (i = 0; i < (ctx->row_size * ctx->col_size); i++)
         if (XYInRect(ctx->rects[i]))
         {
@@ -152,12 +162,12 @@ void Context_swap_rect_buffer(Context_t ctx, SDL_Rect *rect_buffer)
     memcpy(ctx->rects, rect_buffer, sizeof(ctx->rects));
 }
 
-color_t Context_get_pixel(Context_t ctx, const unsigned char pixel_index)
+color_t Context_get_pixel(Context_t ctx, const unsigned int pixel_index)
 {
     return ctx->pixels[pixel_index];
 }
 
-void Context_set_pixel(Context_t ctx, const unsigned char pixel_index, color_t color)
+void Context_set_pixel(Context_t ctx, const unsigned int pixel_index, color_t color)
 {
     Context_new_commit(ctx, ctx->pixels[pixel_index], color, pixel_index);
     ctx->pixels[pixel_index] = color;
@@ -206,7 +216,7 @@ void Context_move_commits(Context_t ctx, int offset)
     if (offset == 0 || ctx->commit == NULL)
         return;
 
-    signed char direction = -1 + (2 * (offset > 0));
+    signed int direction = -1 + (2 * (offset > 0));
 
     for (uint i = 0; i < direction * offset; i++)
     {

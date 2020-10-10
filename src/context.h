@@ -18,16 +18,16 @@ extern void Context_render(Context_t ctx);
 *   if it is within the rect, the function will execute a function pointer and pass through the
 *   index of that rect.
 */
-extern void Context_handle_rect_click(Context_t ctx, void  (*fn)(const unsigned char));
+extern void Context_handle_rect_click(Context_t ctx, void  (*fn)(const unsigned int));
 
 /* swap the pixels from one Context to another */
 extern void Context_swap_pixels(Context_t dest, Context_t source);
 
 extern void Context_from_pixel_buffer(Context_t ctx, color_t *pixel_buffer);
 extern void Context_to_pixel_buffer(Context_t ctx, color_t *pixel_buffer);
-extern color_t Context_get_pixel (Context_t ctx, const unsigned char pixel_index);
-extern void Context_set_pixel(Context_t ctx, const unsigned char pixel_index, color_t color);
-extern void Context_indicator_focus(Context_t ctx, const unsigned char rect_index);
+extern color_t Context_get_pixel (Context_t ctx, const unsigned int pixel_index);
+extern void Context_set_pixel(Context_t ctx, const unsigned int pixel_index, color_t color);
+extern void Context_indicator_focus(Context_t ctx, const unsigned int rect_index);
 
 /**
  * Context_make_indicator
@@ -48,5 +48,6 @@ extern void Context_make_transparent(Context_t ctx);
 
 /* Return 1 if the ctx is entirely the given color else return 0 */
 extern int Context_is_solid_color(Context_t ctx, color_t color);
+extern void Context_render_icon(Context_t ctx, char *filename, uint index);
 
 #endif

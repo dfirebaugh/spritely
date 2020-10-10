@@ -151,6 +151,9 @@ static void save_sprites(
 }
 
 void save_file(int save_individual_sprites) {
+#ifdef __EMSCRIPTEN__
+    return;
+#else
     // Populate the options struct for the save dialog
     sfd_Options opt = {
         .filter_name  = "Image File",
@@ -179,6 +182,7 @@ void save_file(int save_individual_sprites) {
         const size_t filename_prefix_len = find_last_occurrence(filename, strlen(filename), '.');
         save_sprites(filename, filename_prefix_len);
     }
+#endif
 }
 
 static void populate_spritesheet_row_with_file_data(const uint8_t *const file_data, const int row) {
@@ -212,6 +216,9 @@ static void populate_spritesheet_row_with_file_data(const uint8_t *const file_da
 }
 
 void open_file() {
+#ifdef __EMSCRIPTEN__
+    return;
+#else
     // Populate the options struct for the open dialog
     sfd_Options opt = {
         .filter_name  = "Image File",
@@ -255,4 +262,5 @@ void open_file() {
     for (int i = 0; i < SPRITESHEET_COL_SIZE; i += 1) {
         populate_spritesheet_row_with_file_data(image_data, i);
     }
+#endif
 }

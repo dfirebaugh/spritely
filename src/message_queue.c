@@ -4,16 +4,16 @@
 
 struct Message_Queue
 {
-    unsigned char front, rear, size;
-    unsigned capacity;
+    unsigned int front, rear, size;
+    unsigned int capacity;
     char **messages;
-    unsigned char displaying;
+    unsigned int displaying;
     char *middle;
 };
 
 #define MESSAGE_BOX_HEIGHT 35
 
-Message_Queue_t Message_Queue_create(const unsigned char capacity)
+Message_Queue_t Message_Queue_create(const unsigned int capacity)
 {
     Message_Queue_t queue = (Message_Queue_t)malloc(sizeof(struct Message_Queue));
     queue->capacity = capacity;
@@ -42,7 +42,7 @@ static int Message_Queue_isEmpty(Message_Queue_t queue)
     return (queue->size == 0);
 }
 
-void Message_Queue_enqueue(Message_Queue_t queue, char *message, char middle)
+void Message_Queue_enqueue(Message_Queue_t queue, char *message, unsigned int middle)
 {
     if (Message_Queue_isFull(queue))
         return;
@@ -77,7 +77,9 @@ char *Message_Queue_front(Message_Queue_t queue)
 
 void Message_box_render(Message_Queue_t queue)
 {
-
+#ifdef __EMSCRIPTEN__
+    return;
+#else
     if (Message_Queue_isEmpty(queue))
         return;
 
@@ -134,4 +136,5 @@ void Message_box_render(Message_Queue_t queue)
         queue->displaying = 0;
         Message_Queue_dequeue(queue);
     }
+#endif
 }

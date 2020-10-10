@@ -13,16 +13,19 @@ extern struct mouse mouse;
 #include "colors.h"
 #include "message_queue.h"
 #include "context.h"
+#include "util.h"
+#include "file.h"
+#include "draw_tools.h"
 
 extern SDL_Window *window;
 extern SDL_Renderer *renderer;
 
 //TODO: move these into spritely
-extern char pen_color;
-extern int current_sprite_index;
-extern int copy_index;
-extern int lctrl;
-extern int lshift;
+extern unsigned int pen_color;
+extern unsigned int current_sprite_index;
+extern unsigned int copy_index;
+extern unsigned int lctrl;
+extern unsigned int lshift;
 extern color_t clipboard_pixel_buffer[SPRITE_CANVAS_SIZE];
 extern Context_t sprite_canvas_ctx;
 extern Context_t color_picker_ctx;
@@ -42,8 +45,18 @@ extern unsigned int last_time;
 
 typedef enum tool_types {
   PEN = 0,
-  FILL
+  FILL,
+  DRAG,
+  UNDO,
+  REDO,
+  LOAD,
+  SAVE,
+  INFO
 } tool_t;
+
+
+extern char icon_files[TOOLBAR_ROW_SIZE][50];
+
 
 extern tool_t active_tool;
 
