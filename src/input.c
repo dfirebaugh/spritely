@@ -79,7 +79,7 @@ void process_inputs()
                 break;
             case SDLK_s:
                 if (lctrl) {
-                    Draw_tool_handle_event(OPEN_FILE);
+                    Draw_tool_handle_event(SAVE_FILE);
                 }
                 break;
             case SDLK_o:
