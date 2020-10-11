@@ -179,50 +179,6 @@ static void decrement_row_sprite_selector()
     tool_sprite_selection(current_sprite_index);
 }
 
-static void tool_toolbar_selection(const unsigned int rect_index)
-{
-/**
- * this is where we can handle which tool is selected based on 
- * which thing on the toolbar is active
- */
-    switch(rect_index)
-    {
-        case PEN:
-            active_tool = PEN;
-            Message_Queue_enqueue(command_message_queue, "pen tool", 0);
-            break;
-        case FILL:
-            active_tool = FILL;
-            Message_Queue_enqueue(command_message_queue, "fill tool", 0);
-            break;
-        case DRAG:
-            active_tool = DRAG;
-            Message_Queue_enqueue(command_message_queue, "drag not implemented", 0);
-            break;
-        case UNDO:
-            undo();
-            break;
-        case REDO:
-            redo();
-            Context_indicator_focus(toolbar_ctx, PEN);
-            break;
-        case LOAD:
-            open_file();
-            Context_indicator_focus(toolbar_ctx, PEN);
-            break;
-        case SAVE:
-            save_file(lshift);
-            Context_indicator_focus(toolbar_ctx, PEN);
-            break;
-        case INFO:
-            help();
-            Context_indicator_focus(toolbar_ctx, PEN);
-            break;
-        default:
-            break;
-    }
-}
-
 void Draw_tool_handle_event(draw_event_t event)
 {
     switch(event)
@@ -244,6 +200,9 @@ void Draw_tool_handle_event(draw_event_t event)
             right_clicks();
             break;
         case OPEN_FILE:
+            open_file(lshift);
+            break;
+        case SAVE_FILE:
             save_file(lshift);
             break;
         case PASTE_SPRITE:
@@ -273,6 +232,39 @@ void Draw_tool_handle_event(draw_event_t event)
             break;
         case SHOW_HELP:
             help();
+        default:
+            break;
+    }
+}
+
+static void tool_toolbar_selection(const unsigned int rect_index)
+{
+    switch(rect_index)
+    {
+        case PEN:
+            Draw_tool_handle_event(ACTIVATE_PEN);
+            break;
+        case FILL:
+            Draw_tool_handle_event(ACTIVATE_FILL);
+            break;
+        case DRAG:
+            Draw_tool_handle_event(ACTIVATE_DRAG);
+            break;
+        case UNDO:
+            Draw_tool_handle_event(HANDLE_UNDO);
+            break;
+        case REDO:
+            Draw_tool_handle_event(HANDLE_REDO);
+            break;
+        case LOAD:
+            Draw_tool_handle_event(OPEN_FILE);
+            break;
+        case SAVE:
+            Draw_tool_handle_event(SAVE_FILE);
+            break;
+        case INFO:
+            Draw_tool_handle_event(SHOW_HELP);
+            break;
         default:
             break;
     }
