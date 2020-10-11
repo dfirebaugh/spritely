@@ -3,7 +3,9 @@ LDFLAGS  = `sdl2-config --libs` -lSDL2 -lSDL2_ttf -lSDL2_image -lm
 PROG = spritely
 CC = gcc
 
-SRCS = $(addprefix src/, main.c spritely.c input.c init.c util.c context.c file.c message_queue.c globals.c colors.c sfd.c draw_tools.c)
+SRCS = $(addprefix src/, main.c spritely.c init.c util.c context.c file.c \
+message_queue.c globals.c colors.c sfd.c draw_tools.c sprite_sheet.c app_state.c \
+sprite_editor.c shell.c)
 OBJS = $(SRCS:.c=.o)
 
 # top-level rule to create the program.
