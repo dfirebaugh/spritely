@@ -80,12 +80,14 @@ void Context_free(Context_t ctx)
 
 void Context_render_icon(Context_t ctx, char *filename, uint index)
 {
+    /* TODO: Avoid loading this stuff on *every* frame */
     SDL_Surface* surface = IMG_Load(filename); 
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface); 
     SDL_FreeSurface(surface);
 
 
     SDL_RenderCopy(renderer, texture, NULL, &ctx->rects[index]);
+    SDL_DestroyTexture(texture);
 }
 
 void Context_make_transparent(Context_t ctx)
