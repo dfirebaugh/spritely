@@ -5,12 +5,18 @@ struct mouse mouse;
 SDL_Window *window;
 SDL_Renderer *renderer;
 
+unsigned int spritely_editor_initialized = 0;
+
+Shell_t spritely_shell;
+
 unsigned int pen_color;
 unsigned int current_sprite_index;
 unsigned int copy_index;
 unsigned int lctrl;
 unsigned int lshift;
 color_t clipboard_pixel_buffer[SPRITE_CANVAS_SIZE];
+
+App_State_t spritely_state;
 Context_t sprite_canvas_ctx;
 Context_t color_picker_ctx;
 Context_t sprite_selector_ctx;
@@ -18,6 +24,9 @@ Context_t sprite_sheet_current_cell_ctx;
 Context_t toolbar_ctx;
 Context_t sprite_selector_cells[SPRITESHEET_SIZE];
 Context_t color_selector_cells[COLORPICKER_CANVAS_SIZE];
+
+Sprite_sheet_t main_sprite_sheet;
+Sprite_sheet_t alpha_chars_font;
 
 uint sprite_sheet[SPRITESHEET_SIZE][SPRITE_CANVAS_SIZE];
 

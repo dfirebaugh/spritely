@@ -2,128 +2,89 @@
 #include <emscripten.h>
 #endif
 #include "globals.h"
-#include "input.h"
 
-unsigned int spritely_initialized = 0;
-
-static void toolbar_render(Context_t ctx)
+void process_inputs()
 {
-  color_t pixel_buffer[COLORPICKER_PIXEL_SIZE];
+  SDL_Event event;
 
-  unsigned int i;
-
-  for (i = 0; i < TOOLBAR_ROW_SIZE; i++)
+  /* Loop through waiting messages and process them */
+  while (SDL_PollEvent(&event))
   {
-    Context_render_icon(toolbar_ctx, icon_files[i], i);
-  }
-}
-
-static void color_picker_init(Context_t ctx)
-{
-  color_t pixel_buffer[COLORPICKER_PIXEL_SIZE];
-
-  unsigned int i;
-
-  for (i = 0; i < (COLORPICKER_ROW_SIZE * COLORPICKER_ROW_SIZE); i++)
-    pixel_buffer[i] = i;
-
-  Context_from_pixel_buffer(ctx, pixel_buffer);
-}
-
-#define SPRITE_SELECTOR_CELL_X_PADDING 0
-#define SPRITE_SELECTOR_CELL_Y_PADDING 0
-
-static void sprite_selector_init(Context_t *ctx)
-{
-  unsigned int i, j;
-  unsigned int index = 0;
-  for (i = 0; i < SPRITESHEET_COL_SIZE; i++)
-  {
-    for (j = 0; j < SPRITESHEET_ROW_SIZE; j++)
+    switch (App_State_get_state(spritely_state))
     {
-      int sprite_height = SPRITESHEET_PIXEL_SIZE * 8;
-      int sprite_y_pos = sprite_height * i;
-
-      int x = (j * (SPRITESHEET_PIXEL_SIZE * 8) + j) + j;
-      int y = (SPRITESHEET_YOFFSET + sprite_y_pos) + i;
-
-      ctx[index] = Context_make(SPRITESHEET_PIXEL_SIZE,
-                                SPRITE_CANVAS_ROW_SIZE,
-                                SPRITE_CANVAS_ROW_SIZE,
-                                x, y);
-      index++;
+    case SHELL:
+      Shell_inputs(spritely_shell, event);
+      break;
+    case SPRITE_EDITOR:
+      sprite_editor_inputs(event);
+      break;
+    default:
+      switch (event.type)
+      {
+      /* Closing the Window or pressing Escape will exit the program */
+      case SDL_QUIT:
+        exit(0);
+        break;
+      }
+      break;
     }
   }
 }
 
 static void render()
 {
-  SDL_SetRenderDrawColor(renderer, 74, 50, 110, 255);
-  SDL_RenderClear(renderer);
-
-  Context_render(sprite_canvas_ctx);
-  Context_render(color_picker_ctx);
-  Context_render(toolbar_ctx);
-
-  unsigned int i;
-  for (i = 0; i < SPRITESHEET_SIZE; i++)
+  switch (App_State_get_state(spritely_state))
   {
-    Context_render(sprite_selector_cells[i]);
+  case SHELL:
+    Shell_render(spritely_shell);
+    break;
+  case SPRITE_EDITOR:
+    sprite_editor_render();
+    break;
+  default:
+    break;
   }
-  Context_render(sprite_selector_ctx);
-  toolbar_render(toolbar_ctx);
 
-
-  Message_box_render(command_message_queue);
-  Message_box_render(help_message_queue);
   SDL_RenderPresent(renderer);
+}
+
+void main_loop()
+{
+  process_inputs();
+  switch (App_State_get_state(spritely_state))
+  {
+  case SHELL:
+    break;
+  case SPRITE_EDITOR:
+    if (!spritely_editor_initialized)
+      sprite_editor_init();
+    break;
+  default:
+    break;
+  }
+
+  render();
 }
 
 void emscripten_loop(void *arg)
 {
-  process_inputs();
-  render();
+  main_loop();
 }
 
 void spritely_run()
 {
-  if (!spritely_initialized)
-  {
-    pen_color = BLUE;
-    sprite_canvas_ctx = Context_make(SPRITE_CANVAS_PIXEL_SIZE,
-                                     SPRITE_CANVAS_ROW_SIZE, SPRITE_CANVAS_ROW_SIZE, 0, 0);
-    sprite_selector_ctx = Context_make(SPRITESHEET_CELL_SIZE,
-                                       SPRITESHEET_ROW_SIZE, SPRITESHEET_COL_SIZE, 0, SPRITESHEET_YOFFSET);
-    color_picker_ctx = Context_make(COLORPICKER_PIXEL_SIZE,
-                                    COLORPICKER_ROW_SIZE, COLORPICKER_ROW_SIZE,
-                                    COLORPICKER_XOFFSET, COLORPICKER_YOFFSET);
+  spritely_state = App_State_make();
+  spritely_shell = Shell_make();
+  alpha_chars_font = Sprite_sheet_make("assets/font/alpha.png");
+  main_sprite_sheet = Sprite_sheet_make("test.png");
 
-    toolbar_ctx = Context_make(COLORPICKER_PIXEL_SIZE, TOOLBAR_ROW_SIZE, TOOLBAR_COLUMN_SIZE, TOOLBAR_XOFFSET, TOOLBAR_YOFFSET);
-
-    sprite_selector_init(sprite_selector_cells);
-    color_picker_init(color_picker_ctx);
-
-    Context_make_indicator(color_picker_ctx);
-    Context_make_indicator(sprite_selector_ctx);
-    Context_make_indicator(toolbar_ctx);
-
-    Context_make_transparent(sprite_selector_ctx);
-    Context_make_transparent(toolbar_ctx);
-
-    command_message_queue = Message_Queue_create(10);
-    help_message_queue = Message_Queue_create(10);
-
-    spritely_initialized = 1;
-  }
 
 #ifdef __EMSCRIPTEN__
   emscripten_set_main_loop_arg(emscripten_loop, NULL, -1, 1);
 #else
   while (1)
   {
-    process_inputs();
-
-    render();
+    main_loop();
   }
 #endif
 }
