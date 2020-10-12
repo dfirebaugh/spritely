@@ -44,7 +44,7 @@ extern Context_t toolbar_ctx;
 extern Context_t sprite_selector_cells[SPRITESHEET_SIZE];
 extern Context_t color_selector_cells[COLORPICKER_CANVAS_SIZE];
 
-extern Sprite_sheet_t main_sprite_sheet;
+extern Sprite_sheet_t icon_sprite_sheet;
 extern Sprite_sheet_t alpha_chars_font;
 
 extern uint sprite_sheet[SPRITESHEET_SIZE][SPRITE_CANVAS_SIZE];
@@ -70,5 +70,7 @@ typedef enum tool_types {
 extern char icon_files[TOOLBAR_ROW_SIZE][50];
 
 extern tool_t active_tool;
+
+extern void free_globals();
 
 #endif

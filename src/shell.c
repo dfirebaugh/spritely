@@ -185,6 +185,7 @@ void Shell_inputs(Shell_t shell, SDL_Event event)
     /* Closing the Window or pressing Escape will exit the program */
     case SDL_QUIT:
         Shell_free(shell);
+        free_globals();
         exit(0);
         break;
     case SDL_MOUSEMOTION:
@@ -219,6 +220,7 @@ void Shell_inputs(Shell_t shell, SDL_Event event)
         {
         case SDLK_ESCAPE:
             Shell_free(shell);
+            free_globals();
             exit(0);
             break;
         case SDLK_F1:

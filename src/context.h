@@ -1,5 +1,6 @@
 #ifndef _CONTEXT
 #define _CONTEXT
+#include "sprite_sheet.h"
 
 typedef struct Context *Context_t;
 
@@ -48,6 +49,13 @@ extern void Context_make_transparent(Context_t ctx);
 
 /* Return 1 if the ctx is entirely the given color else return 0 */
 extern int Context_is_solid_color(Context_t ctx, color_t color);
-extern void Context_render_icon(Context_t ctx, char *filename, uint index);
+
+
+/**
+ * Context_render_sprite_in_context
+ * renders a specific sprite from a sprite sheet in a context cell
+ * this is useful if you need to handle click events (i.e. icons that trigger something)
+*/
+extern void Context_render_sprite_in_context(Context_t ctx, Sprite_sheet_t sprite_sheet, uint index, uint context_index);
 
 #endif

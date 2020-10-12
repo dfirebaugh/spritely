@@ -78,16 +78,9 @@ void Context_free(Context_t ctx)
     ctx = NULL;
 }
 
-void Context_render_icon(Context_t ctx, char *filename, uint index)
+void Context_render_sprite_in_context(Context_t ctx, Sprite_sheet_t sprite_sheet, uint index, uint context_index)
 {
-    /* TODO: Avoid loading this stuff on *every* frame */
-    SDL_Surface* surface = IMG_Load(filename); 
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface); 
-    SDL_FreeSurface(surface);
-
-
-    SDL_RenderCopy(renderer, texture, NULL, &ctx->rects[index]);
-    SDL_DestroyTexture(texture);
+    Sprite_sheet_render_sprite(sprite_sheet, index, ctx->rects[context_index].x, ctx->rects[context_index].y);
 }
 
 void Context_make_transparent(Context_t ctx)
