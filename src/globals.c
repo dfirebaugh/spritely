@@ -25,7 +25,7 @@ Context_t toolbar_ctx;
 Context_t sprite_selector_cells[SPRITESHEET_SIZE];
 Context_t color_selector_cells[COLORPICKER_CANVAS_SIZE];
 
-Sprite_sheet_t main_sprite_sheet;
+Sprite_sheet_t icon_sprite_sheet;
 Sprite_sheet_t alpha_chars_font;
 
 uint sprite_sheet[SPRITESHEET_SIZE][SPRITE_CANVAS_SIZE];
@@ -47,3 +47,12 @@ char icon_files[TOOLBAR_ROW_SIZE][50] = {
     "assets/icons/Save.png",
     "assets/icons/Info.png"
   };
+
+void free_globals()
+{
+    Message_Queue_free(command_message_queue);
+    Message_Queue_free(help_message_queue);
+    Sprite_sheet_free(icon_sprite_sheet);
+    Sprite_sheet_free(alpha_chars_font);
+    App_State_free(spritely_state);
+}

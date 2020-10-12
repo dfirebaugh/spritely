@@ -8,7 +8,7 @@ static void toolbar_render(Context_t ctx)
 
   for (i = 0; i < TOOLBAR_ROW_SIZE; i++)
   {
-    Context_render_icon(toolbar_ctx, icon_files[i], i);
+    Context_render_sprite_in_context(toolbar_ctx, icon_sprite_sheet, i, i);
   }
 }
 
@@ -99,8 +99,6 @@ void sprite_editor_init()
   Context_make_transparent(sprite_selector_ctx);
   Context_make_transparent(toolbar_ctx);
 
-//   main_sprite_sheet = Sprite_sheet_make("test.png");
-
   command_message_queue = Message_Queue_create(10);
   help_message_queue = Message_Queue_create(10);
   spritely_editor_initialized = 1;
@@ -128,10 +126,7 @@ static void free_all_contexts()
 static void free_all()
 {
     free_all_contexts();
-    Message_Queue_free(command_message_queue);
-    Message_Queue_free(help_message_queue);
-    Sprite_sheet_free(main_sprite_sheet);
-    App_State_free(spritely_state);
+    free_globals();
 }
 
 void sprite_editor_inputs(SDL_Event event)
