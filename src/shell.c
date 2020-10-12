@@ -1,7 +1,7 @@
 
 #include "globals.h"
 
-#define INPUT_BUFFER_SIZE 50
+#define IO_BUFFER_SIZE 50
 #define CURSOR_WIDTH 22
 #define LINE_HEIGHT 25
 #define SHELL_ROWS 20
@@ -10,11 +10,12 @@ struct Shell
 {
     unsigned int cursor;
     unsigned int line;
-    int input[INPUT_BUFFER_SIZE];
-    char output[INPUT_BUFFER_SIZE][SHELL_ROWS];
+    int input[IO_BUFFER_SIZE];
+    char output[IO_BUFFER_SIZE][SHELL_ROWS];
+    char current_output[IO_BUFFER_SIZE];
 };
 
-const char alphabet[27] = "abcdefghijklmnopqrstuvwxyz\0";
+const char alphanumeric[39] = "abcdefghijklmnopqrstuvwxyz 0123456789>\0";
 typedef enum letters
 {
     LETTER_A = 0,
@@ -42,32 +43,39 @@ typedef enum letters
     LETTER_W,
     LETTER_X,
     LETTER_Y,
-    LETTER_Z
+    LETTER_Z,
+    LETTER_SPACE,
+    NUM_0,
+    NUM_1,
+    NUM_2,
+    NUM_3,
+    NUM_4,
+    NUM_5,
+    NUM_6,
+    NUM_7,
+    NUM_8,
+    NUM_9
 } letters_t;
 
+const char *help_message = "type edit and press enter";
+const char greater_than = '>';
+
+
 void Shell_println(Shell_t shell, char *str);
-int find_index_of_alpha(char character);
-size_t
-rte_strlcpy(char *dst, const char *src, size_t siz);
+static int find_index_of_alpha(char character);
 
 Shell_t Shell_make()
 {
     Shell_t new_shell = malloc(sizeof(struct Shell));
     new_shell->cursor = 0;
-    new_shell->line = 2;
+    new_shell->line = 0;
 
-    for (int i = 0; i < INPUT_BUFFER_SIZE; ++i)
+    for (int i = 0; i < IO_BUFFER_SIZE; ++i)
     {
         new_shell->input[i] = -1;
     }
 
-    for (int i = 0; i < SHELL_ROWS; ++i)
-    {
-        for (int j = 0; j < INPUT_BUFFER_SIZE; ++j)
-        {
-            new_shell->output[i][j] = -1;
-        }
-    }
+    memcpy(new_shell->current_output, help_message, IO_BUFFER_SIZE);
 
     return new_shell;
 }
@@ -84,37 +92,18 @@ void Shell_render(Shell_t shell)
 
     unsigned int i;
 
-    for (i = 0; i < INPUT_BUFFER_SIZE; ++i)
+    Sprite_sheet_render_sprite(alpha_chars_font, find_index_of_alpha(greater_than), 0 * CURSOR_WIDTH, LINE_HEIGHT * shell->line);
+    // shell->cursor++;
+    for (i = 0; i < IO_BUFFER_SIZE; ++i)
     {
         if (shell->input[i] > -1)
-        {
-            Sprite_sheet_render_sprite(alpha_chars_font, shell->input[i], i * CURSOR_WIDTH, LINE_HEIGHT * shell->line);
-        }
+            Sprite_sheet_render_sprite(alpha_chars_font, shell->input[i], (i+1) * CURSOR_WIDTH, LINE_HEIGHT * shell->line);
     }
 
-    char *msg = "type edit and press enter";
-
-    for(int l = 0; l < strlen(msg); ++l)
+    for(int l = 0; l < strlen(shell->current_output); ++l)
     {
-        if(find_index_of_alpha(msg[l]) < 0) continue;
-        Sprite_sheet_render_sprite(alpha_chars_font, find_index_of_alpha(msg[l]), l * CURSOR_WIDTH, LINE_HEIGHT * 0);
-    }
-
-    for (int i = 0; i < SHELL_ROWS; ++i)
-    {
-        if (shell->output[i][0] == -1)
-            continue;
-
-        for (int j = 0; j < strlen(shell->output[i]); ++j)
-        {
-            ++shell->cursor;
-            Sprite_sheet_render_sprite(
-                alpha_chars_font,
-                find_index_of_alpha(shell->output[i][j]),
-                j * CURSOR_WIDTH,
-                LINE_HEIGHT * i);
-        }
-        shell->cursor = 0;
+        if(find_index_of_alpha(shell->current_output[l]) < 0) continue;
+        Sprite_sheet_render_sprite(alpha_chars_font, find_index_of_alpha(shell->current_output[l]), l * CURSOR_WIDTH, LINE_HEIGHT * 2);
     }
 }
 
@@ -123,7 +112,7 @@ static void input_to_string(Shell_t shell, char *outStr)
     unsigned int i = 0;
     while (shell->input[i] != -1)
     {
-        outStr[i] = alphabet[shell->input[i]];
+        outStr[i] = alphanumeric[shell->input[i]];
         ++i;
     }
     outStr[i] = 0;
@@ -131,7 +120,7 @@ static void input_to_string(Shell_t shell, char *outStr)
 
 static void proccess_input(Shell_t shell)
 {
-    char input_command[INPUT_BUFFER_SIZE];
+    char input_command[IO_BUFFER_SIZE];
     input_to_string(shell, input_command);
 
     if (strcmp(input_command, "edit") == 0)
@@ -142,30 +131,31 @@ static void proccess_input(Shell_t shell)
 
     if (strcmp(input_command, "help") == 0)
     {
-        printf("help\n");
+        Shell_println(shell, (char *)help_message);
+    } else {
+        Shell_println(shell, input_command);
     }
 
-    shell->line++;
+    // shell->line++;
     shell->cursor = 0;
-    for (int i = 0; i < INPUT_BUFFER_SIZE; ++i)
+    for (int i = 0; i < IO_BUFFER_SIZE; ++i)
     {
         shell->input[i] = -1;
     }
-    Shell_println(shell, input_command);
 }
 
 void Shell_println(Shell_t shell, char *str)
 {
-    printf("output: %s\n", str);
-    // TODO: add output somewhere where we can render it
+    if (strlen(str) > IO_BUFFER_SIZE) return;
+    memcpy(shell->current_output, str, IO_BUFFER_SIZE);
 }
 
-int find_index_of_alpha(char character)
+static int find_index_of_alpha(char character)
 {
-    const char *ptr = strchr(alphabet, character);
+    const char *ptr = strchr(alphanumeric, character);
     if (ptr)
     {
-        int index = ptr - alphabet;
+        int index = ptr - alphanumeric;
         return index;
     }
 
@@ -176,6 +166,14 @@ static void register_keypress(Shell_t shell, letters_t letter)
 {
     shell->input[shell->cursor] = letter;
     ++shell->cursor;
+}
+
+static void backspace(Shell_t shell)
+{
+    if(shell->cursor == 0) return;
+
+    --shell->cursor;
+    shell->input[shell->cursor] = -1;
 }
 
 void Shell_inputs(Shell_t shell, SDL_Event event)
@@ -309,11 +307,41 @@ void Shell_inputs(Shell_t shell, SDL_Event event)
         case SDLK_z:
             register_keypress(shell, LETTER_Z);
             break;
-
+        case SDLK_0:
+            register_keypress(shell, NUM_0);
+            break;
+        case SDLK_1:
+            register_keypress(shell, NUM_1);
+            break;
+        case SDLK_2:
+            register_keypress(shell, NUM_2);
+            break;
+        case SDLK_3:
+            register_keypress(shell, NUM_3);
+            break;
+        case SDLK_4:
+            register_keypress(shell, NUM_4);
+            break;
+        case SDLK_5:
+            register_keypress(shell, NUM_5);
+            break;
+        case SDLK_6:
+            register_keypress(shell, NUM_6);
+            break;
+        case SDLK_7:
+            register_keypress(shell, NUM_7);
+            break;
+        case SDLK_8:
+            register_keypress(shell, NUM_8);
+            break;
+        case SDLK_9:
+            register_keypress(shell, NUM_9);
+            break;
         case SDLK_RETURN:
             proccess_input(shell);
             break;
         case SDLK_SPACE:
+            register_keypress(shell, LETTER_SPACE);
             break;
         case SDLK_LEFT:
             break;
@@ -322,6 +350,10 @@ void Shell_inputs(Shell_t shell, SDL_Event event)
         case SDLK_DOWN:
             break;
         case SDLK_UP:
+            break;
+
+        case SDLK_BACKSPACE:
+            backspace(shell);
             break;
 
         default:
@@ -350,4 +382,3 @@ void Shell_inputs(Shell_t shell, SDL_Event event)
         break;
     }
 }
-
