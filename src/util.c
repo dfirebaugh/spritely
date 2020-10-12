@@ -43,7 +43,7 @@ void *checked_malloc(size_t size) {
 }
 
 size_t find_last_occurrence(const char *const buf, const size_t buf_len, const char ch) {
-    for (size_t i = buf_len - 1; i >= 0; i -= 1) {
+    for (size_t i = buf_len - 1; i != (size_t) -1; i--) {
         if (buf[i] == ch) {
             return i;
         }
