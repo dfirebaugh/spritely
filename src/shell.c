@@ -18,6 +18,7 @@ struct Shell
 char *help_message = "type edit and press enter\0";
 
 void Shell_println(Shell_t shell, char *str);
+static void Shell_clear(Shell_t shell);
 
 Shell_t Shell_make()
 {
@@ -25,11 +26,7 @@ Shell_t Shell_make()
     new_shell->cursor = 0;
     new_shell->line = 0;
 
-    for (int i = 0; i < IO_BUFFER_SIZE; ++i)
-    {
-        new_shell->input[i] = -1;
-    }
-
+    Shell_clear(new_shell);
     Shell_println(new_shell, help_message);
 
     return new_shell;
@@ -52,7 +49,7 @@ void Shell_render(Shell_t shell)
     {
         for(j = 0; j < SHELL_ROWS; ++j)
         {
-            if(shell->output[j][i] < 0) continue;
+            if(shell->output[j][i] <= 0) continue;
             Sprite_sheet_render_sprite(main_font_sprite_sheet, shell->output[j][i], i * CURSOR_WIDTH, LINE_HEIGHT * j);
         }
     }
@@ -72,17 +69,26 @@ static void input_to_render(Shell_t shell)
     memcpy(shell->output[shell->line], result, IO_BUFFER_SIZE);
 }
 
+static void Shell_clear(Shell_t shell)
+{
+    for (int i = 0; i < IO_BUFFER_SIZE; ++i)
+    {
+        shell->input[i] = 0;
+    }
+
+    shell->line = 0;
+    /* clear the output */
+    for(uint8_t i = 0; i < SHELL_ROWS; ++i)
+        for(uint8_t j = 0; j < IO_BUFFER_SIZE; ++j)
+            shell->output[i][j] = 0;
+}
+
 static void proccess_input(Shell_t shell)
 {
     if (strcmp(shell->input, "help") == 0) {
         Shell_println(shell, help_message);
     } else if (strcmp(shell->input, "clear") == 0) {
-        shell->line = 0;
-
-        /* clear the output */
-        for(uint32_t i = 0; i < SHELL_ROWS; ++i)
-            for(uint32_t j = 0; j < IO_BUFFER_SIZE; ++j)
-                shell->output[i][j] = 0;
+        Shell_clear(shell);
     } else if (strcmp(shell->input, "edit") == 0) {
         printf("editing\n");
         App_State_set_state(spritely_state, SPRITE_EDITOR);
@@ -91,6 +97,7 @@ static void proccess_input(Shell_t shell)
     }
 
     shell->cursor = 0;
+    /* clear the input */
     for (int i = 0; i < IO_BUFFER_SIZE; ++i)
     {
         shell->input[i] = 0;
@@ -103,8 +110,8 @@ void Shell_println(Shell_t shell, char *str)
 {
     if (strlen(str) > IO_BUFFER_SIZE) return;
     ++shell->line;
-    memcpy(shell->output[shell->line], str, IO_BUFFER_SIZE);
-    printf("%s\n", shell->output[shell->line]);
+    memcpy(shell->output[shell->line], str, strlen(str));
+    ++shell->line;
 }
 
 static void register_keypress(Shell_t shell, char letter)
