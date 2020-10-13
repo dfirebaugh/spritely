@@ -11,12 +11,11 @@ struct Shell
     unsigned int cursor;
     unsigned int line;
     char input[IO_BUFFER_SIZE];
-    char output[IO_BUFFER_SIZE][SHELL_ROWS];
+    char output[SHELL_ROWS][IO_BUFFER_SIZE];
     char current_output[IO_BUFFER_SIZE];
 };
 
-const char *help_message = "type edit and press enter";
-const char greater_than = '>';
+char *help_message = "type edit and press enter\0";
 
 void Shell_println(Shell_t shell, char *str);
 
@@ -31,7 +30,7 @@ Shell_t Shell_make()
         new_shell->input[i] = -1;
     }
 
-    memcpy(new_shell->current_output, help_message, IO_BUFFER_SIZE);
+    Shell_println(new_shell, help_message);
 
     return new_shell;
 }
@@ -46,50 +45,66 @@ void Shell_render(Shell_t shell)
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
-    unsigned int i;
+    uint8_t i;
+    uint8_t j;
 
-    Sprite_sheet_render_sprite(main_font_sprite_sheet, greater_than, 0 * CURSOR_WIDTH, LINE_HEIGHT * shell->line);
-
-    for (i = 0; i < IO_BUFFER_SIZE; ++i)
+    for(i = 0; i < IO_BUFFER_SIZE; ++i)
     {
-        if (shell->input[i] > 0)
-            Sprite_sheet_render_sprite(main_font_sprite_sheet, shell->input[i], (i+1) * CURSOR_WIDTH, LINE_HEIGHT * shell->line);
+        for(j = 0; j < SHELL_ROWS; ++j)
+        {
+            if(shell->output[j][i] < 0) continue;
+            Sprite_sheet_render_sprite(main_font_sprite_sheet, shell->output[j][i], i * CURSOR_WIDTH, LINE_HEIGHT * j);
+        }
+    }
+}
+
+static void input_to_render(Shell_t shell)
+{
+    char result[IO_BUFFER_SIZE];
+
+    uint32_t i;
+    result[0] = '>';
+    for(i = 1; i < IO_BUFFER_SIZE; ++i)
+    {
+        result[i] = shell->input[i-1];
     }
 
-    for(int l = 0; l < strlen(shell->current_output); ++l)
-    {
-        if(shell->current_output[l] == 0) continue;
-        Sprite_sheet_render_sprite(main_font_sprite_sheet, shell->current_output[l], l * CURSOR_WIDTH, LINE_HEIGHT * 2);
-    }
+    memcpy(shell->output[shell->line], result, IO_BUFFER_SIZE);
 }
 
 static void proccess_input(Shell_t shell)
 {
-    if (strcmp(shell->input, "edit") == 0)
-    {
+    if (strcmp(shell->input, "help") == 0) {
+        Shell_println(shell, help_message);
+    } else if (strcmp(shell->input, "clear") == 0) {
+        shell->line = 0;
+
+        /* clear the output */
+        for(uint32_t i = 0; i < SHELL_ROWS; ++i)
+            for(uint32_t j = 0; j < IO_BUFFER_SIZE; ++j)
+                shell->output[i][j] = 0;
+    } else if (strcmp(shell->input, "edit") == 0) {
         printf("editing\n");
         App_State_set_state(spritely_state, SPRITE_EDITOR);
-    }
-
-    if (strcmp(shell->input, "help") == 0)
-    {
-        Shell_println(shell, (char *)help_message);
     } else {
         Shell_println(shell, shell->input);
     }
 
-    // shell->line++;
     shell->cursor = 0;
     for (int i = 0; i < IO_BUFFER_SIZE; ++i)
     {
         shell->input[i] = 0;
     }
+    memcpy(shell->output[shell->line], shell->input, IO_BUFFER_SIZE);
+    input_to_render(shell);
 }
 
 void Shell_println(Shell_t shell, char *str)
 {
     if (strlen(str) > IO_BUFFER_SIZE) return;
-    memcpy(shell->current_output, str, IO_BUFFER_SIZE);
+    ++shell->line;
+    memcpy(shell->output[shell->line], str, IO_BUFFER_SIZE);
+    printf("%s\n", shell->output[shell->line]);
 }
 
 static void register_keypress(Shell_t shell, char letter)
@@ -97,6 +112,7 @@ static void register_keypress(Shell_t shell, char letter)
     shell->input[shell->cursor] = letter;
     shell->input[shell->cursor+1] = 0;
     ++shell->cursor;
+    input_to_render(shell);
 }
 
 static void backspace(Shell_t shell)
@@ -105,6 +121,7 @@ static void backspace(Shell_t shell)
 
     --shell->cursor;
     shell->input[shell->cursor] = 0;
+    input_to_render(shell);
 }
 
 void Shell_inputs(Shell_t shell, SDL_Event event)
@@ -114,7 +131,7 @@ void Shell_inputs(Shell_t shell, SDL_Event event)
     /* Closing the Window or pressing Escape will exit the program */
     case SDL_QUIT:
         Shell_free(shell);
-        free_globals();
+        // free_globals();
         exit(0);
         break;
     case SDL_MOUSEMOTION:
@@ -152,7 +169,6 @@ void Shell_inputs(Shell_t shell, SDL_Event event)
         {
         case SDLK_ESCAPE:
             Shell_free(shell);
-            free_globals();
             exit(0);
             break;
         case SDLK_F1:
