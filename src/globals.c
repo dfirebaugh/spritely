@@ -26,12 +26,13 @@ Context_t sprite_selector_cells[SPRITESHEET_SIZE];
 Context_t color_selector_cells[COLORPICKER_CANVAS_SIZE];
 
 Sprite_sheet_t icon_sprite_sheet;
-Sprite_sheet_t alpha_chars_font;
+Sprite_sheet_t main_font_sprite_sheet;
 
 uint sprite_sheet[SPRITESHEET_SIZE][SPRITE_CANVAS_SIZE];
 
 Message_Queue_t command_message_queue;
 Message_Queue_t help_message_queue;
+
 
 unsigned int current_time;
 unsigned int last_time;
@@ -48,11 +49,12 @@ char icon_files[TOOLBAR_ROW_SIZE][50] = {
     "assets/icons/Info.png"
   };
 
+
 void free_globals()
 {
     Message_Queue_free(command_message_queue);
     Message_Queue_free(help_message_queue);
     Sprite_sheet_free(icon_sprite_sheet);
-    Sprite_sheet_free(alpha_chars_font);
+    Sprite_sheet_free(main_font_sprite_sheet);
     App_State_free(spritely_state);
 }

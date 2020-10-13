@@ -217,12 +217,14 @@ void Context_move_commits(Context_t ctx, int offset)
     {
 
 	if (direction == ctx->previous_direction && ctx->previous_direction != 0)
+    {
 		if (direction < 0 && ctx->commit->previous != NULL)
 		    ctx->commit = ctx->commit->previous;
 		else if (direction > 0 && ctx->commit->next != NULL)
 		    ctx->commit = ctx->commit->next;
 		else
 		    break;
+    }
 
         ctx->pixels[ctx->commit->position] = ctx->commit->color[direction > 0];
     }
