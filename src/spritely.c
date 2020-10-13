@@ -75,9 +75,8 @@ void spritely_run()
 {
   spritely_state = App_State_make();
   spritely_shell = Shell_make();
-  alpha_chars_font = Sprite_sheet_make("assets/font/alpha.png");
   icon_sprite_sheet = Sprite_sheet_make("assets/icons/icons.png");
-
+  main_font_sprite_sheet = Sprite_sheet_make("assets/font/white_letter.sorted.png");
 
 #ifdef __EMSCRIPTEN__
   emscripten_set_main_loop_arg(emscripten_loop, NULL, -1, 1);

@@ -45,7 +45,7 @@ extern Context_t sprite_selector_cells[SPRITESHEET_SIZE];
 extern Context_t color_selector_cells[COLORPICKER_CANVAS_SIZE];
 
 extern Sprite_sheet_t icon_sprite_sheet;
-extern Sprite_sheet_t alpha_chars_font;
+extern Sprite_sheet_t main_font_sprite_sheet;
 
 extern uint sprite_sheet[SPRITESHEET_SIZE][SPRITE_CANVAS_SIZE];
 

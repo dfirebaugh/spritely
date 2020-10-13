@@ -2,8 +2,6 @@
 
 static void toolbar_render(Context_t ctx)
 {
-  color_t pixel_buffer[COLORPICKER_PIXEL_SIZE];
-
   unsigned int i;
 
   for (i = 0; i < TOOLBAR_ROW_SIZE; i++)
