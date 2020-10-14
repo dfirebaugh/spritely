@@ -201,6 +201,7 @@ void Draw_tool_handle_event(draw_event_t event)
             break;
         case OPEN_FILE:
             open_file(lshift);
+            tool_sprite_selection(0);
             break;
         case SAVE_FILE:
             save_file(lshift);
