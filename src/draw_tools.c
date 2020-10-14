@@ -2,7 +2,7 @@
 
 static void tool_toolbar_selection(const unsigned int rect_index);
 
-static void help()
+void show_help()
 {
     Message_Queue_enqueue(help_message_queue,
         "> Ctrl+C - Copy\n"
@@ -84,7 +84,7 @@ static void tool_fill(const unsigned int rect_index)
     tool_fill_recurse(rect_index, original_color);
 }
 
-static void tool_sprite_selection(const unsigned int rect_index)
+void tool_sprite_selection(const unsigned int rect_index)
 {
     current_sprite_index = rect_index;
     Context_indicator_focus(sprite_selector_ctx, current_sprite_index);
@@ -96,7 +96,7 @@ static void tool_color_pick(const unsigned int rect_index)
     pen_color = rect_index;
 }
 
-static void left_clicks()
+void left_clicks()
 {
     if (active_tool == FILL) {
         Context_handle_rect_click(sprite_canvas_ctx, tool_fill);
@@ -109,21 +109,21 @@ static void left_clicks()
     Context_handle_rect_click(toolbar_ctx, tool_toolbar_selection);
 }
 
-static void right_clicks()
+void right_clicks()
 {
     Context_handle_rect_click(sprite_canvas_ctx, tool_alt_pen);
     Context_handle_rect_click(color_picker_ctx, tool_color_pick);
     Context_handle_rect_click(sprite_selector_ctx, tool_sprite_selection);
 }
 
-static void copy_sprite()
+void copy_sprite()
 {
     Message_Queue_enqueue(command_message_queue, "copied", 0);
     Context_to_pixel_buffer(sprite_canvas_ctx, clipboard_pixel_buffer);
     Context_swap_pixels(sprite_selector_cells[current_sprite_index], sprite_canvas_ctx);
 }
 
-static void paste_sprite()
+void paste_sprite()
 {
     Message_Queue_enqueue(command_message_queue, "paste", 0);
     Context_from_pixel_buffer(sprite_canvas_ctx, clipboard_pixel_buffer);
@@ -147,7 +147,7 @@ static void undo()
     Context_swap_pixels(current_cell, sprite_canvas_ctx);
 }
 
-static void increment_sprite_selector()
+void increment_sprite_selector()
 {
     if (!(sprite_sheet_index_in_range(current_sprite_index + 1))) return;
 
@@ -155,7 +155,7 @@ static void increment_sprite_selector()
     tool_sprite_selection(current_sprite_index);
 }
 
-static void decrement_sprite_selector()
+void decrement_sprite_selector()
 {
     if (!(sprite_sheet_index_in_range(current_sprite_index - 1))) return;
 
@@ -163,7 +163,7 @@ static void decrement_sprite_selector()
     tool_sprite_selection(current_sprite_index);
 }
 
-static void increment_row_sprite_selector()
+void increment_row_sprite_selector()
 {
     if (!(sprite_sheet_index_in_range(current_sprite_index + SPRITESHEET_ROW_SIZE))) return;
 
@@ -171,7 +171,7 @@ static void increment_row_sprite_selector()
     tool_sprite_selection(current_sprite_index);
 }
 
-static void decrement_row_sprite_selector()
+void decrement_row_sprite_selector()
 {
     if (!(sprite_sheet_index_in_range(current_sprite_index - SPRITESHEET_ROW_SIZE))) return;
 
@@ -179,63 +179,36 @@ static void decrement_row_sprite_selector()
     tool_sprite_selection(current_sprite_index);
 }
 
-void Draw_tool_handle_event(draw_event_t event)
+void draw_tool_activate_pen()
 {
-    switch(event)
-    {
-        case ACTIVATE_PEN:
-            active_tool = PEN;
-            Message_Queue_enqueue(command_message_queue, "pen tool", 0);
-            Context_indicator_focus(toolbar_ctx, PEN);
-            break;
-        case ACTIVATE_FILL:
-            active_tool = FILL;
-            Message_Queue_enqueue(command_message_queue, "fill tool", 0);
-            Context_indicator_focus(toolbar_ctx, FILL);
-            break;
-        case LEFT_CLICK_EVENT:
-            left_clicks();
-            break;
-        case RIGHT_CLICK_EVENT:
-            right_clicks();
-            break;
-        case OPEN_FILE:
-            open_file(lshift);
-            tool_sprite_selection(0);
-            break;
-        case SAVE_FILE:
-            save_file(lshift);
-            break;
-        case PASTE_SPRITE:
-            paste_sprite();
-            break;
-        case COPY_SPRITE:
-            copy_sprite();
-            break;
-        case HANDLE_REDO:
-            redo();
-            break;
-        case HANDLE_UNDO:
-            undo();
-            Context_indicator_focus(toolbar_ctx, PEN);
-            break;
-        case LEFT_ARROW:
-            decrement_sprite_selector();
-            break;
-        case RIGHT_ARROW:
-            increment_sprite_selector();
-            break;
-        case UP_ARROW:
-            decrement_row_sprite_selector();
-            break;
-        case DOWN_ARROW:
-            increment_row_sprite_selector();
-            break;
-        case SHOW_HELP:
-            help();
-        default:
-            break;
-    }
+    active_tool = PEN;
+    Message_Queue_enqueue(command_message_queue, "pen tool", 0);
+    Context_indicator_focus(toolbar_ctx, PEN);
+}
+
+void draw_tool_activate_fill()
+{
+    active_tool = FILL;
+    Message_Queue_enqueue(command_message_queue, "fill tool", 0);
+    Context_indicator_focus(toolbar_ctx, FILL);
+}
+
+void draw_tool_handle_undo()
+{
+    undo();
+    Context_indicator_focus(toolbar_ctx, PEN);
+}
+
+void draw_tool_handle_redo()
+{
+    redo();
+    Context_indicator_focus(toolbar_ctx, PEN);
+}
+
+void draw_tool_handle_open_file()
+{
+    tool_sprite_selection(0);
+    open_file();
 }
 
 static void tool_toolbar_selection(const unsigned int rect_index)
@@ -243,28 +216,28 @@ static void tool_toolbar_selection(const unsigned int rect_index)
     switch(rect_index)
     {
         case PEN:
-            Draw_tool_handle_event(ACTIVATE_PEN);
+            draw_tool_activate_pen();
             break;
         case FILL:
-            Draw_tool_handle_event(ACTIVATE_FILL);
+            draw_tool_activate_fill();
             break;
         case DRAG:
-            Draw_tool_handle_event(ACTIVATE_DRAG);
+            Message_Queue_enqueue(command_message_queue, "not implemented", 0);
             break;
         case UNDO:
-            Draw_tool_handle_event(HANDLE_UNDO);
+            draw_tool_handle_undo();
             break;
         case REDO:
-            Draw_tool_handle_event(HANDLE_REDO);
+            draw_tool_handle_redo();
             break;
         case LOAD:
-            Draw_tool_handle_event(OPEN_FILE);
+            draw_tool_handle_open_file();
             break;
         case SAVE:
-            Draw_tool_handle_event(SAVE_FILE);
+            save_file(lshift);
             break;
         case INFO:
-            Draw_tool_handle_event(SHOW_HELP);
+            show_help();
             break;
         default:
             break;
