@@ -15,7 +15,6 @@ extern struct mouse mouse;
 #include "context.h"
 #include "util.h"
 #include "file.h"
-#include "draw_tools.h"
 #include "sprite_sheet.h"
 #include "app_state.h"
 #include "sprite_editor.h"

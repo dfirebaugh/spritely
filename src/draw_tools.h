@@ -1,25 +1,21 @@
 #ifndef _DRAWTOOLS
 #define _DRAWTOOLS
 
-typedef enum draw_event {
-  ACTIVATE_PEN = 0,
-  ACTIVATE_FILL,
-  ACTIVATE_DRAG,
-  LEFT_CLICK_EVENT,
-  RIGHT_CLICK_EVENT,
-  COPY_SPRITE,
-  PASTE_SPRITE,
-  OPEN_FILE,
-  SAVE_FILE,
-  HANDLE_REDO,
-  HANDLE_UNDO,
-  LEFT_ARROW,
-  RIGHT_ARROW,
-  UP_ARROW,
-  DOWN_ARROW,
-  SHOW_HELP
-} draw_event_t;
 
-extern void Draw_tool_handle_event(draw_event_t event);
+extern void draw_tool_handle_open_file();
+extern void draw_tool_handle_undo();
+extern void draw_tool_handle_redo();
+extern void draw_tool_activate_fill();
+extern void draw_tool_activate_pen();
+extern void decrement_row_sprite_selector();
+extern void increment_row_sprite_selector();
+extern void decrement_sprite_selector();
+extern void increment_sprite_selector();
+extern void copy_sprite();
+extern void paste_sprite();
+extern void right_clicks();
+extern void left_clicks();
+extern void show_help();
+extern void tool_sprite_selection(const unsigned int rect_index);
 
 #endif

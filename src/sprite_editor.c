@@ -142,14 +142,14 @@ void sprite_editor_inputs(SDL_Event event)
         switch (event.button.button)
         {
         case SDL_BUTTON_LEFT:
-            Draw_tool_handle_event(LEFT_CLICK_EVENT);
+            left_clicks();
             break;
         case SDL_BUTTON_RIGHT:
-            Draw_tool_handle_event(RIGHT_CLICK_EVENT);
+            right_clicks();
             break;
         case SDL_BUTTON_X1:
             /* for some reason right mouse clicks are registering as SDL_BUTTON_X1 but only when I am moving the mouse.... ??????*/
-            Draw_tool_handle_event(RIGHT_CLICK_EVENT);
+            right_clicks();
             break;
         default:
             break;
@@ -159,10 +159,10 @@ void sprite_editor_inputs(SDL_Event event)
         switch (event.button.button)
         {
         case SDL_BUTTON_LEFT:
-            Draw_tool_handle_event(LEFT_CLICK_EVENT);
+            left_clicks();
             break;
         case SDL_BUTTON_RIGHT:
-            Draw_tool_handle_event(RIGHT_CLICK_EVENT);
+            right_clicks();
             break;
         default:
             break;
@@ -179,17 +179,15 @@ void sprite_editor_inputs(SDL_Event event)
         case SDLK_s:
             if (lctrl)
             {
-                Draw_tool_handle_event(SAVE_FILE);
+                save_file(lshift);
             }
             break;
         case SDLK_o:
             if (lctrl)
-            {
-                Draw_tool_handle_event(OPEN_FILE);
-            }
+                draw_tool_handle_open_file();
             break;
         case SDLK_F1:
-            Draw_tool_handle_event(SHOW_HELP);
+            show_help();
             break;
         case SDLK_LCTRL:
             lctrl = 1;
@@ -199,38 +197,38 @@ void sprite_editor_inputs(SDL_Event event)
             break;
         case SDLK_c:
             if (lctrl)
-                Draw_tool_handle_event(COPY_SPRITE);
+            copy_sprite();
             break;
         case SDLK_v:
             if (lctrl)
-                Draw_tool_handle_event(PASTE_SPRITE);
+                paste_sprite();
             break;
         case SDLK_y:
             if (lctrl)
-                Draw_tool_handle_event(HANDLE_REDO);
+                draw_tool_handle_redo();
             break;
         case SDLK_z:
             if (lctrl && !lshift)
-                Draw_tool_handle_event(HANDLE_UNDO);
+                draw_tool_handle_undo();
             else if (lctrl && lshift)
-                Draw_tool_handle_event(HANDLE_REDO);
+                draw_tool_handle_redo();
         case SDLK_f:
-            Draw_tool_handle_event(ACTIVATE_FILL);
+            draw_tool_activate_fill();
             break;
         case SDLK_SPACE:
-            Draw_tool_handle_event(ACTIVATE_PEN);
+            draw_tool_activate_pen();
             break;
         case SDLK_LEFT:
-            Draw_tool_handle_event(LEFT_ARROW);
+            decrement_sprite_selector();
             break;
         case SDLK_RIGHT:
-            Draw_tool_handle_event(RIGHT_ARROW);
+            increment_sprite_selector();
             break;
         case SDLK_DOWN:
-            Draw_tool_handle_event(DOWN_ARROW);
+            increment_row_sprite_selector();
             break;
         case SDLK_UP:
-            Draw_tool_handle_event(UP_ARROW);
+            decrement_row_sprite_selector();
             break;
 
         default:
