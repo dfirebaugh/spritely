@@ -4,7 +4,7 @@
 
 #define IO_BUFFER_SIZE 50
 #define CURSOR_WIDTH 22
-#define LINE_HEIGHT 25
+#define LINE_HEIGHT 22
 #define SHELL_ROWS 20
 
 struct Shell
@@ -14,6 +14,7 @@ struct Shell
     char input[IO_BUFFER_SIZE];
     char output[SHELL_ROWS][IO_BUFFER_SIZE];
     char current_output[IO_BUFFER_SIZE];
+    PyObject *pModule;
 };
 
 char *help_message = "type edit and press enter\0";
@@ -30,11 +31,15 @@ Shell_t Shell_make()
     Shell_clear(new_shell);
     Shell_println(new_shell, help_message);
 
+    Py_Initialize();
+    new_shell->pModule = PyImport_AddModule("__main__"); //create main module
+
     return new_shell;
 }
 
 void Shell_free(Shell_t shell)
 {
+    Py_Finalize();
     free(shell);
 }
 
@@ -97,20 +102,16 @@ sys.stdout = catchOutErr\n\
 sys.stderr = catchOutErr\n\
 "; //this is python code to redirect stdouts/stderr
 
-    Py_Initialize();
-    PyObject *pModule = PyImport_AddModule("__main__"); //create main module
     PyRun_SimpleString(stdOutErr); //invoke code to redirect
     PyRun_SimpleString(command); //this is ok stdout
     // PyRun_SimpleString("1+a");    //this creates an error
-    PyObject *catcher = PyObject_GetAttrString(pModule,"catchOutErr"); //get our catchOutErr created above
+    PyObject *catcher = PyObject_GetAttrString(shell->pModule,"catchOutErr"); //get our catchOutErr created above
     PyErr_Print(); //make python print any errors
 
     PyObject *output = PyObject_GetAttrString(catcher,"value"); //get the stdout and stderr from our catchOutErr
     PyObject* encoded = PyUnicode_AsEncodedString(output,"utf-8","strict");
 
     Shell_println(shell, PyBytes_AsString(encoded));
-
-    Py_Finalize();
 }
 
 static void proccess_input(Shell_t shell)
