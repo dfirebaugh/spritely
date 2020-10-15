@@ -43,9 +43,9 @@ static void tool_fill_recurse(const unsigned int rect_index, color_t original_co
     if (!canvas_index_in_range(rect_index)) return;
     if (Context_get_pixel(sprite_canvas_ctx, rect_index) != original_color) return;
 
+	increment_batch_undo_operation_counter();
+	increment_batch_redo_operation_counter();
     tool_pen(rect_index);
-
-	increment_batch_operation_count();
 
     if (canvas_index_in_range(rect_index - 1))
     {
@@ -134,23 +134,31 @@ static void paste_sprite()
 
 static void redo()
 {
-    Message_Queue_enqueue(command_message_queue, "redo", 0);
-    Context_move_commits(sprite_canvas_ctx, 1);
-    Context_t current_cell = sprite_selector_cells[current_sprite_index];
-    Context_swap_pixels(current_cell, sprite_canvas_ctx);
-    Context_indicator_focus(toolbar_ctx, PEN);
+	for (int i = 0; i < batch_redo_operation_counter + 1; i++)
+	{
+		Message_Queue_enqueue(command_message_queue, "redo", 0);
+		Context_move_commits(sprite_canvas_ctx, 1);
+		Context_t current_cell = sprite_selector_cells[current_sprite_index];
+		Context_swap_pixels(current_cell, sprite_canvas_ctx);
+		Context_indicator_focus(toolbar_ctx, PEN);
+	}
+
+	set_batch_undo_operation_counter(batch_redo_operation_counter);
+	reset_batch_redo_operation_counter();
 }
 
 static void undo()
 {
-    for (int i = 0; i < batch_operation_counter + 1; i++)
+    for (int i = 0; i < batch_undo_operation_counter + 1; i++)
 	{
-		printf("Undo called\n");
 		Message_Queue_enqueue(command_message_queue, "undo", 0);
 		Context_move_commits(sprite_canvas_ctx, -1);
 		Context_t current_cell = sprite_selector_cells[current_sprite_index];
 		Context_swap_pixels(current_cell, sprite_canvas_ctx);
 	}
+
+	set_batch_redo_operation_counter(batch_undo_operation_counter);
+	reset_batch_undo_operation_counter();
 }
 
 static void increment_sprite_selector()

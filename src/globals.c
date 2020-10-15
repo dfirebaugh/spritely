@@ -36,7 +36,10 @@ Message_Queue_t help_message_queue;
 
 unsigned int current_time;
 unsigned int last_time;
-unsigned int batch_operation_counter = 0;
+
+unsigned int batch_undo_operation_counter = 0;
+unsigned int batch_redo_operation_counter = 0;
+
 tool_t active_tool = PEN;
 
 char icon_files[TOOLBAR_ROW_SIZE][50] = {
@@ -50,14 +53,35 @@ char icon_files[TOOLBAR_ROW_SIZE][50] = {
     "assets/icons/Info.png"
   };
 
-void increment_batch_operation_count(void)
+void increment_batch_undo_operation_counter(void)
 {
-	batch_operation_counter++;
+	batch_undo_operation_counter++;
 };
 
-void reset_batch_operation_counter(void)
+void reset_batch_undo_operation_counter(void)
 {
-	batch_operation_counter = 0;
+	batch_undo_operation_counter = 0;
+}
+
+
+void increment_batch_redo_operation_counter(void)
+{
+	batch_redo_operation_counter++;
+};
+
+void reset_batch_redo_operation_counter(void)
+{
+	batch_redo_operation_counter = 0;
+}
+
+void set_batch_redo_operation_counter(unsigned int count)
+{
+	batch_redo_operation_counter = count;
+}
+
+void set_batch_undo_operation_counter(unsigned int count)
+{
+	batch_undo_operation_counter = count;
 }
 
 void free_globals(void)
