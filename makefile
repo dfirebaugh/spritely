@@ -1,4 +1,4 @@
-CFLAGS   = -g `sdl2-config --cflags`
+CFLAGS   = -g `sdl2-config --cflags` -Wall -Werror --pedantic
 LDFLAGS  = `sdl2-config --libs` -lSDL2 -lSDL2_ttf -lSDL2_image -lm
 PROG = spritely
 CC = gcc

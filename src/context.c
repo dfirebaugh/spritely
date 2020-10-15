@@ -32,6 +32,36 @@ struct Context
     signed int previous_direction;
 };
 
+Context_t Context_make_from_config(Context_config_t ctx_config)
+{
+    Context_t ctx = malloc(sizeof(struct Context));
+
+    ctx->row_size = ctx_config.row_size;
+    ctx->col_size = ctx_config.col_size;
+
+    unsigned int i, j;
+    unsigned int index = 0;
+    for (i = 0; i < ctx_config.col_size; i++)
+    {
+        for (j = 0; j < ctx_config.row_size; j++)
+        {
+            ctx->pixels[index] = BLACK;
+            ctx->rects[index].x = ctx_config.x_offset + j * ctx_config.pixel_size;
+            ctx->rects[index].y = ctx_config.y_offset + i * ctx_config.pixel_size;
+            ctx->rects[index].w = ctx_config.pixel_size;
+            ctx->rects[index].h = ctx_config.pixel_size;
+            index++;
+        }
+    }
+
+    ctx->is_transparent = ctx_config.is_transparent;
+    ctx->has_indicator = ctx_config.has_indicator;
+    ctx->commit = NULL;
+    ctx->previous_direction = 0;
+
+    return ctx;
+}
+
 Context_t Context_make(uint pixel_size, uint row_size, uint col_size, uint x_offset, uint y_offset)
 {
     Context_t ctx = malloc(sizeof(struct Context));
@@ -81,6 +111,11 @@ void Context_free(Context_t ctx)
 void Context_render_sprite_in_context(Context_t ctx, Sprite_sheet_t sprite_sheet, uint index, uint context_index)
 {
     Sprite_sheet_render_sprite(sprite_sheet, index, ctx->rects[context_index].x, ctx->rects[context_index].y);
+}
+
+void Context_render_sprite_in_context_scale(Context_t ctx, Sprite_sheet_t sprite_sheet, uint index, uint context_index, float scale)
+{
+    Sprite_sheet_render_sprite_scale(sprite_sheet, index, ctx->rects[context_index].x, ctx->rects[context_index].y, scale);
 }
 
 void Context_make_transparent(Context_t ctx)
@@ -206,14 +241,14 @@ void Context_new_commit(Context_t ctx, color_t pre_color, color_t post_color, ui
     ctx->commit = new_commit;
 }
 
-void Context_move_commits(Context_t ctx, int offset)
+void Context_move_commits(Context_t ctx, signed int offset)
 {
     if (offset == 0 || ctx->commit == NULL)
         return;
 
     signed int direction = -1 + (2 * (offset > 0));
 
-    for (uint i = 0; i < direction * offset; i++)
+    for (signed int i = 0; i < direction * offset; i++)
     {
 
 	if (direction == ctx->previous_direction && ctx->previous_direction != 0)
@@ -241,4 +276,3 @@ int Context_is_solid_color(Context_t ctx, color_t color) {
 
     return 1;
 }
-
