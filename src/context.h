@@ -3,6 +3,18 @@
 #include "sprite_sheet.h"
 
 typedef struct Context *Context_t;
+typedef struct Context_config {
+    uint pixel_size;
+    uint row_size;
+    uint col_size;
+    uint x_offset;
+    uint y_offset;
+    bool is_transparent;
+    bool has_indicator;
+} Context_config_t;
+
+/* Context_make -- construct a Context of pixles scaled based on size passed in */
+extern Context_t Context_make_from_config(Context_config_t ctx_config);
 
 /* Context_make -- construct a Context of pixles scaled based on size passed in */
 extern Context_t Context_make(uint pixel_size, uint row_size, uint col_size, uint x_offset, uint y_offset);
@@ -57,5 +69,6 @@ extern int Context_is_solid_color(Context_t ctx, color_t color);
  * this is useful if you need to handle click events (i.e. icons that trigger something)
 */
 extern void Context_render_sprite_in_context(Context_t ctx, Sprite_sheet_t sprite_sheet, uint index, uint context_index);
+extern void Context_render_sprite_in_context_scale(Context_t ctx, Sprite_sheet_t sprite_sheet, uint index, uint context_index, float scale);
 
 #endif

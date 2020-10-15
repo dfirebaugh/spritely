@@ -39,8 +39,18 @@ void Sprite_sheet_render_sprite(Sprite_sheet_t spr_sheet, const unsigned int spr
 {
     spr_sheet->destination_rect.x = x;
     spr_sheet->destination_rect.y = y;
-    spr_sheet->destination_rect.w = 25;
-    spr_sheet->destination_rect.h = 25;
+    spr_sheet->destination_rect.w = SPRITE_WIDTH;
+    spr_sheet->destination_rect.h = SPRITE_HEIGHT;
+
+    SDL_RenderCopy(renderer, spr_sheet->texture, &spr_sheet->clips[sprite_index], &spr_sheet->destination_rect);
+}
+
+void Sprite_sheet_render_sprite_scale(Sprite_sheet_t spr_sheet, const unsigned int sprite_index, unsigned int x, unsigned int y, float scale)
+{
+    spr_sheet->destination_rect.x = x;
+    spr_sheet->destination_rect.y = y;
+    spr_sheet->destination_rect.w = (int)(SPRITE_WIDTH * scale);
+    spr_sheet->destination_rect.h = (int)(SPRITE_HEIGHT * scale);
 
     SDL_RenderCopy(renderer, spr_sheet->texture, &spr_sheet->clips[sprite_index], &spr_sheet->destination_rect);
 }

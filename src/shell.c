@@ -50,7 +50,7 @@ void Shell_render(Shell_t shell)
         for(j = 0; j < SHELL_ROWS; ++j)
         {
             if(shell->output[j][i] <= 0) continue;
-            Sprite_sheet_render_sprite(main_font_sprite_sheet, shell->output[j][i], i * CURSOR_WIDTH, LINE_HEIGHT * j);
+            Sprite_sheet_render_sprite_scale(main_font_sprite_sheet, shell->output[j][i], i * CURSOR_WIDTH, LINE_HEIGHT * j, 2);
         }
     }
 }

@@ -2,24 +2,24 @@
 
 static void toolbar_render(Context_t ctx)
 {
-  unsigned int i;
+    uint8_t i;
 
-  for (i = 0; i < TOOLBAR_ROW_SIZE; i++)
-  {
-    Context_render_sprite_in_context(toolbar_ctx, icon_sprite_sheet, i, i);
-  }
+    for (i = 0; i < TOOLBAR_ROW_SIZE; i++)
+    {
+        Context_render_sprite_in_context_scale(toolbar_ctx, icon_sprite_sheet, i, i, 6);
+    }
 }
 
 static void color_picker_init(Context_t ctx)
 {
-  color_t pixel_buffer[COLORPICKER_PIXEL_SIZE];
+    color_t pixel_buffer[COLORPICKER_PIXEL_SIZE];
 
-  unsigned int i;
+    uint8_t i;
 
-  for (i = 0; i < (COLORPICKER_ROW_SIZE * COLORPICKER_ROW_SIZE); i++)
-    pixel_buffer[i] = i;
+    for (i = 0; i < (COLORPICKER_ROW_SIZE * COLORPICKER_ROW_SIZE); i++)
+        pixel_buffer[i] = i;
 
-  Context_from_pixel_buffer(ctx, pixel_buffer);
+    Context_from_pixel_buffer(ctx, pixel_buffer);
 }
 
 #define SPRITE_SELECTOR_CELL_X_PADDING 0
@@ -27,79 +27,112 @@ static void color_picker_init(Context_t ctx)
 
 static void sprite_selector_init(Context_t *ctx)
 {
-  unsigned int i, j;
-  unsigned int index = 0;
-  for (i = 0; i < SPRITESHEET_COL_SIZE; i++)
-  {
-    for (j = 0; j < SPRITESHEET_ROW_SIZE; j++)
+    uint8_t i, j;
+    uint8_t index = 0;
+    for (i = 0; i < SPRITESHEET_COL_SIZE; i++)
     {
-      int sprite_height = SPRITESHEET_PIXEL_SIZE * 8;
-      int sprite_y_pos = sprite_height * i;
+        for (j = 0; j < SPRITESHEET_ROW_SIZE; j++)
+        {
+            int sprite_height = SPRITESHEET_PIXEL_SIZE * 8;
+            int sprite_y_pos = sprite_height * i;
 
-      int x = (j * (SPRITESHEET_PIXEL_SIZE * 8) + j) + j;
-      int y = (SPRITESHEET_YOFFSET + sprite_y_pos) + i;
+            int x = (j * (SPRITESHEET_PIXEL_SIZE * 8) + j) + j;
+            int y = (SPRITESHEET_YOFFSET + sprite_y_pos) + i;
 
-      ctx[index] = Context_make(SPRITESHEET_PIXEL_SIZE,
-                                SPRITE_CANVAS_ROW_SIZE,
-                                SPRITE_CANVAS_ROW_SIZE,
-                                x, y);
-      index++;
+            Context_config_t selector_cell_ctx_config;
+            selector_cell_ctx_config.pixel_size = SPRITESHEET_PIXEL_SIZE;
+            selector_cell_ctx_config.row_size = SPRITE_CANVAS_ROW_SIZE;
+            selector_cell_ctx_config.col_size = SPRITE_CANVAS_ROW_SIZE;
+            selector_cell_ctx_config.x_offset = x;
+            selector_cell_ctx_config.y_offset = y;
+            selector_cell_ctx_config.has_indicator = false;
+            selector_cell_ctx_config.is_transparent = false;
+
+            ctx[index] = Context_make_from_config(selector_cell_ctx_config);
+            index++;
+        }
     }
-  }
 }
 
 void sprite_editor_render()
 {
-  SDL_SetRenderDrawColor(renderer, 74, 50, 110, 255);
-  SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(renderer, 74, 50, 110, 255);
+    SDL_RenderClear(renderer);
 
-  Context_render(sprite_canvas_ctx);
-  Context_render(color_picker_ctx);
-  Context_render(toolbar_ctx);
+    Context_render(sprite_canvas_ctx);
+    Context_render(color_picker_ctx);
+    Context_render(toolbar_ctx);
 
-  unsigned int i;
-  for (i = 0; i < SPRITESHEET_SIZE; i++)
-  {
-    Context_render(sprite_selector_cells[i]);
-  }
-  Context_render(sprite_selector_ctx);
-  toolbar_render(toolbar_ctx);
+    unsigned int i;
+    for (i = 0; i < SPRITESHEET_SIZE; i++)
+    {
+        Context_render(sprite_selector_cells[i]);
+    }
 
-//   Sprite_sheet_render_sprite(main_sprite_sheet, 1, 0, 0);
+    Context_render(sprite_selector_ctx);
+    toolbar_render(toolbar_ctx);
 
-  Message_box_render(command_message_queue);
-  Message_box_render(help_message_queue);
+    Message_box_render(command_message_queue);
+    Message_box_render(help_message_queue);
 }
 
 void sprite_editor_init()
 {
-  pen_color = BLUE;
-  sprite_canvas_ctx = Context_make(SPRITE_CANVAS_PIXEL_SIZE,
-                                   SPRITE_CANVAS_ROW_SIZE, SPRITE_CANVAS_ROW_SIZE, 0, 0);
-  sprite_selector_ctx = Context_make(SPRITESHEET_CELL_SIZE,
-                                     SPRITESHEET_ROW_SIZE, SPRITESHEET_COL_SIZE, 0, SPRITESHEET_YOFFSET);
-  color_picker_ctx = Context_make(COLORPICKER_PIXEL_SIZE,
-                                  COLORPICKER_ROW_SIZE, COLORPICKER_ROW_SIZE,
-                                  COLORPICKER_XOFFSET, COLORPICKER_YOFFSET);
+    pen_color = BLUE;
 
-  toolbar_ctx = Context_make(COLORPICKER_PIXEL_SIZE, TOOLBAR_ROW_SIZE, TOOLBAR_COLUMN_SIZE, TOOLBAR_XOFFSET, TOOLBAR_YOFFSET);
+    Context_config_t sprite_canvas_ctx_config;
+    sprite_canvas_ctx_config.pixel_size = SPRITE_CANVAS_PIXEL_SIZE;
+    sprite_canvas_ctx_config.row_size = SPRITE_CANVAS_ROW_SIZE;
+    sprite_canvas_ctx_config.col_size = SPRITE_CANVAS_ROW_SIZE;
+    sprite_canvas_ctx_config.x_offset = 0;
+    sprite_canvas_ctx_config.y_offset = 0;
+    sprite_canvas_ctx_config.has_indicator = false;
+    sprite_canvas_ctx_config.is_transparent = false;
 
-  sprite_selector_init(sprite_selector_cells);
-  color_picker_init(color_picker_ctx);
+    Context_config_t color_picker_config;
+    color_picker_config.pixel_size = COLORPICKER_PIXEL_SIZE;
+    color_picker_config.row_size = COLORPICKER_ROW_SIZE;
+    color_picker_config.col_size = COLORPICKER_ROW_SIZE;
+    color_picker_config.x_offset = COLORPICKER_XOFFSET;
+    color_picker_config.y_offset = COLORPICKER_YOFFSET;
+    color_picker_config.has_indicator = true;
+    color_picker_config.is_transparent = false;
 
-  Context_make_indicator(color_picker_ctx);
-  Context_make_indicator(sprite_selector_ctx);
-  Context_make_indicator(toolbar_ctx);
+    Context_config_t toolbar_ctx_config;
+    toolbar_ctx_config.pixel_size = COLORPICKER_PIXEL_SIZE;
+    toolbar_ctx_config.row_size = TOOLBAR_ROW_SIZE;
+    toolbar_ctx_config.col_size = TOOLBAR_COLUMN_SIZE;
+    toolbar_ctx_config.x_offset = TOOLBAR_XOFFSET;
+    toolbar_ctx_config.y_offset = TOOLBAR_YOFFSET;
+    toolbar_ctx_config.has_indicator = true;
+    toolbar_ctx_config.is_transparent = true;
 
-  /* set the color picker to the current active pen_color */
-  Context_indicator_focus(color_picker_ctx, pen_color);
+    Context_config_t sprite_selector_ctx_config;
+    sprite_selector_ctx_config.pixel_size = SPRITESHEET_CELL_SIZE;
+    sprite_selector_ctx_config.row_size = SPRITESHEET_ROW_SIZE;
+    sprite_selector_ctx_config.col_size = SPRITESHEET_COL_SIZE;
+    sprite_selector_ctx_config.x_offset = 0;
+    sprite_selector_ctx_config.y_offset = SPRITESHEET_YOFFSET;
+    sprite_selector_ctx_config.has_indicator = true;
+    sprite_selector_ctx_config.is_transparent = true;
 
-  Context_make_transparent(sprite_selector_ctx);
-  Context_make_transparent(toolbar_ctx);
 
-  command_message_queue = Message_Queue_create(10);
-  help_message_queue = Message_Queue_create(10);
-  spritely_editor_initialized = 1;
+    sprite_canvas_ctx = Context_make_from_config(sprite_canvas_ctx_config);
+    color_picker_ctx = Context_make_from_config(color_picker_config);
+    toolbar_ctx = Context_make_from_config(toolbar_ctx_config);
+    sprite_selector_ctx = Context_make_from_config(sprite_selector_ctx_config);
+
+    sprite_selector_init(sprite_selector_cells);
+    color_picker_init(color_picker_ctx);
+
+    /* set the color picker to the current active pen_color */
+    Context_indicator_focus(color_picker_ctx, pen_color);
+    Context_indicator_focus(toolbar_ctx, 0);
+    Context_indicator_focus(sprite_selector_ctx, 0);
+
+    command_message_queue = Message_Queue_create(10);
+    help_message_queue = Message_Queue_create(10);
+    spritely_editor_initialized = 1;
 }
 
 static void free_all_contexts()
@@ -109,8 +142,8 @@ static void free_all_contexts()
     Context_free(sprite_selector_ctx);
     Context_free(color_picker_ctx);
 
-    unsigned int i, j;
-    unsigned int index = 0;
+    uint8_t i, j;
+    uint8_t index = 0;
     for (i = 0; i < SPRITESHEET_COL_SIZE; i++)
     {
         for (j = 0; j < SPRITESHEET_ROW_SIZE; j++)
@@ -197,7 +230,7 @@ void sprite_editor_inputs(SDL_Event event)
             break;
         case SDLK_c:
             if (lctrl)
-            copy_sprite();
+                copy_sprite();
             break;
         case SDLK_v:
             if (lctrl)
