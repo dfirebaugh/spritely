@@ -1,4 +1,5 @@
-
+#define PY_SSIZE_T_CLEAN
+#include <Python.h>
 #include "globals.h"
 
 #define IO_BUFFER_SIZE 50
@@ -83,17 +84,46 @@ static void Shell_clear(Shell_t shell)
             shell->output[i][j] = 0;
 }
 
+static void execute_python_command(Shell_t shell, char *command)
+{
+    char *stdOutErr = "import sys\n\
+class CatchOutErr:\n\
+    def __init__(self):\n\
+        self.value = ''\n\
+    def write(self, txt):\n\
+        self.value += txt\n\
+catchOutErr = CatchOutErr()\n\
+sys.stdout = catchOutErr\n\
+sys.stderr = catchOutErr\n\
+"; //this is python code to redirect stdouts/stderr
+
+    Py_Initialize();
+    PyObject *pModule = PyImport_AddModule("__main__"); //create main module
+    PyRun_SimpleString(stdOutErr); //invoke code to redirect
+    PyRun_SimpleString(command); //this is ok stdout
+    // PyRun_SimpleString("1+a");    //this creates an error
+    PyObject *catcher = PyObject_GetAttrString(pModule,"catchOutErr"); //get our catchOutErr created above
+    PyErr_Print(); //make python print any errors
+
+    PyObject *output = PyObject_GetAttrString(catcher,"value"); //get the stdout and stderr from our catchOutErr
+    PyObject* encoded = PyUnicode_AsEncodedString(output,"utf-8","strict");
+
+    Shell_println(shell, PyBytes_AsString(encoded));
+
+    Py_Finalize();
+}
+
 static void proccess_input(Shell_t shell)
 {
     if (strcmp(shell->input, "help") == 0) {
         Shell_println(shell, help_message);
-    } else if (strcmp(shell->input, "clear") == 0) {
+    } else if (strcmp(shell->input, "clear") == 0 || strcmp(shell->input, "cls") == 0) {
         Shell_clear(shell);
     } else if (strcmp(shell->input, "edit") == 0) {
         printf("editing\n");
         App_State_set_state(spritely_state, SPRITE_EDITOR);
     } else {
-        Shell_println(shell, shell->input);
+        execute_python_command(shell, shell->input);
     }
 
     shell->cursor = 0;
@@ -114,10 +144,9 @@ void Shell_println(Shell_t shell, char *str)
     ++shell->line;
 }
 
-static void register_keypress(Shell_t shell, char letter)
+static void register_keypress(Shell_t shell, char *text)
 {
-    shell->input[shell->cursor] = letter;
-    shell->input[shell->cursor+1] = 0;
+    SDL_strlcat(shell->input, text, sizeof(shell->input));
     ++shell->cursor;
     input_to_render(shell);
 }
@@ -169,9 +198,6 @@ void Shell_inputs(Shell_t shell, SDL_Event event)
         break;
 
     case SDL_KEYDOWN:
-        if(event.key.keysym.sym >= ' ' && event.key.keysym.sym <= 'z')
-            register_keypress(shell, event.key.keysym.sym);
-
         switch (event.key.keysym.sym)
         {
         case SDLK_ESCAPE:
@@ -211,6 +237,12 @@ void Shell_inputs(Shell_t shell, SDL_Event event)
         default:
             break;
         }
+    case SDL_TEXTINPUT:
+        if (SDL_strlen(event.text.text) == 0 || event.text.text[0] == '\n')
+            break;
+
+        register_keypress(shell, event.text.text);
+        break;
 
     case SDL_USEREVENT:
         break;
