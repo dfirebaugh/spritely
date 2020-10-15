@@ -84,6 +84,106 @@ static void tool_fill(const unsigned int rect_index)
     tool_fill_recurse(rect_index, original_color);
 }
 
+static uint8_t calculate_upshift(uint8_t index)
+{
+    if (index - SPRITE_CANVAS_ROW_SIZE < 0)
+        return SPRITE_CANVAS_SIZE - (SPRITE_CANVAS_ROW_SIZE - index);
+
+    return index - SPRITE_CANVAS_ROW_SIZE;
+}
+
+static uint8_t calculate_downshift(uint8_t index)
+{
+    if (index + SPRITE_CANVAS_ROW_SIZE >= SPRITE_CANVAS_SIZE)
+        return SPRITE_CANVAS_ROW_SIZE - (SPRITE_CANVAS_SIZE - index);
+
+    return index + SPRITE_CANVAS_ROW_SIZE;
+}
+
+static uint8_t calculate_leftshift(uint8_t index)
+{
+    if (index % SPRITE_CANVAS_ROW_SIZE == 0)
+        return index + SPRITE_CANVAS_ROW_SIZE - 1;
+
+    return index - 1;
+}
+
+static uint8_t calculate_rightshift(uint8_t index)
+{
+    if ((index + 1) % SPRITE_CANVAS_ROW_SIZE == 0)
+        return index - SPRITE_CANVAS_ROW_SIZE + 1;
+
+    return index + 1;
+}
+
+static void shift_up()
+{
+    color_t original_pixel_buffer[SPRITE_CANVAS_SIZE];
+    color_t new_pixel_buffer[SPRITE_CANVAS_SIZE];
+    Context_to_pixel_buffer(sprite_canvas_ctx, original_pixel_buffer);
+
+    for(uint8_t i = 0; i < SPRITE_CANVAS_SIZE; i++)
+        new_pixel_buffer[calculate_upshift(i)] = original_pixel_buffer[i];
+
+    Context_from_pixel_buffer(sprite_canvas_ctx, new_pixel_buffer);
+}
+static void shift_down()
+{
+    color_t original_pixel_buffer[SPRITE_CANVAS_SIZE];
+    color_t new_pixel_buffer[SPRITE_CANVAS_SIZE];
+    Context_to_pixel_buffer(sprite_canvas_ctx, original_pixel_buffer);
+
+    for(uint8_t i = 0; i < SPRITE_CANVAS_SIZE; i++)
+        new_pixel_buffer[calculate_downshift(i)] = original_pixel_buffer[i];
+
+    Context_from_pixel_buffer(sprite_canvas_ctx, new_pixel_buffer);
+}
+
+static void shift_left()
+{
+    color_t original_pixel_buffer[SPRITE_CANVAS_SIZE];
+    color_t new_pixel_buffer[SPRITE_CANVAS_SIZE];
+    Context_to_pixel_buffer(sprite_canvas_ctx, original_pixel_buffer);
+
+    for(uint8_t i = 0; i < SPRITE_CANVAS_SIZE; i++)
+        new_pixel_buffer[calculate_leftshift(i)] = original_pixel_buffer[i];
+
+    Context_from_pixel_buffer(sprite_canvas_ctx, new_pixel_buffer);
+}
+
+static void shift_right()
+{
+    color_t original_pixel_buffer[SPRITE_CANVAS_SIZE];
+    color_t new_pixel_buffer[SPRITE_CANVAS_SIZE];
+    Context_to_pixel_buffer(sprite_canvas_ctx, original_pixel_buffer);
+
+    for(uint8_t i = 0; i < SPRITE_CANVAS_SIZE; i++)
+        new_pixel_buffer[calculate_rightshift(i)] = original_pixel_buffer[i];
+
+    Context_from_pixel_buffer(sprite_canvas_ctx, new_pixel_buffer);
+}
+
+unsigned int previous_rect_index;
+static void tool_drag(const unsigned int rect_index)
+{
+    if(previous_rect_index - SPRITE_CANVAS_ROW_SIZE == rect_index)
+        shift_up();
+
+    if(previous_rect_index + SPRITE_CANVAS_ROW_SIZE == rect_index)
+        shift_down();
+    
+    if(previous_rect_index - 1 == rect_index)
+        shift_left();
+
+    if(previous_rect_index + 1 == rect_index)
+        shift_right();
+
+
+    Context_t current_cell = sprite_selector_cells[current_sprite_index];
+    Context_swap_pixels(current_cell, sprite_canvas_ctx);
+    previous_rect_index = rect_index;
+}
+
 void tool_sprite_selection(const unsigned int rect_index)
 {
     current_sprite_index = rect_index;
@@ -100,6 +200,8 @@ void left_clicks()
 {
     if (active_tool == FILL) {
         Context_handle_rect_click(sprite_canvas_ctx, tool_fill);
+    } else if (active_tool == DRAG) {
+        Context_handle_rect_click(sprite_canvas_ctx, tool_drag);
     } else {
         Context_handle_rect_click(sprite_canvas_ctx, tool_pen);
     }
@@ -193,6 +295,13 @@ void draw_tool_activate_fill()
     Context_indicator_focus(toolbar_ctx, FILL);
 }
 
+void draw_tool_activate_drag()
+{
+    active_tool = DRAG;
+    Message_Queue_enqueue(command_message_queue, "drag tool", 0);
+    Context_indicator_focus(toolbar_ctx, DRAG);
+}
+
 void draw_tool_handle_undo()
 {
     undo();
@@ -222,7 +331,7 @@ static void tool_toolbar_selection(const unsigned int rect_index)
             draw_tool_activate_fill();
             break;
         case DRAG:
-            Message_Queue_enqueue(command_message_queue, "not implemented", 0);
+            draw_tool_activate_drag();
             break;
         case UNDO:
             draw_tool_handle_undo();
