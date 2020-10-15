@@ -79,6 +79,7 @@ void spritely_run()
   main_font_sprite_sheet = Sprite_sheet_make("assets/font/white_letter.sorted.png");
 
 #ifdef __EMSCRIPTEN__
+  App_State_set_state(spritely_state, SPRITE_EDITOR);
   emscripten_set_main_loop_arg(emscripten_loop, NULL, -1, 1);
 #else
   while (1)

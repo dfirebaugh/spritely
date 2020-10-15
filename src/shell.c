@@ -1,5 +1,10 @@
+
+#ifndef __EMSCRIPTEN__
+
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+
+#endif
 #include "globals.h"
 
 #define IO_BUFFER_SIZE 50
@@ -14,7 +19,9 @@ struct Shell
     char input[IO_BUFFER_SIZE];
     char output[SHELL_ROWS][IO_BUFFER_SIZE];
     char current_output[IO_BUFFER_SIZE];
+#ifndef __EMSCRIPTEN__
     PyObject *pModule;
+#endif
 };
 
 char *help_message = "type edit and press enter\0";
@@ -31,15 +38,19 @@ Shell_t Shell_make()
     Shell_clear(new_shell);
     Shell_println(new_shell, help_message);
 
+#ifndef __EMSCRIPTEN__
     Py_Initialize();
     new_shell->pModule = PyImport_AddModule("__main__"); //create main module
+#endif
 
     return new_shell;
 }
 
 void Shell_free(Shell_t shell)
 {
+#ifndef __EMSCRIPTEN__
     Py_Finalize();
+#endif
     free(shell);
 }
 
@@ -91,6 +102,7 @@ static void Shell_clear(Shell_t shell)
 
 static void execute_python_command(Shell_t shell, char *command)
 {
+#ifndef __EMSCRIPTEN__
     char *stdOutErr = "import sys\n\
 class CatchOutErr:\n\
     def __init__(self):\n\
@@ -112,6 +124,7 @@ sys.stderr = catchOutErr\n\
     PyObject* encoded = PyUnicode_AsEncodedString(output,"utf-8","strict");
 
     Shell_println(shell, PyBytes_AsString(encoded));
+#endif
 }
 
 static void proccess_input(Shell_t shell)
