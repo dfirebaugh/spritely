@@ -1,5 +1,7 @@
-CFLAGS   = -g `sdl2-config --cflags` -Wall -Werror --pedantic
-LDFLAGS  = `sdl2-config --libs` -lSDL2 -lSDL2_ttf -lSDL2_image -lm
+PY_CFLAGS  := $(shell python3.9-config --cflags)
+PY_LDFLAGS := $(shell python3.9-config --ldflags --embed)
+CFLAGS   = -g `sdl2-config --cflags` $(PY_CFLAGS) -fPIE -Wall -Werror --pedantic
+LDFLAGS  = `sdl2-config --libs` -lSDL2 -lSDL2_ttf -lSDL2_image -lm $(PY_LDFLAGS) 
 PROG = spritely
 CC = gcc
 
