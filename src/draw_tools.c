@@ -45,6 +45,8 @@ static void tool_fill_recurse(const unsigned int rect_index, color_t original_co
 
     tool_pen(rect_index);
 
+	increment_batch_operation_count();
+
     if (canvas_index_in_range(rect_index - 1))
     {
         if (!(rect_index % SPRITE_CANVAS_ROW_SIZE == 0))
@@ -141,10 +143,14 @@ static void redo()
 
 static void undo()
 {
-    Message_Queue_enqueue(command_message_queue, "undo", 0);
-    Context_move_commits(sprite_canvas_ctx, -1);
-    Context_t current_cell = sprite_selector_cells[current_sprite_index];
-    Context_swap_pixels(current_cell, sprite_canvas_ctx);
+    for (int i = 0; i < batch_operation_counter + 1; i++)
+	{
+		printf("Undo called\n");
+		Message_Queue_enqueue(command_message_queue, "undo", 0);
+		Context_move_commits(sprite_canvas_ctx, -1);
+		Context_t current_cell = sprite_selector_cells[current_sprite_index];
+		Context_swap_pixels(current_cell, sprite_canvas_ctx);
+	}
 }
 
 static void increment_sprite_selector()

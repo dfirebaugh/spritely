@@ -36,6 +36,7 @@ Message_Queue_t help_message_queue;
 
 unsigned int current_time;
 unsigned int last_time;
+unsigned int batch_operation_counter = 0;
 tool_t active_tool = PEN;
 
 char icon_files[TOOLBAR_ROW_SIZE][50] = {
@@ -49,8 +50,17 @@ char icon_files[TOOLBAR_ROW_SIZE][50] = {
     "assets/icons/Info.png"
   };
 
+void increment_batch_operation_count(void)
+{
+	batch_operation_counter++;
+};
 
-void free_globals()
+void reset_batch_operation_counter(void)
+{
+	batch_operation_counter = 0;
+}
+
+void free_globals(void)
 {
     Message_Queue_free(command_message_queue);
     Message_Queue_free(help_message_queue);

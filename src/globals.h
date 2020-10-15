@@ -55,6 +55,8 @@ extern Message_Queue_t help_message_queue;
 extern unsigned int current_time;
 extern unsigned int last_time;
 
+extern unsigned int batch_operation_counter;
+
 typedef enum tool_types {
   PEN = 0,
   FILL,
@@ -71,6 +73,10 @@ extern char icon_files[TOOLBAR_ROW_SIZE][50];
 
 extern tool_t active_tool;
 
-extern void free_globals();
+extern void increment_batch_operation_count(void);
+
+extern void reset_batch_operation_counter(void);
+
+extern void free_globals(void);
 
 #endif
