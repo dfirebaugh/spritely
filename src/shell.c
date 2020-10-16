@@ -1,10 +1,4 @@
 
-#ifndef __EMSCRIPTEN__
-
-#define PY_SSIZE_T_CLEAN
-#include <Python.h>
-
-#endif
 #include "globals.h"
 
 #define IO_BUFFER_SIZE 50
