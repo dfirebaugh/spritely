@@ -13,6 +13,9 @@ A limited demo can be found here: https://dfirebaugh.github.io/spritely/
 $ apt-get install libsdl2-ttf-dev libsdl2-image-dev python3.9-dev
 ```
 
+##Installation
+Run `sudo make` & `sudo make install`
+
 ## Webassembly build
 
 Running `make web` will build spritely using emscripten. So in order to run it, you need to download it from : https://emscripten.org/docs/getting_started/downloads.html
