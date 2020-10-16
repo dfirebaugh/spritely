@@ -7,7 +7,7 @@ CC = gcc
 
 SRCS = $(addprefix src/, main.c spritely.c init.c util.c context.c file.c \
 message_queue.c globals.c colors.c sfd.c draw_tools.c sprite_sheet.c app_state.c \
-sprite_editor.c shell.c)
+sprite_editor.c shell.c python_api.c)
 OBJS = $(SRCS:.c=.o)
 
 # top-level rule to create the program.

@@ -19,6 +19,7 @@ extern struct mouse mouse;
 #include "app_state.h"
 #include "sprite_editor.h"
 #include "shell.h"
+#include "python_api.h"
 
 extern SDL_Window *window;
 extern SDL_Renderer *renderer;

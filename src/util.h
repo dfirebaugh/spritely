@@ -23,3 +23,5 @@ extern int sprite_sheet_index_in_range(const unsigned int index);
 * Return 1 if the index is within the spritesheet range
 */
 extern int canvas_index_in_range(const unsigned int index);
+
+extern const char *get_filename_ext(const char *filename);
