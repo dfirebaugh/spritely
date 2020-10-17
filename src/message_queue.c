@@ -11,7 +11,7 @@ struct Message_Queue
     char *middle;
 };
 
-#define MESSAGE_BOX_HEIGHT 35
+#define MESSAGE_BOX_HEIGHT 28
 
 Message_Queue_t Message_Queue_create(const unsigned int capacity)
 {
@@ -113,7 +113,7 @@ void Message_box_render(Message_Queue_t queue)
         }
         else
         {
-            message_rect.w = 400;
+            message_rect.w = 480;
             message_rect.h = MESSAGE_BOX_HEIGHT*HELP_OPTIONS;
             message_rect.x = (SCREEN_WIDTH/2)-(message_rect.w/2);
             message_rect.y = (SCREEN_HEIGHT/2)-(message_rect.h/2);
