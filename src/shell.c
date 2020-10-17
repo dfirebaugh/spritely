@@ -130,6 +130,9 @@ static void proccess_input(Shell_t shell)
     } else if (strcmp(shell->input, "edit") == 0) {
         printf("editing\n");
         App_State_set_state(spritely_state, SPRITE_EDITOR);
+    } else if (strcmp(shell->input, "exit") == 0) {
+        Shell_free(shell);
+        exit(0);
     } else {
         execute_python_command(shell, shell->input);
     }

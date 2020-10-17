@@ -45,6 +45,8 @@ static void render()
     break;
   }
 
+  Entity_render(spritely_entities);
+
   SDL_RenderPresent(renderer);
 }
 
@@ -77,6 +79,8 @@ void spritely_run()
   spritely_shell = Shell_make();
   icon_sprite_sheet = Sprite_sheet_make("assets/icons/icons.png");
   main_font_sprite_sheet = Sprite_sheet_make("assets/font/white_letter.sorted.png");
+
+  spritely_entities = Entity_manager_make();
 
 #ifdef __EMSCRIPTEN__
   App_State_set_state(spritely_state, SPRITE_EDITOR);
