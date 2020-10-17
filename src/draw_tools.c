@@ -14,9 +14,9 @@ void show_help()
         "> Ctrl+O - Load a spritesheet from an image file\n"
         "> Left click to draw pixel\n"
         "> Right click to select a colour that is on the  canvas\n"
-        "> Arrow Keys to move sprite selection"
-        "> F - fill tool"
-        "> Space - pen tool",
+        "> Arrow Keys to move sprite selection\n"
+        "> F - fill tool\n"
+        "> Space - pen tool\n",
         1
     );
 }
