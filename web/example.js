@@ -1,4 +1,4 @@
-import spritely from "./spritely";
+import spritely from "./spritely.js";
 
 const _engine = spritely();
 
