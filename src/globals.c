@@ -28,11 +28,12 @@ Context_t color_selector_cells[COLORPICKER_CANVAS_SIZE];
 Sprite_sheet_t icon_sprite_sheet;
 Sprite_sheet_t main_font_sprite_sheet;
 
+Entity_manager_t spritely_entities;
+
 uint sprite_sheet[SPRITESHEET_SIZE][SPRITE_CANVAS_SIZE];
 
 Message_Queue_t command_message_queue;
 Message_Queue_t help_message_queue;
-
 
 unsigned int current_time;
 unsigned int last_time;

@@ -6,7 +6,8 @@ typedef struct App_State *App_State_t;
 
 typedef enum state_type {
   SHELL = 0,
-  SPRITE_EDITOR
+  SPRITE_EDITOR,
+  GAME
 } state_type_t;
 
 extern App_State_t App_State_make();
