@@ -130,8 +130,8 @@ void sprite_editor_init()
     Context_indicator_focus(toolbar_ctx, 0);
     Context_indicator_focus(sprite_selector_ctx, 0);
 
-    command_message_queue = Message_Queue_create(10);
-    help_message_queue = Message_Queue_create(10);
+    command_message_queue = Message_Queue_create(1);
+    help_message_queue = Message_Queue_create(1);
     spritely_editor_initialized = 1;
 }
 

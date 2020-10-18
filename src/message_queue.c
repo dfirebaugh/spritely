@@ -77,9 +77,6 @@ char *Message_Queue_front(Message_Queue_t queue)
 
 void Message_box_render(Message_Queue_t queue)
 {
-#ifdef __EMSCRIPTEN__
-    return;
-#else
     if (Message_Queue_isEmpty(queue))
         return;
 
@@ -136,5 +133,4 @@ void Message_box_render(Message_Queue_t queue)
         queue->displaying = 0;
         Message_Queue_dequeue(queue);
     }
-#endif
 }

@@ -27,7 +27,7 @@ clean-web:
 web:
 	emcc $(SRCS) -s WASM=1 -s USE_SDL=2 -s USE_SDL_TTF=2 \
 	-s ALLOW_MEMORY_GROWTH=1 \
-	-s SDL2_IMAGE_FORMATS='["png"]' -s USE_SDL_IMAGE=2 --use-preload-plugins --preload-file assets \
+	-s SDL2_IMAGE_FORMATS='["png"]' -s USE_SDL_IMAGE=2 --use-preload-plugins --preload-file assets --preload-file fonts \
 	-s ERROR_ON_UNDEFINED_SYMBOLS=0 -s LLD_REPORT_UNDEFINED \
 	-s EXPORTED_FUNCTIONS='["_print_something", "_render_char", "_change_state", "_new_entity_manager", "_Entity_free", "_add_sprite_to_entity_manager", "_main"]' -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' \
 	-s EXPORT_NAME="'MyEmscriptenModule'" -s EXPORT_ES6=1 -s MODULARIZE=1 \

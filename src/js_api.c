@@ -21,7 +21,7 @@ Entity_manager_t new_entity_manager()
   Entity_manager_t new_entities = Entity_manager_make();
 
   return new_entities;
-};
+}
 
 void add_sprite_to_entity_manager(Entity_manager_t manager, uint8_t sprite_index, uint32_t x, uint32_t y)
 {
