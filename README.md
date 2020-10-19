@@ -1,4 +1,6 @@
 # spritely
+<img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/dfirebaugh/spritely/Build%20and%20deploy">
+
 Spritely is a sprite editor for making tiny sprites.
 Spritely makes a 64 sprite sprite sheet in the format of png.  Each sprite is 8x8 pixels with 16 colors.
 
