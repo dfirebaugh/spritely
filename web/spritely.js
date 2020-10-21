@@ -47,6 +47,16 @@ const app_states = {
     GAME: 2
 }
 
+const CONTROLLER_BTNS = {
+    BTN_LEFT: 0,
+    BTN_RIGHT: 1,
+    BTN_UP: 2,
+    BTN_DOWN: 3,
+    BTN_SECONDARY: 4,
+    BTN_PRIMARY: 5,
+    BTN_PAUSE: 6
+}
+
 function print_something() {
     SPRITELY.ps();
 }
@@ -109,6 +119,9 @@ export default function() {
         rect,
         rectFill,
         color,
-        btn
+        btn,
+        CONTROLLER_BTNS,
+        SCREEN_WIDTH: 670,
+        SCREEN_HEIGHT: 625,
     }
 }

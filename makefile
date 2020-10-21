@@ -34,6 +34,6 @@ web:
 	-s RESERVED_FUNCTION_POINTERS=10 \
 	-s "EXTRA_EXPORTED_RUNTIME_METHODS=['addFunction']" \
 	-s EXPORT_NAME="'MyEmscriptenModule'" -s EXPORT_ES6=1 -s MODULARIZE=1 -s ALLOW_TABLE_GROWTH=1 \
-	-o web/index.js  
+	-o web/index.js -Os && cp web/index* web/examples/
 
 .PHONY: web
