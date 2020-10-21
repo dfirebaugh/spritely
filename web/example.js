@@ -1,28 +1,53 @@
 import spritely from "./spritely.js";
 
-const _engine = spritely();
+const {
+    loadSpritely,
+    set_app_state,
+    app_states,
+    registerDrawFn,
+    registerUpdateFn,
+    rectFill,
+    rect,
+    btn
+} = spritely();
 
 /* loads spritely canvas on screen */
-_engine.loadSpritely().then(game)
+loadSpritely().then(init)
 
-function game() {
-    /* register gameloop functions */
-    // render_testing()
+
+const rectangle = {
+    x: 0,
+    y: 0,
+    width: 20,
+    height: 20
 }
 
-function render_testing() {
-    _engine.set_app_state(_engine.app_states.GAME)
-    _engine.render_char('H'.charCodeAt(0), 100, 100)
-    _engine.render_char('E'.charCodeAt(0), 120, 100)
-    _engine.render_char('L'.charCodeAt(0), 140, 100)
-    _engine.render_char('L'.charCodeAt(0), 160, 100)
-    _engine.render_char('O'.charCodeAt(0), 180, 100)
-    _engine.render_char(','.charCodeAt(0), 200, 100)
-    _engine.render_char('W'.charCodeAt(0), 100, 120)
-    _engine.render_char('O'.charCodeAt(0), 120, 120)
-    _engine.render_char('R'.charCodeAt(0), 140, 120)
-    _engine.render_char('L'.charCodeAt(0), 160, 120)
-    _engine.render_char('D'.charCodeAt(0), 180, 120)
-    
-    _engine.render_string("hello, world!", 0, 0);
+function init() {
+    set_app_state(app_states.GAME)
+    registerDrawFn(render);
+    registerUpdateFn(update);
+}
+
+function update() {
+    if (btn(0))
+        rectangle.x--;
+
+    if (btn(1))
+        rectangle.x++;
+
+    if (btn(2))
+        rectangle.y--;
+
+    if (btn(3))
+        rectangle.y++;
+
+}
+
+function render(){
+    rectFill(
+        rectangle.x,
+        rectangle.y,
+        rectangle.width,
+        rectangle.height,
+        2);
 }

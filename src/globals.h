@@ -56,6 +56,17 @@ extern uint sprite_sheet[SPRITESHEET_SIZE][SPRITE_CANVAS_SIZE];
 extern Message_Queue_t command_message_queue;
 extern Message_Queue_t help_message_queue;
 
+/**
+ * js_draw is a Function pointer used to register a javascript function
+ *  to call during the render loop
+ */
+extern void (*js_draw)(void);
+/**
+ * js_update is a Function pointer used to register a javascript function
+ *  to call during the update loop
+ */
+extern void (*js_update)(void);
+
 extern unsigned int current_time;
 extern unsigned int last_time;
 

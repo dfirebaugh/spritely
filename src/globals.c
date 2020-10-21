@@ -39,6 +39,9 @@ unsigned int current_time;
 unsigned int last_time;
 tool_t active_tool = PEN;
 
+void (*js_draw)(void);
+void (*js_update)(void);
+
 char icon_files[TOOLBAR_ROW_SIZE][50] = {
     "assets/icons/Pen.png",
     "assets/icons/Fill.png",

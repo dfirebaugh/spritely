@@ -18,6 +18,9 @@ void process_inputs()
     case SPRITE_EDITOR:
       sprite_editor_inputs(event);
       break;
+    case GAME:
+      game_inputs(event);
+      break;
     default:
       switch (event.type)
       {
@@ -41,11 +44,13 @@ static void render()
   case SPRITE_EDITOR:
     sprite_editor_render();
     break;
+  case GAME:
+    if(js_draw != NULL)
+      (*js_draw)();
+    break;
   default:
     break;
   }
-
-  Entity_render(spritely_entities);
 
   SDL_RenderPresent(renderer);
 }
@@ -60,6 +65,10 @@ void main_loop()
   case SPRITE_EDITOR:
     if (!spritely_editor_initialized)
       sprite_editor_init();
+    break;
+  case GAME:
+    if(js_update != NULL)
+      (*js_update)();
     break;
   default:
     break;
