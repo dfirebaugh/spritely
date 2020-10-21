@@ -38,11 +38,11 @@ extern void Context_indicator_focus(Context_t ctx, const unsigned int rect_index
 extern void Context_make_indicator(Context_t ctx);
 
 extern void Context_free_future_commits(Context_t ctx);
-extern void Context_new_commit(Context_t ctx, color_t pre_color, color_t post_color, uint position);
+extern void Context_new_commit(Context_t ctx, color_t *pixels, uint position);
 extern void Context_move_commits(Context_t ctx, int offset);
 
 /**
- * Context_make_transparent - the context will not render if this is executed, 
+ * Context_make_transparent - the context will not render if this is executed,
  * but the indicator will render
  */
 extern void Context_make_transparent(Context_t ctx);

@@ -3,7 +3,7 @@
 
 struct Commit
 {
-    color_t color[2];
+	color_t *pixels;
     uint position;
     struct Commit *previous;
     struct Commit *next;
@@ -164,7 +164,13 @@ color_t Context_get_pixel(Context_t ctx, const unsigned int pixel_index)
 
 void Context_set_pixel(Context_t ctx, const unsigned int pixel_index, color_t color)
 {
-    Context_new_commit(ctx, ctx->pixels[pixel_index], color, pixel_index);
+	int buffer_size = (sizeof(color_t)) * SPRITE_CANVAS_SIZE;
+	color_t *new_pixels = malloc(buffer_size);
+	memcpy(new_pixels, ctx->pixels, buffer_size);
+
+	new_pixels[pixel_index] = color;
+
+    Context_new_commit(ctx, new_pixels, color);
     ctx->pixels[pixel_index] = color;
 }
 
@@ -183,19 +189,15 @@ void Context_free_future_commits(Context_t ctx)
     ctx->commit->next = NULL;
 }
 
-void Context_new_commit(Context_t ctx, color_t pre_color, color_t post_color, uint position)
+void Context_new_commit(Context_t ctx, color_t *pixels, uint position)
 {
-    if (pre_color == post_color)
-        return;
-
     Context_free_future_commits(ctx);
 
     struct Commit *new_commit = (struct Commit *)malloc(sizeof(struct Commit));
     if (!new_commit)
         return;
 
-    new_commit->color[0] = pre_color;
-    new_commit->color[1] = post_color;
+    new_commit->pixels = pixels;
     new_commit->position = position;
     new_commit->previous = ctx->commit;
     new_commit->next = NULL;
@@ -226,7 +228,7 @@ void Context_move_commits(Context_t ctx, int offset)
 		    break;
     }
 
-        ctx->pixels[ctx->commit->position] = ctx->commit->color[direction > 0];
+		memcpy(ctx->pixels, ctx->commit->pixels, (sizeof(color_t) * SPRITE_CANVAS_SIZE));
     }
 
     ctx->previous_direction = direction;
@@ -241,4 +243,3 @@ int Context_is_solid_color(Context_t ctx, color_t color) {
 
     return 1;
 }
-

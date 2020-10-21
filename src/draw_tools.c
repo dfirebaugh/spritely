@@ -138,8 +138,6 @@ static void redo()
 	{
 		Message_Queue_enqueue(command_message_queue, "redo", 0);
 		Context_move_commits(sprite_canvas_ctx, 1);
-		Context_t current_cell = sprite_selector_cells[current_sprite_index];
-		Context_swap_pixels(current_cell, sprite_canvas_ctx);
 		Context_indicator_focus(toolbar_ctx, PEN);
 	}
 
@@ -153,8 +151,6 @@ static void undo()
 	{
 		Message_Queue_enqueue(command_message_queue, "undo", 0);
 		Context_move_commits(sprite_canvas_ctx, -1);
-		Context_t current_cell = sprite_selector_cells[current_sprite_index];
-		Context_swap_pixels(current_cell, sprite_canvas_ctx);
 	}
 
 	set_batch_redo_operation_counter(batch_undo_operation_counter);
