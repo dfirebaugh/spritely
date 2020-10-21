@@ -29,8 +29,11 @@ web:
 	-s ALLOW_MEMORY_GROWTH=1 \
 	-s SDL2_IMAGE_FORMATS='["png"]' -s USE_SDL_IMAGE=2 --use-preload-plugins --preload-file assets --preload-file fonts \
 	-s ERROR_ON_UNDEFINED_SYMBOLS=0 -s LLD_REPORT_UNDEFINED \
-	-s EXPORTED_FUNCTIONS='["_print_something", "_render_char", "_change_state", "_new_entity_manager", "_Entity_free", "_add_sprite_to_entity_manager", "_main"]' -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' \
-	-s EXPORT_NAME="'MyEmscriptenModule'" -s EXPORT_ES6=1 -s MODULARIZE=1 \
+	-s EXPORTED_FUNCTIONS='["_print_something", "_is_btn_pressed", "_render_rect", "_render_rect_fill", "_set_render_color", "_render_char", "_change_state", "_new_entity_manager", "_Entity_free", "_add_sprite_to_entity_manager", "_clear", "_register_draw_fn", "_register_update_fn", "_main"]' \
+	-s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' \
+	-s RESERVED_FUNCTION_POINTERS=10 \
+	-s "EXTRA_EXPORTED_RUNTIME_METHODS=['addFunction']" \
+	-s EXPORT_NAME="'MyEmscriptenModule'" -s EXPORT_ES6=1 -s MODULARIZE=1 -s ALLOW_TABLE_GROWTH=1 \
 	-o web/index.js  
 
 .PHONY: web
