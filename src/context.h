@@ -27,7 +27,11 @@ extern void Context_swap_pixels(Context_t dest, Context_t source);
 extern void Context_from_pixel_buffer(Context_t ctx, color_t *pixel_buffer);
 extern void Context_to_pixel_buffer(Context_t ctx, color_t *pixel_buffer);
 extern color_t Context_get_pixel (Context_t ctx, const unsigned int pixel_index);
+/* Context_set_pixel - pass in an index to set it as a specific color */
 extern void Context_set_pixel(Context_t ctx, const unsigned int pixel_index, color_t color);
+/* Context_set_pixels - pass in a list of pixels to set them as a specific color */
+extern void Context_set_pixels(Context_t ctx, const bool *pixels_to_fill, color_t color);
+
 extern void Context_indicator_focus(Context_t ctx, const unsigned int rect_index);
 
 /**
@@ -38,7 +42,7 @@ extern void Context_indicator_focus(Context_t ctx, const unsigned int rect_index
 extern void Context_make_indicator(Context_t ctx);
 
 extern void Context_free_future_commits(Context_t ctx);
-extern void Context_new_commit(Context_t ctx, color_t *pixels, uint position);
+extern void Context_new_commit(Context_t ctx, color_t *new_pixels);
 extern void Context_move_commits(Context_t ctx, int offset);
 
 /**

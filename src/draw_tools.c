@@ -33,19 +33,32 @@ static void tool_alt_pen(const unsigned int rect_index)
     pen_color = Context_get_pixel(sprite_canvas_ctx, rect_index);
 }
 
+bool pixels_to_fill[SPRITE_CANVAS_SIZE];
+
+static void mark_pixel_to_fill(uint8_t pixel_index)
+{
+    pixels_to_fill[pixel_index] = true;
+}
+
+static void clear_pixels_to_fill()
+{
+    for(uint8_t i = 0; i < SPRITE_CANVAS_SIZE; i++)
+    {
+        pixels_to_fill[i] = false;
+    }
+}
+
 /**
 * tool_fill_recurse
 * recursive function that fills in neighbors with the current `pen_color` if the conditions are correct
 */
 static void tool_fill_recurse(const unsigned int rect_index, color_t original_color)
 {
-    if (original_color == pen_color) return;
+    if (pixels_to_fill[rect_index]) return;
     if (!canvas_index_in_range(rect_index)) return;
     if (Context_get_pixel(sprite_canvas_ctx, rect_index) != original_color) return;
 
-	increment_batch_undo_operation_counter();
-	increment_batch_redo_operation_counter();
-    tool_pen(rect_index);
+    mark_pixel_to_fill(rect_index);
 
     if (canvas_index_in_range(rect_index - 1))
     {
@@ -82,8 +95,10 @@ static void tool_fill_recurse(const unsigned int rect_index, color_t original_co
 
 static void tool_fill(const unsigned int rect_index)
 {
+    clear_pixels_to_fill();
     color_t original_color = Context_get_pixel(sprite_canvas_ctx, rect_index);
     tool_fill_recurse(rect_index, original_color);
+    Context_set_pixels(sprite_canvas_ctx, pixels_to_fill, pen_color);
 }
 
 static void tool_sprite_selection(const unsigned int rect_index)
@@ -134,27 +149,15 @@ static void paste_sprite()
 
 static void redo()
 {
-	for (int i = 0; i < batch_redo_operation_counter + 1; i++)
-	{
-		Message_Queue_enqueue(command_message_queue, "redo", 0);
-		Context_move_commits(sprite_canvas_ctx, 1);
-		Context_indicator_focus(toolbar_ctx, PEN);
-	}
-
-	set_batch_undo_operation_counter(batch_redo_operation_counter);
-	reset_batch_redo_operation_counter();
+    Message_Queue_enqueue(command_message_queue, "redo", 0);
+    Context_move_commits(sprite_canvas_ctx, 1);
+    Context_indicator_focus(toolbar_ctx, PEN);
 }
 
 static void undo()
 {
-    for (int i = 0; i < batch_undo_operation_counter + 1; i++)
-	{
-		Message_Queue_enqueue(command_message_queue, "undo", 0);
-		Context_move_commits(sprite_canvas_ctx, -1);
-	}
-
-	set_batch_redo_operation_counter(batch_undo_operation_counter);
-	reset_batch_undo_operation_counter();
+    Message_Queue_enqueue(command_message_queue, "undo", 0);
+    Context_move_commits(sprite_canvas_ctx, -1);
 }
 
 static void increment_sprite_selector()

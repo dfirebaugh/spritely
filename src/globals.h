@@ -74,15 +74,6 @@ extern char icon_files[TOOLBAR_ROW_SIZE][50];
 
 extern tool_t active_tool;
 
-extern void increment_batch_undo_operation_counter(void);
-extern void increment_batch_redo_operation_counter(void);
-
-extern void set_batch_undo_operation_counter(unsigned int count);
-extern void set_batch_redo_operation_counter(unsigned int count);
-
-extern void reset_batch_undo_operation_counter(void);
-extern void reset_batch_redo_operation_counter(void);
-
 extern void free_globals(void);
 
 #endif

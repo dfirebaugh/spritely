@@ -53,37 +53,6 @@ char icon_files[TOOLBAR_ROW_SIZE][50] = {
     "assets/icons/Info.png"
   };
 
-void increment_batch_undo_operation_counter(void)
-{
-	batch_undo_operation_counter++;
-};
-
-void reset_batch_undo_operation_counter(void)
-{
-	batch_undo_operation_counter = 0;
-}
-
-
-void increment_batch_redo_operation_counter(void)
-{
-	batch_redo_operation_counter++;
-};
-
-void reset_batch_redo_operation_counter(void)
-{
-	batch_redo_operation_counter = 0;
-}
-
-void set_batch_redo_operation_counter(unsigned int count)
-{
-	batch_redo_operation_counter = count;
-}
-
-void set_batch_undo_operation_counter(unsigned int count)
-{
-	batch_undo_operation_counter = count;
-}
-
 void free_globals(void)
 {
     Message_Queue_free(command_message_queue);
