@@ -37,6 +37,10 @@ Message_Queue_t help_message_queue;
 
 unsigned int current_time;
 unsigned int last_time;
+
+unsigned int batch_undo_operation_counter = 0;
+unsigned int batch_redo_operation_counter = 0;
+
 tool_t active_tool = PEN;
 
 void (*js_draw)(void);
@@ -53,8 +57,7 @@ char icon_files[TOOLBAR_ROW_SIZE][50] = {
     "assets/icons/Info.png"
   };
 
-
-void free_globals()
+void free_globals(void)
 {
     Message_Queue_free(command_message_queue);
     Message_Queue_free(help_message_queue);

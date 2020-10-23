@@ -70,6 +70,9 @@ extern void (*js_update)(void);
 extern unsigned int current_time;
 extern unsigned int last_time;
 
+extern unsigned int batch_undo_operation_counter;
+extern unsigned int batch_redo_operation_counter;
+
 typedef enum tool_types {
   PEN = 0,
   FILL,
@@ -86,6 +89,6 @@ extern char icon_files[TOOLBAR_ROW_SIZE][50];
 
 extern tool_t active_tool;
 
-extern void free_globals();
+extern void free_globals(void);
 
 #endif

@@ -160,6 +160,8 @@ static void free_all()
     free_globals();
 }
 
+
+bool mousedown=false;
 void sprite_editor_inputs(SDL_Event event)
 {
     switch (event.type)
@@ -172,36 +174,31 @@ void sprite_editor_inputs(SDL_Event event)
     case SDL_MOUSEMOTION:
         mouse.x = event.motion.x;
         mouse.y = event.motion.y;
-        switch (event.button.button)
-        {
-        case SDL_BUTTON_LEFT:
-            left_clicks();
-            break;
-        case SDL_BUTTON_RIGHT:
-            right_clicks();
-            break;
-        case SDL_BUTTON_X1:
-            /* for some reason right mouse clicks are registering as SDL_BUTTON_X1 but only when I am moving the mouse.... ??????*/
-            right_clicks();
-            break;
-        default:
-            break;
-        }
-        break;
     case SDL_MOUSEBUTTONDOWN:
-        switch (event.button.button)
+        mousedown=true;
+        break;
+    case SDL_MOUSEBUTTONUP:
+        if(mousedown) 
         {
-        case SDL_BUTTON_LEFT:
-            left_clicks();
-            break;
-        case SDL_BUTTON_RIGHT:
-            right_clicks();
-            break;
-        default:
+            switch (event.button.button)
+            {
+            case SDL_BUTTON_LEFT:
+                left_clicks();
+                break;
+            case SDL_BUTTON_RIGHT:
+                right_clicks();
+                break;
+            case SDL_BUTTON_X1:
+                /* for some reason right mouse clicks are registering as SDL_BUTTON_X1 but only when I am moving the mouse.... ??????*/
+                right_clicks();
+                break;
+            default:
+                break;
+            }
             break;
         }
+        mousedown=false;
         break;
-
     case SDL_KEYDOWN:
         switch (event.key.keysym.sym)
         {
