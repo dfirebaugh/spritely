@@ -1,3 +1,5 @@
+#include "draw_tools.h"
+
 #ifndef _SPRITE_EDITOR
 #define _SPRITE_EDITOR
 

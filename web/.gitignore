@@ -1,2 +1,5 @@
 index.js
 index.wasm
+index.data
+
+examples/index.html

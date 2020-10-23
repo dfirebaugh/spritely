@@ -28,11 +28,12 @@ Context_t color_selector_cells[COLORPICKER_CANVAS_SIZE];
 Sprite_sheet_t icon_sprite_sheet;
 Sprite_sheet_t main_font_sprite_sheet;
 
+Entity_manager_t spritely_entities;
+
 uint sprite_sheet[SPRITESHEET_SIZE][SPRITE_CANVAS_SIZE];
 
 Message_Queue_t command_message_queue;
 Message_Queue_t help_message_queue;
-
 
 unsigned int current_time;
 unsigned int last_time;
@@ -41,6 +42,9 @@ unsigned int batch_undo_operation_counter = 0;
 unsigned int batch_redo_operation_counter = 0;
 
 tool_t active_tool = PEN;
+
+void (*js_draw)(void);
+void (*js_update)(void);
 
 char icon_files[TOOLBAR_ROW_SIZE][50] = {
     "assets/icons/Pen.png",

@@ -2,7 +2,7 @@
 
 static void tool_toolbar_selection(const unsigned int rect_index);
 
-static void help()
+void show_help()
 {
     Message_Queue_enqueue(help_message_queue,
         "> Ctrl+C - Copy\n"
@@ -14,9 +14,9 @@ static void help()
         "> Ctrl+O - Load a spritesheet from an image file\n"
         "> Left click to draw pixel\n"
         "> Right click to select a colour that is on the  canvas\n"
-        "> Arrow Keys to move sprite selection"
-        "> F - fill tool"
-        "> Space - pen tool",
+        "> Arrow Keys to move sprite selection\n"
+        "> F - fill tool\n"
+        "> Space - pen tool\n",
         1
     );
 }
@@ -101,7 +101,107 @@ static void tool_fill(const unsigned int rect_index)
     Context_set_pixels(sprite_canvas_ctx, pixels_to_fill, pen_color);
 }
 
-static void tool_sprite_selection(const unsigned int rect_index)
+static uint8_t calculate_upshift(uint8_t index)
+{
+    if (index - SPRITE_CANVAS_ROW_SIZE < 0)
+        return SPRITE_CANVAS_SIZE - (SPRITE_CANVAS_ROW_SIZE - index);
+
+    return index - SPRITE_CANVAS_ROW_SIZE;
+}
+
+static uint8_t calculate_downshift(uint8_t index)
+{
+    if (index + SPRITE_CANVAS_ROW_SIZE >= SPRITE_CANVAS_SIZE)
+        return SPRITE_CANVAS_ROW_SIZE - (SPRITE_CANVAS_SIZE - index);
+
+    return index + SPRITE_CANVAS_ROW_SIZE;
+}
+
+static uint8_t calculate_leftshift(uint8_t index)
+{
+    if (index % SPRITE_CANVAS_ROW_SIZE == 0)
+        return index + SPRITE_CANVAS_ROW_SIZE - 1;
+
+    return index - 1;
+}
+
+static uint8_t calculate_rightshift(uint8_t index)
+{
+    if ((index + 1) % SPRITE_CANVAS_ROW_SIZE == 0)
+        return index - SPRITE_CANVAS_ROW_SIZE + 1;
+
+    return index + 1;
+}
+
+static void shift_up()
+{
+    color_t original_pixel_buffer[SPRITE_CANVAS_SIZE];
+    color_t new_pixel_buffer[SPRITE_CANVAS_SIZE];
+    Context_to_pixel_buffer(sprite_canvas_ctx, original_pixel_buffer);
+
+    for(uint8_t i = 0; i < SPRITE_CANVAS_SIZE; i++)
+        new_pixel_buffer[calculate_upshift(i)] = original_pixel_buffer[i];
+
+    Context_from_pixel_buffer(sprite_canvas_ctx, new_pixel_buffer);
+}
+static void shift_down()
+{
+    color_t original_pixel_buffer[SPRITE_CANVAS_SIZE];
+    color_t new_pixel_buffer[SPRITE_CANVAS_SIZE];
+    Context_to_pixel_buffer(sprite_canvas_ctx, original_pixel_buffer);
+
+    for(uint8_t i = 0; i < SPRITE_CANVAS_SIZE; i++)
+        new_pixel_buffer[calculate_downshift(i)] = original_pixel_buffer[i];
+
+    Context_from_pixel_buffer(sprite_canvas_ctx, new_pixel_buffer);
+}
+
+static void shift_left()
+{
+    color_t original_pixel_buffer[SPRITE_CANVAS_SIZE];
+    color_t new_pixel_buffer[SPRITE_CANVAS_SIZE];
+    Context_to_pixel_buffer(sprite_canvas_ctx, original_pixel_buffer);
+
+    for(uint8_t i = 0; i < SPRITE_CANVAS_SIZE; i++)
+        new_pixel_buffer[calculate_leftshift(i)] = original_pixel_buffer[i];
+
+    Context_from_pixel_buffer(sprite_canvas_ctx, new_pixel_buffer);
+}
+
+static void shift_right()
+{
+    color_t original_pixel_buffer[SPRITE_CANVAS_SIZE];
+    color_t new_pixel_buffer[SPRITE_CANVAS_SIZE];
+    Context_to_pixel_buffer(sprite_canvas_ctx, original_pixel_buffer);
+
+    for(uint8_t i = 0; i < SPRITE_CANVAS_SIZE; i++)
+        new_pixel_buffer[calculate_rightshift(i)] = original_pixel_buffer[i];
+
+    Context_from_pixel_buffer(sprite_canvas_ctx, new_pixel_buffer);
+}
+
+unsigned int previous_rect_index;
+static void tool_drag(const unsigned int rect_index)
+{
+    if(previous_rect_index - SPRITE_CANVAS_ROW_SIZE == rect_index)
+        shift_up();
+
+    if(previous_rect_index + SPRITE_CANVAS_ROW_SIZE == rect_index)
+        shift_down();
+    
+    if(previous_rect_index - 1 == rect_index)
+        shift_left();
+
+    if(previous_rect_index + 1 == rect_index)
+        shift_right();
+
+
+    Context_t current_cell = sprite_selector_cells[current_sprite_index];
+    Context_swap_pixels(current_cell, sprite_canvas_ctx);
+    previous_rect_index = rect_index;
+}
+
+void tool_sprite_selection(const unsigned int rect_index)
 {
     current_sprite_index = rect_index;
     Context_indicator_focus(sprite_selector_ctx, current_sprite_index);
@@ -113,10 +213,12 @@ static void tool_color_pick(const unsigned int rect_index)
     pen_color = rect_index;
 }
 
-static void left_clicks()
+void left_clicks()
 {
     if (active_tool == FILL) {
         Context_handle_rect_click(sprite_canvas_ctx, tool_fill);
+    } else if (active_tool == DRAG) {
+        Context_handle_rect_click(sprite_canvas_ctx, tool_drag);
     } else {
         Context_handle_rect_click(sprite_canvas_ctx, tool_pen);
     }
@@ -126,21 +228,21 @@ static void left_clicks()
     Context_handle_rect_click(toolbar_ctx, tool_toolbar_selection);
 }
 
-static void right_clicks()
+void right_clicks()
 {
     Context_handle_rect_click(sprite_canvas_ctx, tool_alt_pen);
     Context_handle_rect_click(color_picker_ctx, tool_color_pick);
     Context_handle_rect_click(sprite_selector_ctx, tool_sprite_selection);
 }
 
-static void copy_sprite()
+void copy_sprite()
 {
     Message_Queue_enqueue(command_message_queue, "copied", 0);
     Context_to_pixel_buffer(sprite_canvas_ctx, clipboard_pixel_buffer);
     Context_swap_pixels(sprite_selector_cells[current_sprite_index], sprite_canvas_ctx);
 }
 
-static void paste_sprite()
+void paste_sprite()
 {
     Message_Queue_enqueue(command_message_queue, "paste", 0);
     Context_from_pixel_buffer(sprite_canvas_ctx, clipboard_pixel_buffer);
@@ -160,7 +262,7 @@ static void undo()
     Context_move_commits(sprite_canvas_ctx, -1);
 }
 
-static void increment_sprite_selector()
+void increment_sprite_selector()
 {
     if (!(sprite_sheet_index_in_range(current_sprite_index + 1))) return;
 
@@ -168,7 +270,7 @@ static void increment_sprite_selector()
     tool_sprite_selection(current_sprite_index);
 }
 
-static void decrement_sprite_selector()
+void decrement_sprite_selector()
 {
     if (!(sprite_sheet_index_in_range(current_sprite_index - 1))) return;
 
@@ -176,7 +278,7 @@ static void decrement_sprite_selector()
     tool_sprite_selection(current_sprite_index);
 }
 
-static void increment_row_sprite_selector()
+void increment_row_sprite_selector()
 {
     if (!(sprite_sheet_index_in_range(current_sprite_index + SPRITESHEET_ROW_SIZE))) return;
 
@@ -184,7 +286,7 @@ static void increment_row_sprite_selector()
     tool_sprite_selection(current_sprite_index);
 }
 
-static void decrement_row_sprite_selector()
+void decrement_row_sprite_selector()
 {
     if (!(sprite_sheet_index_in_range(current_sprite_index - SPRITESHEET_ROW_SIZE))) return;
 
@@ -192,62 +294,43 @@ static void decrement_row_sprite_selector()
     tool_sprite_selection(current_sprite_index);
 }
 
-void Draw_tool_handle_event(draw_event_t event)
+void draw_tool_activate_pen()
 {
-    switch(event)
-    {
-        case ACTIVATE_PEN:
-            active_tool = PEN;
-            Message_Queue_enqueue(command_message_queue, "pen tool", 0);
-            Context_indicator_focus(toolbar_ctx, PEN);
-            break;
-        case ACTIVATE_FILL:
-            active_tool = FILL;
-            Message_Queue_enqueue(command_message_queue, "fill tool", 0);
-            Context_indicator_focus(toolbar_ctx, FILL);
-            break;
-        case LEFT_CLICK_EVENT:
-            left_clicks();
-            break;
-        case RIGHT_CLICK_EVENT:
-            right_clicks();
-            break;
-        case OPEN_FILE:
-            open_file(lshift);
-            break;
-        case SAVE_FILE:
-            save_file(lshift);
-            break;
-        case PASTE_SPRITE:
-            paste_sprite();
-            break;
-        case COPY_SPRITE:
-            copy_sprite();
-            break;
-        case HANDLE_REDO:
-            redo();
-            break;
-        case HANDLE_UNDO:
-            undo();
-            Context_indicator_focus(toolbar_ctx, PEN);
-            break;
-        case LEFT_ARROW:
-            decrement_sprite_selector();
-            break;
-        case RIGHT_ARROW:
-            increment_sprite_selector();
-            break;
-        case UP_ARROW:
-            decrement_row_sprite_selector();
-            break;
-        case DOWN_ARROW:
-            increment_row_sprite_selector();
-            break;
-        case SHOW_HELP:
-            help();
-        default:
-            break;
-    }
+    active_tool = PEN;
+    Message_Queue_enqueue(command_message_queue, "pen tool", 0);
+    Context_indicator_focus(toolbar_ctx, PEN);
+}
+
+void draw_tool_activate_fill()
+{
+    active_tool = FILL;
+    Message_Queue_enqueue(command_message_queue, "fill tool", 0);
+    Context_indicator_focus(toolbar_ctx, FILL);
+}
+
+void draw_tool_activate_drag()
+{
+    active_tool = DRAG;
+    Message_Queue_enqueue(command_message_queue, "drag tool", 0);
+    Context_indicator_focus(toolbar_ctx, DRAG);
+}
+
+void draw_tool_handle_undo()
+{
+    undo();
+    Context_indicator_focus(toolbar_ctx, PEN);
+}
+
+void draw_tool_handle_redo()
+{
+    redo();
+    Context_indicator_focus(toolbar_ctx, PEN);
+}
+
+void draw_tool_handle_open_file()
+{
+    tool_sprite_selection(0);
+    open_file();
 }
 
 static void tool_toolbar_selection(const unsigned int rect_index)
@@ -255,28 +338,28 @@ static void tool_toolbar_selection(const unsigned int rect_index)
     switch(rect_index)
     {
         case PEN:
-            Draw_tool_handle_event(ACTIVATE_PEN);
+            draw_tool_activate_pen();
             break;
         case FILL:
-            Draw_tool_handle_event(ACTIVATE_FILL);
+            draw_tool_activate_fill();
             break;
         case DRAG:
-            Draw_tool_handle_event(ACTIVATE_DRAG);
+            draw_tool_activate_drag();
             break;
         case UNDO:
-            Draw_tool_handle_event(HANDLE_UNDO);
+            draw_tool_handle_undo();
             break;
         case REDO:
-            Draw_tool_handle_event(HANDLE_REDO);
+            draw_tool_handle_redo();
             break;
         case LOAD:
-            Draw_tool_handle_event(OPEN_FILE);
+            draw_tool_handle_open_file();
             break;
         case SAVE:
-            Draw_tool_handle_event(SAVE_FILE);
+            save_file(lshift);
             break;
         case INFO:
-            Draw_tool_handle_event(SHOW_HELP);
+            show_help();
             break;
         default:
             break;

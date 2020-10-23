@@ -9,17 +9,19 @@ struct mouse
 
 extern struct mouse mouse;
 
+#include "python_api.h"
 #include "defs.h"
 #include "colors.h"
 #include "message_queue.h"
 #include "context.h"
 #include "util.h"
 #include "file.h"
-#include "draw_tools.h"
 #include "sprite_sheet.h"
 #include "app_state.h"
 #include "sprite_editor.h"
 #include "shell.h"
+#include "js_api.h"
+#include "entity.h"
 
 extern SDL_Window *window;
 extern SDL_Renderer *renderer;
@@ -47,10 +49,23 @@ extern Context_t color_selector_cells[COLORPICKER_CANVAS_SIZE];
 extern Sprite_sheet_t icon_sprite_sheet;
 extern Sprite_sheet_t main_font_sprite_sheet;
 
+extern Entity_manager_t spritely_entities;
+
 extern uint sprite_sheet[SPRITESHEET_SIZE][SPRITE_CANVAS_SIZE];
 
 extern Message_Queue_t command_message_queue;
 extern Message_Queue_t help_message_queue;
+
+/**
+ * js_draw is a Function pointer used to register a javascript function
+ *  to call during the render loop
+ */
+extern void (*js_draw)(void);
+/**
+ * js_update is a Function pointer used to register a javascript function
+ *  to call during the update loop
+ */
+extern void (*js_update)(void);
 
 extern unsigned int current_time;
 extern unsigned int last_time;
