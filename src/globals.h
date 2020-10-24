@@ -5,6 +5,8 @@ struct mouse
 {
     int x;
     int y;
+    int canvas_x;
+    int canvas_y;
 };
 
 extern struct mouse mouse;
