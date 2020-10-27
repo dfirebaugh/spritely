@@ -329,8 +329,8 @@ void draw_tool_handle_redo()
 
 void draw_tool_handle_open_file()
 {
-    tool_sprite_selection(0);
     open_file();
+    tool_sprite_selection(0);
 }
 
 static void tool_toolbar_selection(const unsigned int rect_index)
