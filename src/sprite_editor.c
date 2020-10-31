@@ -10,11 +10,55 @@ static void toolbar_render(Context_t ctx)
     }
 }
 
+/**
+ * @brief Load color palette file
+ * 
+ * @return int 1 if success, 0: if failed
+ */
+static int load_palette_file(void)
+{
+    char buf[16];
+    uint8_t colors[COLOR_VALUES_SIZE];
+    FILE* file = fopen(palette_file, "rb");
+    if(NULL != file)
+    {
+        const int palette_size = COLORPICKER_NUM_COLORS;
+        int color_idx = 0;
+
+        for(int i = 0; i < palette_size && !feof(file); ++i)
+        {
+            if(fgets(buf, sizeof(buf), file) != NULL)
+            {
+                unsigned int r,g,b;
+                sscanf(buf, "%u,%u,%u\n", &r, &g, &b);
+                colors[color_idx++] = r;
+                colors[color_idx++] = g;
+                colors[color_idx++] = b;
+                colors[color_idx++] = 255;
+            }
+            else
+            {
+                return 0;
+                break;
+            }
+            
+        }
+        fclose(file);
+        /* overwrite the default color palette */
+        memcpy(color_values, colors, COLOR_VALUES_SIZE);
+        return 1;
+    }
+
+    return 0;
+}
+
 static void color_picker_init(Context_t ctx)
 {
     color_t pixel_buffer[COLORPICKER_PIXEL_SIZE];
 
     uint8_t i;
+
+    load_palette_file();
 
     for (i = 0; i < (COLORPICKER_ROW_SIZE * COLORPICKER_ROW_SIZE); i++)
         pixel_buffer[i] = i;
@@ -78,7 +122,7 @@ void sprite_editor_render()
 
 void sprite_editor_init()
 {
-    pen_color = BLUE;
+    pen_color = 0;
 
     Context_config_t sprite_canvas_ctx_config;
     sprite_canvas_ctx_config.pixel_size = SPRITE_CANVAS_PIXEL_SIZE;

@@ -45,7 +45,7 @@ Context_t Context_make_from_config(Context_config_t ctx_config)
     {
         for (j = 0; j < ctx_config.row_size; j++)
         {
-            ctx->pixels[index] = BLACK;
+            ctx->pixels[index] = BACKGROUND;
             ctx->rects[index].x = ctx_config.x_offset + j * ctx_config.pixel_size;
             ctx->rects[index].y = ctx_config.y_offset + i * ctx_config.pixel_size;
             ctx->rects[index].w = ctx_config.pixel_size;
@@ -75,7 +75,7 @@ Context_t Context_make(uint pixel_size, uint row_size, uint col_size, uint x_off
     {
         for (j = 0; j < row_size; j++)
         {
-            ctx->pixels[index] = BLACK;
+            ctx->pixels[index] = BACKGROUND;
             ctx->rects[index].x = x_offset + j * pixel_size;
             ctx->rects[index].y = y_offset + i * pixel_size;
             ctx->rects[index].w = pixel_size;

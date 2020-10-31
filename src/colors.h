@@ -6,7 +6,9 @@
 #include <stdint.h>
 #include "defs.h"
 
+/* Default color palette, will be overridden when loading palette file */
 typedef enum color {
+  BACKGROUND = -1, /* default background color (black color) */
   BLACK = 0,
   GREY1,
   GREY2,

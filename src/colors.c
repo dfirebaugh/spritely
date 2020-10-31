@@ -1,5 +1,5 @@
 #include "colors.h"
-
+/* Default color palette, will be overridden when loading palette file */
 uint8_t color_values[COLOR_VALUES_SIZE] = {
       0,   0,   0, 255, // BLACK
     224, 224, 224, 255, // GREY1
@@ -15,5 +15,6 @@ uint8_t color_values[COLOR_VALUES_SIZE] = {
     200,   0,   0, 255, // RED
       0, 255, 255, 255, // CYAN
     255, 255,   0, 255, // YELLOW
+    255,   0, 255, 255, // MAGENTA
     255, 255, 255, 255, // WHITE
 };

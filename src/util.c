@@ -3,6 +3,11 @@
 
 void set_pixel_render_color(color_t p)
 {
+    if(BACKGROUND == p) {
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        return;
+    }
+
     const size_t base = p * NUM_COLOR_COMPONENTS;
     SDL_SetRenderDrawColor(renderer,
         color_values[base + 0],
@@ -26,8 +31,8 @@ color_t get_pixel_render_color(const uint8_t r, const uint8_t g, const uint8_t b
         }
     }
 
-    // Return black if no exact match found
-    return BLACK;
+    // Return default background color if no exact match found
+    return BACKGROUND;
 }
 
 void *checked_malloc(size_t size) {

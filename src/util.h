@@ -2,7 +2,7 @@
 /* Assumes p is a valid color_t value */
 extern void set_pixel_render_color(color_t p);
 
-/* Get the enum color value for the given RGBA values, or BLACK if no enum value matches */
+/* Get the enum color value for the given RGBA values, or defauft background color if no enum value matches */
 color_t get_pixel_render_color(const uint8_t r, const uint8_t g, const uint8_t b, const uint8_t a);
 
 extern void *checked_malloc(size_t size);
