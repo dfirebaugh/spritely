@@ -87,6 +87,8 @@ typedef enum tool_types {
 
 extern char icon_files[TOOLBAR_ROW_SIZE][50];
 
+extern const char *palette_file;
+
 extern tool_t active_tool;
 
 extern void free_globals(void);

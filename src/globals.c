@@ -57,6 +57,8 @@ char icon_files[TOOLBAR_ROW_SIZE][50] = {
     "assets/icons/Info.png"
   };
 
+const char *palette_file = "assets/palette/palette.cfg";
+
 void free_globals(void)
 {
     Message_Queue_free(command_message_queue);

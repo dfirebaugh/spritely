@@ -9,6 +9,17 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+/**
+  8: palette_info_header
+  48: COLORPICKER_NUM_COLORS*3
+  1 : checksum
+*/
+#define PALETTE_INFO_LEN ((COLORPICKER_NUM_COLORS*3)+8+1)
+static const char* palette_info_header = "SPRITELY";
+
+static void append_color_palette(const char* filepath);
+static void load_color_palette(const char* filepath);
+
 // Populate the file_data array with the row-th row of sprites
 // row is assumed to be in range [0, SPRITESHEET_COL_SIZE)
 static void populate_file_data_with_spritesheet_row(uint8_t *const file_data, const int row) {
@@ -62,7 +73,7 @@ static void save_spritesheet(const char *const filename) {
         Message_Queue_enqueue(command_message_queue, "Failed to save spritesheet", 0);
         return;
     }
-
+    append_color_palette(filename);
     Message_Queue_enqueue(command_message_queue, "Spritesheet saved", 0);
 }
 
@@ -81,8 +92,8 @@ static void save_sprites(
             const size_t sprite_index = x + y * SPRITESHEET_ROW_SIZE;
             Context_t sprite = sprite_selector_cells[sprite_index];
 
-            if (Context_is_solid_color(sprite, BLACK)) {
-                continue;// Do not output blank (all black) sprite cells
+            if (Context_is_solid_color(sprite, BACKGROUND)) {
+                continue;// Do not output blank (background color only) sprite cells
             }
 
             sprintf(&filename_buf[filename_prefix_len], "_(%.2d,%.2d).png", x, y);
@@ -113,6 +124,8 @@ static void save_sprites(
                 Message_Queue_enqueue(command_message_queue, "Error outputting sprites", 0);
                 return;// Do not attempt to output any more images
             }
+
+            append_color_palette(filename_buf);
         }
     }
 
@@ -228,8 +241,87 @@ void open_file() {
         return;
     }
 
+    load_color_palette(filename);
+
     for (int i = 0; i < SPRITESHEET_COL_SIZE; i += 1) {
         populate_spritesheet_row_with_file_data(image_data, i);
     }
 #endif
+}
+
+static void append_color_palette(const char* filepath)
+{
+    FILE* file = fopen(filepath, "a");
+
+    if(file != NULL)
+    {
+        fwrite(palette_info_header, strlen(palette_info_header), 1, file);
+        const int palette_size = COLORPICKER_NUM_COLORS;
+        int color_idx = 0;
+        uint8_t cs = 0;
+
+        for(int i = 0; i < palette_size && !feof(file); ++i)
+        {
+            uint8_t r = color_values[color_idx++];
+            uint8_t g = color_values[color_idx++];
+            uint8_t b = color_values[color_idx++];
+            color_idx++;
+            cs ^= r;
+            cs ^= g;
+            cs ^= b;
+            fwrite(&r, 1, 1, file);
+            fwrite(&g, 1, 1, file);
+            fwrite(&b, 1, 1, file);
+        }
+        fwrite(&cs, 1, 1, file);
+        fclose(file);
+    }
+}
+
+static void load_color_palette(const char* filepath)
+{
+    FILE* file = fopen(filepath, "rb");
+
+    if(file != NULL)
+    {
+        int file_len = 0;
+
+        fseek(file, 0, SEEK_END);
+        file_len = ftell(file);
+
+        if(file_len > PALETTE_INFO_LEN)
+        {
+            const int palette_size = COLORPICKER_NUM_COLORS;
+            const int header_len = strlen(palette_info_header);
+            uint8_t buf[PALETTE_INFO_LEN];
+
+            fseek(file, -(PALETTE_INFO_LEN), SEEK_END);
+            fread(buf, PALETTE_INFO_LEN, 1, file);
+
+            if(memcmp(buf, palette_info_header, header_len) == 0)
+            {
+                uint8_t cs = 0;
+                uint8_t *data = &buf[header_len];
+
+                for(int i = 0; i < palette_size * 3; ++i)
+                {
+                    cs ^= data[i];
+                }
+
+                if(cs == data[palette_size * 3])
+                {
+                    for(int i = 0; i < palette_size; ++i)
+                    {
+                        color_values[i*4]   = data[i*3];
+                        color_values[i*4+1] = data[i*3+1];
+                        color_values[i*4+2] = data[i*3+2];
+                        color_values[i*4+3] = 255;
+                    }
+                    Context_render(color_picker_ctx);
+                }
+            }
+        }
+
+        fclose(file);
+    }
 }
