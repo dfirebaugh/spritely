@@ -218,11 +218,19 @@ void sprite_editor_inputs(SDL_Event event)
     case SDL_MOUSEMOTION:
         mouse.x = event.motion.x;
         mouse.y = event.motion.y;
+        int canvas_x = (event.motion.x / SPRITE_CANVAS_PIXEL_SIZE);
+        int canvas_y = (event.motion.y / SPRITE_CANVAS_PIXEL_SIZE);
+        if (canvas_x != mouse.canvas_x || canvas_y != mouse.canvas_y) {
+            mouse.canvas_x = canvas_x;
+            mouse.canvas_y = canvas_y;
+            if (mousedown && event.motion.state & SDL_BUTTON_LMASK)
+                left_drags();
+        }
     case SDL_MOUSEBUTTONDOWN:
         mousedown=true;
         break;
     case SDL_MOUSEBUTTONUP:
-        if(mousedown) 
+        if(mousedown)
         {
             switch (event.button.button)
             {

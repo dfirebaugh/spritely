@@ -15,6 +15,7 @@ extern void copy_sprite();
 extern void paste_sprite();
 extern void right_clicks();
 extern void left_clicks();
+extern void left_drags();
 extern void show_help();
 extern void tool_sprite_selection(const unsigned int rect_index);
 

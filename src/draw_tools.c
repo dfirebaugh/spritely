@@ -188,7 +188,7 @@ static void tool_drag(const unsigned int rect_index)
 
     if(previous_rect_index + SPRITE_CANVAS_ROW_SIZE == rect_index)
         shift_down();
-    
+
     if(previous_rect_index - 1 == rect_index)
         shift_left();
 
@@ -226,6 +226,15 @@ void left_clicks()
     Context_handle_rect_click(color_picker_ctx, tool_color_pick);
     Context_handle_rect_click(sprite_selector_ctx, tool_sprite_selection);
     Context_handle_rect_click(toolbar_ctx, tool_toolbar_selection);
+}
+
+void left_drags()
+{
+    if (active_tool == DRAG) {
+        Context_handle_rect_click(sprite_canvas_ctx, tool_drag);
+    } else if (active_tool == PEN) {
+        Context_handle_rect_click(sprite_canvas_ctx, tool_pen);
+    }
 }
 
 void right_clicks()
