@@ -71,11 +71,15 @@ void show_help()
     );
 }
 
+static void udpate_sprite_sheet()
+{
+    Context_swap_pixels(sprite_selector_cells[current_sprite_index], sprite_canvas_ctx);
+}
+
 static void tool_pen(const unsigned int rect_index)
 {
     Context_set_pixel(sprite_canvas_ctx, rect_index, pen_color);
-    Context_t current_cell = sprite_selector_cells[current_sprite_index];
-    Context_swap_pixels(current_cell, sprite_canvas_ctx);
+    udpate_sprite_sheet();
 }
 
 static void tool_alt_pen(const unsigned int rect_index)
@@ -149,6 +153,7 @@ static void tool_fill(const unsigned int rect_index)
     color_t original_color = Context_get_pixel(sprite_canvas_ctx, rect_index);
     tool_fill_recurse(rect_index, original_color);
     Context_set_pixels(sprite_canvas_ctx, pixels_to_fill, pen_color);
+    udpate_sprite_sheet();
 }
 
 static uint8_t calculate_upshift(uint8_t index)
@@ -245,9 +250,7 @@ static void tool_drag(const unsigned int rect_index)
     if(previous_rect_index + 1 == rect_index)
         shift_right();
 
-
-    Context_t current_cell = sprite_selector_cells[current_sprite_index];
-    Context_swap_pixels(current_cell, sprite_canvas_ctx);
+    udpate_sprite_sheet();
     previous_rect_index = rect_index;
 }
 
@@ -298,14 +301,14 @@ void copy_sprite()
 {
     Message_Queue_enqueue(command_message_queue, "copied", 0);
     Context_to_pixel_buffer(sprite_canvas_ctx, clipboard_pixel_buffer);
-    Context_swap_pixels(sprite_selector_cells[current_sprite_index], sprite_canvas_ctx);
+    udpate_sprite_sheet();
 }
 
 void paste_sprite()
 {
     Message_Queue_enqueue(command_message_queue, "paste", 0);
     Context_from_pixel_buffer(sprite_canvas_ctx, clipboard_pixel_buffer);
-    Context_swap_pixels(sprite_selector_cells[current_sprite_index], sprite_canvas_ctx);
+    udpate_sprite_sheet();
 }
 
 static void redo()
@@ -313,12 +316,14 @@ static void redo()
     Message_Queue_enqueue(command_message_queue, "redo", 0);
     Context_move_commits(sprite_canvas_ctx, 1);
     Context_indicator_focus(toolbar_ctx, PEN);
+    udpate_sprite_sheet();
 }
 
 static void undo()
 {
     Message_Queue_enqueue(command_message_queue, "undo", 0);
     Context_move_commits(sprite_canvas_ctx, -1);
+    udpate_sprite_sheet();
 }
 
 void increment_sprite_selector()
