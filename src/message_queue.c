@@ -1,6 +1,12 @@
+#include "defs.h"
 #include "globals.h"
 #include "util.h"
 #include <SDL2/SDL_ttf.h>
+
+#define COMMAND_TIME 500
+#define HELP_TIME 5000
+#define HELP_OPTIONS 12
+typedef struct Message_Queue *Message_Queue_t;
 
 struct Message_Queue
 {
@@ -13,6 +19,9 @@ struct Message_Queue
 
 #define MESSAGE_BOX_HEIGHT 28
 
+unsigned int current_time;
+unsigned int last_time;
+
 Message_Queue_t Message_Queue_create(const unsigned int capacity)
 {
     Message_Queue_t queue = (Message_Queue_t)malloc(sizeof(struct Message_Queue));
@@ -20,7 +29,7 @@ Message_Queue_t Message_Queue_create(const unsigned int capacity)
     queue->front = queue->size = 0;
     queue->rear = capacity - 1;
     queue->messages = (char **)malloc(sizeof(char *) * capacity);
-    queue->middle = (char*)malloc(sizeof(char) * capacity);
+    queue->middle = (char *)malloc(sizeof(char) * capacity);
     queue->displaying = 0;
     return queue;
 }
@@ -32,10 +41,12 @@ void Message_Queue_free(Message_Queue_t queue)
     free(queue);
 }
 
+#if 0
 static int Message_Queue_isFull(Message_Queue_t queue)
 {
     return (queue->size == queue->capacity);
 }
+#endif
 
 static int Message_Queue_isEmpty(Message_Queue_t queue)
 {
@@ -44,6 +55,7 @@ static int Message_Queue_isEmpty(Message_Queue_t queue)
 
 void Message_Queue_enqueue(Message_Queue_t queue, char *message, unsigned int middle)
 {
+    #if 0
     if (Message_Queue_isFull(queue))
         return;
 
@@ -52,6 +64,7 @@ void Message_Queue_enqueue(Message_Queue_t queue, char *message, unsigned int mi
     queue->middle[queue->rear] = middle;
 
     queue->size++;
+    #endif
 }
 
 static void Message_Queue_dequeue(Message_Queue_t queue)
@@ -103,7 +116,7 @@ void Message_box_render(Message_Queue_t queue)
 
         if (queue->middle[queue->rear] == 0)
         {
-            message_rect.w = SCREEN_WIDTH/8;
+            message_rect.w = SCREEN_WIDTH / 8;
             message_rect.h = MESSAGE_BOX_HEIGHT;
             message_rect.x = 0;
             message_rect.y = SCREEN_HEIGHT - MESSAGE_BOX_HEIGHT;
@@ -111,9 +124,9 @@ void Message_box_render(Message_Queue_t queue)
         else
         {
             message_rect.w = 480;
-            message_rect.h = MESSAGE_BOX_HEIGHT*HELP_OPTIONS;
-            message_rect.x = (SCREEN_WIDTH/2)-(message_rect.w/2);
-            message_rect.y = (SCREEN_HEIGHT/2)-(message_rect.h/2);
+            message_rect.h = MESSAGE_BOX_HEIGHT * HELP_OPTIONS;
+            message_rect.x = (SCREEN_WIDTH / 2) - (message_rect.w / 2);
+            message_rect.y = (SCREEN_HEIGHT / 2) - (message_rect.h / 2);
         }
         TTF_Font *Sans = TTF_OpenFont("fonts/OpenSans/OpenSans-SemiBold.ttf", 18);
         SDL_Color White = {255, 255, 255};

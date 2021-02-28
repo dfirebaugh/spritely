@@ -1,5 +1,8 @@
+#include "defs.h"
 #include "globals.h"
 #include "util.h"
+#include "sprite_editor.h"
+
 
 struct Commit
 {
@@ -161,16 +164,16 @@ void Context_make_indicator(Context_t ctx)
 }
 
 
-static int XYInRect(const SDL_Rect rect)
+static int XYInRect(const SDL_Rect rect, int mouse_x, int mouse_y)
 {
-    return ((mouse.x >= rect.x && mouse.x <= rect.x + rect.w) && (mouse.y >= rect.y && mouse.y <= rect.y + rect.h));
+    return ((mouse_x >= rect.x && mouse_x <= rect.x + rect.w) && (mouse_y >= rect.y && mouse_y <= rect.y + rect.h));
 }
 
-void Context_handle_rect_click(Context_t ctx, void (*fn)(const unsigned int))
+void Context_handle_rect_click(Context_t ctx, void (*fn)(const unsigned int), int mouse_x, int mouse_y)
 {
     unsigned int i;
     for (i = 0; i < (ctx->row_size * ctx->col_size); i++)
-        if (XYInRect(ctx->rects[i]))
+        if (XYInRect(ctx->rects[i], mouse_x, mouse_y))
         {
             (*fn)(i);
             Context_indicator_focus(ctx, i);

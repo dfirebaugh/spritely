@@ -1,3 +1,4 @@
+#include "defs.h"
 #include "globals.h"
 
 struct Sprite_sheet
@@ -9,6 +10,8 @@ struct Sprite_sheet
     SDL_Surface* window_surface;
     SDL_Rect destination_rect;
 };
+
+typedef struct Sprite_sheet *Sprite_sheet_t;
 
 Sprite_sheet_t Sprite_sheet_make(const char *sprite_sheet)
 {

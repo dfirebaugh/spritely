@@ -1,5 +1,11 @@
-#include "globals.h"
+#include "defs.h"
 
+typedef struct App_State *App_State_t;
+typedef enum state_type {
+  SHELL = 0,
+  SPRITE_EDITOR,
+  GAME
+} state_type_t;
 struct App_State {
     state_type_t current;
 };

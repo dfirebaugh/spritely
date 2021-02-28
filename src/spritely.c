@@ -2,8 +2,12 @@
 #include <emscripten.h>
 #endif
 #include "globals.h"
+#include "app_state.h"
+#include "sprite_editor.h"
 
-void process_inputs()
+App_State_t spritely_state;
+
+void process_inputs(App_State_t spritely_state)
 {
   SDL_Event event;
 
@@ -12,14 +16,8 @@ void process_inputs()
   {
     switch (App_State_get_state(spritely_state))
     {
-    case SHELL:
-      Shell_inputs(spritely_shell, event);
-      break;
     case SPRITE_EDITOR:
       sprite_editor_inputs(event);
-      break;
-    case GAME:
-      game_inputs(event);
       break;
     default:
       switch (event.type)
@@ -34,19 +32,12 @@ void process_inputs()
   }
 }
 
-static void render()
+static void render(App_State_t spritely_state)
 {
   switch (App_State_get_state(spritely_state))
   {
-  case SHELL:
-    Shell_render(spritely_shell);
-    break;
   case SPRITE_EDITOR:
     sprite_editor_render();
-    break;
-  case GAME:
-    if(js_draw != NULL)
-      (*js_draw)();
     break;
   default:
     break;
@@ -57,24 +48,22 @@ static void render()
 
 void main_loop()
 {
-  process_inputs();
+  static unsigned int spritely_editor_initialized = 0;
+
+  process_inputs(spritely_state);
   switch (App_State_get_state(spritely_state))
   {
   case SHELL:
     break;
   case SPRITE_EDITOR:
     if (!spritely_editor_initialized)
-      sprite_editor_init();
-    break;
-  case GAME:
-    if(js_update != NULL)
-      (*js_update)();
+      spritely_editor_initialized = sprite_editor_init();
     break;
   default:
     break;
   }
 
-  render();
+  render(spritely_state);
 }
 
 void emscripten_loop(void *arg)
@@ -82,14 +71,12 @@ void emscripten_loop(void *arg)
   main_loop();
 }
 
+
 void spritely_run()
 {
   spritely_state = App_State_make();
-  spritely_shell = Shell_make();
-  icon_sprite_sheet = Sprite_sheet_make("assets/icons/icons.png");
-  main_font_sprite_sheet = Sprite_sheet_make("assets/font/white_letter.sorted.png");
 
-  spritely_entities = Entity_manager_make();
+  App_State_set_state(spritely_state, SPRITE_EDITOR);
 
 #ifdef __EMSCRIPTEN__
   App_State_set_state(spritely_state, SPRITE_EDITOR);
@@ -100,4 +87,5 @@ void spritely_run()
     main_loop();
   }
 #endif
+  App_State_free(spritely_state);
 }

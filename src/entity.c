@@ -1,4 +1,3 @@
-#include "globals.h"
 
 typedef struct coordinates
 {

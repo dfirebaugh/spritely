@@ -1,4 +1,6 @@
+#include "defs.h"
 #include "globals.h"
+#include "colors.h"
 #include <stdlib.h>
 
 void set_pixel_render_color(color_t p)

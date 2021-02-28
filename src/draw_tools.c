@@ -1,6 +1,56 @@
-#include "globals.h"
+#include "defs.h"
+#include "context.h"
+#include "util.h"
+#include "message_queue.h"
+#include "file.h"
+
+Context_t sprite_canvas_ctx;
+Context_t color_picker_ctx;
+Context_t sprite_selector_ctx;
+Context_t sprite_sheet_current_cell_ctx;
+Context_t toolbar_ctx;
+Context_t sprite_selector_cells[SPRITESHEET_SIZE];
+Context_t color_selector_cells[COLORPICKER_CANVAS_SIZE];
+
+Message_Queue_t command_message_queue;
+Message_Queue_t help_message_queue;
+
+const char *palette_file = "assets/palette/palette.cfg";
+
+uint sprite_sheet[SPRITESHEET_SIZE][SPRITE_CANVAS_SIZE];
+
+
+unsigned int pen_color;
+unsigned int lctrl;
+unsigned int lshift;
+
+typedef enum tool_types {
+  PEN = 0,
+  FILL,
+  DRAG,
+  UNDO,
+  REDO,
+  LOAD,
+  SAVE,
+  INFO
+} tool_t;
+
+tool_t active_tool = PEN;
+
+struct mouse_t
+{
+    int x;
+    int y;
+    int canvas_x;
+    int canvas_y;
+} mouse;
 
 static void tool_toolbar_selection(const unsigned int rect_index);
+color_t clipboard_pixel_buffer[SPRITE_CANVAS_SIZE];
+
+unsigned int current_sprite_index;
+unsigned int copy_index;
+
 
 void show_help()
 {
@@ -216,32 +266,32 @@ static void tool_color_pick(const unsigned int rect_index)
 void left_clicks()
 {
     if (active_tool == FILL) {
-        Context_handle_rect_click(sprite_canvas_ctx, tool_fill);
+        Context_handle_rect_click(sprite_canvas_ctx, tool_fill, mouse.x, mouse.y);
     } else if (active_tool == DRAG) {
-        Context_handle_rect_click(sprite_canvas_ctx, tool_drag);
+        Context_handle_rect_click(sprite_canvas_ctx, tool_drag, mouse.x, mouse.y);
     } else {
-        Context_handle_rect_click(sprite_canvas_ctx, tool_pen);
+        Context_handle_rect_click(sprite_canvas_ctx, tool_pen, mouse.x, mouse.y);
     }
 
-    Context_handle_rect_click(color_picker_ctx, tool_color_pick);
-    Context_handle_rect_click(sprite_selector_ctx, tool_sprite_selection);
-    Context_handle_rect_click(toolbar_ctx, tool_toolbar_selection);
+    Context_handle_rect_click(color_picker_ctx, tool_color_pick, mouse.x, mouse.y);
+    Context_handle_rect_click(sprite_selector_ctx, tool_sprite_selection, mouse.x, mouse.y);
+    Context_handle_rect_click(toolbar_ctx, tool_toolbar_selection, mouse.x, mouse.y);
 }
 
 void left_drags()
 {
     if (active_tool == DRAG) {
-        Context_handle_rect_click(sprite_canvas_ctx, tool_drag);
+        Context_handle_rect_click(sprite_canvas_ctx, tool_drag, mouse.x, mouse.y);
     } else if (active_tool == PEN) {
-        Context_handle_rect_click(sprite_canvas_ctx, tool_pen);
+        Context_handle_rect_click(sprite_canvas_ctx, tool_pen, mouse.x, mouse.y);
     }
 }
 
 void right_clicks()
 {
-    Context_handle_rect_click(sprite_canvas_ctx, tool_alt_pen);
-    Context_handle_rect_click(color_picker_ctx, tool_color_pick);
-    Context_handle_rect_click(sprite_selector_ctx, tool_sprite_selection);
+    Context_handle_rect_click(sprite_canvas_ctx, tool_alt_pen, mouse.x, mouse.y);
+    Context_handle_rect_click(color_picker_ctx, tool_color_pick, mouse.x, mouse.y);
+    Context_handle_rect_click(sprite_selector_ctx, tool_sprite_selection, mouse.x, mouse.y);
 }
 
 void copy_sprite()

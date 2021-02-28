@@ -1,13 +1,20 @@
+#include "defs.h"
 #include "globals.h"
+#include "draw_tools.h"
+#include "file.h"
 
 static void toolbar_render(Context_t ctx)
 {
     uint8_t i;
 
+    Sprite_sheet_t icon_sprite_sheet = Sprite_sheet_make("assets/icons/icons.png");
+
+
     for (i = 0; i < TOOLBAR_ROW_SIZE; i++)
     {
         Context_render_sprite_in_context_scale(toolbar_ctx, icon_sprite_sheet, i, i, 6);
     }
+    Sprite_sheet_free(icon_sprite_sheet);
 }
 
 /**
@@ -120,7 +127,7 @@ void sprite_editor_render()
     Message_box_render(help_message_queue);
 }
 
-void sprite_editor_init()
+int sprite_editor_init()
 {
     pen_color = 0;
 
@@ -176,7 +183,7 @@ void sprite_editor_init()
 
     command_message_queue = Message_Queue_create(1);
     help_message_queue = Message_Queue_create(1);
-    spritely_editor_initialized = 1;
+    return 1;
 }
 
 static void free_all_contexts()
@@ -196,12 +203,15 @@ static void free_all_contexts()
             index++;
         }
     }
+
+    Message_Queue_free(command_message_queue);
+    Message_Queue_free(help_message_queue);
+
 }
 
 static void free_all()
 {
     free_all_contexts();
-    free_globals();
 }
 
 

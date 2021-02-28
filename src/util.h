@@ -1,3 +1,4 @@
+#include "colors.h"
 
 /* Assumes p is a valid color_t value */
 extern void set_pixel_render_color(color_t p);

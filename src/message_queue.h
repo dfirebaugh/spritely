@@ -1,7 +1,5 @@
 //The time for regular commands (bottom left), and help (middle)
-#define COMMAND_TIME 500
-#define HELP_TIME 5000
-#define HELP_OPTIONS 12
+
 typedef struct Message_Queue *Message_Queue_t;
 
 extern Message_Queue_t

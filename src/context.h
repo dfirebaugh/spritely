@@ -1,6 +1,7 @@
 #ifndef _CONTEXT
 #define _CONTEXT
 #include "sprite_sheet.h"
+#include "colors.h"
 
 typedef struct Context *Context_t;
 typedef struct Context_config {
@@ -31,7 +32,7 @@ extern void Context_render(Context_t ctx);
 *   if it is within the rect, the function will execute a function pointer and pass through the
 *   index of that rect.
 */
-extern void Context_handle_rect_click(Context_t ctx, void  (*fn)(const unsigned int));
+extern void Context_handle_rect_click(Context_t ctx, void  (*fn)(const unsigned int), int mouse_x, int mouse_y);
 
 /* swap the pixels from one Context to another */
 extern void Context_swap_pixels(Context_t dest, Context_t source);

@@ -1,13 +1,11 @@
-PY_CFLAGS  := $(shell python3.9-config --cflags)
-PY_LDFLAGS := $(shell python3.9-config --ldflags --embed)
-CFLAGS   = -g `sdl2-config --cflags` $(PY_CFLAGS) -fPIE -Wall -Werror --pedantic
-LDFLAGS  = `sdl2-config --libs` -lSDL2 -lSDL2_ttf -lSDL2_image -lm $(PY_LDFLAGS) 
+CFLAGS   = -g `sdl2-config --cflags` -fPIE -Wall -Werror --pedantic
+LDFLAGS  = `sdl2-config --libs` -lSDL2 -lSDL2_ttf -lSDL2_image -lm
 PROG = spritely
 CC = gcc
 
 SRCS = $(addprefix src/, main.c spritely.c init.c util.c context.c file.c \
 message_queue.c globals.c colors.c sfd.c draw_tools.c sprite_sheet.c app_state.c \
-sprite_editor.c shell.c python_api.c entity.c js_api.c)
+sprite_editor.c)
 OBJS = $(SRCS:.c=.o)
 
 # top-level rule to create the program.

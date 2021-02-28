@@ -1,7 +1,9 @@
-#include "globals.h"
+#include "defs.h"
 #include "sfd.h"
 #include "util.h"
+#include "sprite_editor.h"
 #include <stdint.h>
+#include "message_queue.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
