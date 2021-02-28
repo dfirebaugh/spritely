@@ -240,6 +240,7 @@ void open_file() {
 
     if (image_width != desired_width || image_height != desired_height) {
         Message_Queue_enqueue(command_message_queue, "Given spritesheet has incorrect dimensions", 0);
+        stbi_image_free((void *)image_data);
         return;
     }
 
@@ -248,6 +249,8 @@ void open_file() {
     for (int i = 0; i < SPRITESHEET_COL_SIZE; i += 1) {
         populate_spritesheet_row_with_file_data(image_data, i);
     }
+
+    stbi_image_free((void *)image_data);
 #endif
 }
 
