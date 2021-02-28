@@ -1,4 +1,5 @@
-#include "main.h"
+#include "init.h"
+#include "spritely.h"
 
 
 int main(int argc, char *args[])

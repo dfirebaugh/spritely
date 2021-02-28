@@ -10,6 +10,9 @@
 #include <stdint.h>
 #include "globals.h"
 
+extern App_State_t spritely_state;
+
+
 extern void print_something();
 extern void render_char(char charcode, uint32_t x, uint32_t y);
 extern void add_sprite_to_entity_manager(Entity_manager_t manager, uint8_t sprite_index, uint32_t x, uint32_t y);

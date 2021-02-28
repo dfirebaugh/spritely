@@ -2,10 +2,10 @@
 #include <emscripten.h>
 #endif
 #include "globals.h"
+#include "defs.h"
 #include "app_state.h"
 #include "sprite_editor.h"
-
-App_State_t spritely_state;
+#include "js_api.h"
 
 void process_inputs(App_State_t spritely_state)
 {
@@ -18,6 +18,9 @@ void process_inputs(App_State_t spritely_state)
     {
     case SPRITE_EDITOR:
       sprite_editor_inputs(event);
+      break;
+    case GAME:
+      game_inputs(event);
       break;
     default:
       switch (event.type)

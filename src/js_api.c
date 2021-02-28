@@ -1,10 +1,22 @@
 #include "globals.h"
 #include "colors.h"
+#include "entity.h"
+#include "draw_tools.h"
+#include "app_state.h"
+
+App_State_t spritely_state;
+
+Entity_manager_t spritely_entities;
+
+void init_js_api()
+{
+    spritely_entities = Entity_manager_make();
+}
 
 void render_char(char charcode, uint32_t x, uint32_t y)
 {
     // Sprite_sheet_render_sprite(main_font_sprite_sheet, charcode, x, y);
-    Entity_manager_new_entity(spritely_entities, main_font_sprite_sheet, charcode, x, y);
+    // Entity_manager_new_entity(spritely_entities, main_font_sprite_sheet, charcode, x, y);
 }
 
 void print_something()
@@ -26,7 +38,7 @@ Entity_manager_t new_entity_manager()
 
 void add_sprite_to_entity_manager(Entity_manager_t manager, uint8_t sprite_index, uint32_t x, uint32_t y)
 {
-  Entity_manager_new_entity(spritely_entities, main_font_sprite_sheet, sprite_index, x, y);
+//   Entity_manager_new_entity(spritely_entities, main_font_sprite_sheet, sprite_index, x, y);
 }
 
 void clear()

@@ -4,7 +4,7 @@ PROG = spritely
 CC = gcc
 
 SRCS = $(addprefix src/, main.c spritely.c init.c util.c context.c file.c \
-message_queue.c globals.c colors.c sfd.c draw_tools.c sprite_sheet.c app_state.c \
+message_queue.c globals.c colors.c sfd.c draw_tools.c js_api.c entity.c sprite_sheet.c app_state.c \
 sprite_editor.c)
 OBJS = $(SRCS:.c=.o)
 
@@ -27,7 +27,7 @@ web:
 	-s ALLOW_MEMORY_GROWTH=1 \
 	-s SDL2_IMAGE_FORMATS='["png"]' -s USE_SDL_IMAGE=2 --use-preload-plugins --preload-file assets --preload-file fonts \
 	-s ERROR_ON_UNDEFINED_SYMBOLS=0 -s LLD_REPORT_UNDEFINED \
-	-s EXPORTED_FUNCTIONS='["_main"]' \
+	-s EXPORTED_FUNCTIONS='["_print_something", "_is_btn_pressed", "_render_rect", "_render_rect_fill", "_set_render_color", "_render_char", "_change_state", "_new_entity_manager", "_Entity_free", "_add_sprite_to_entity_manager", "_clear", "_register_draw_fn", "_register_update_fn", "_main"]' \
 	-s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' \
 	-s RESERVED_FUNCTION_POINTERS=10 \
 	-s "EXTRA_EXPORTED_RUNTIME_METHODS=['addFunction']" \

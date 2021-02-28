@@ -1,3 +1,8 @@
+#include <stdint.h>
+#include <stdlib.h>
+#include "sprite_sheet.h"
+
+typedef struct Entity_manager *Entity_manager_t;
 
 typedef struct coordinates
 {
@@ -10,8 +15,8 @@ struct Entity
     Sprite_sheet_t sprite_sheet;
     uint8_t sprite_index;
     coordinates_t coordinates;
-    bool is_visible;
-    uint position;
+    uint8_t is_visible;
+    uint8_t position;
     struct Entity *previous;
     struct Entity *next;
 };
@@ -59,7 +64,7 @@ void Entity_render(Entity_manager_t manager)
     }
 }
 
-void Entity_set_position(Entity_manager_t manager, uint8_t x, uint8_t y, uint position)
+void Entity_set_position(Entity_manager_t manager, uint8_t x, uint8_t y, uint8_t position)
 {
 #if 0
     entity->position.x = x;
