@@ -39,6 +39,10 @@ static void render(App_State_t spritely_state)
   case SPRITE_EDITOR:
     sprite_editor_render();
     break;
+  case GAME:
+    if (js_draw != NULL)
+      (*js_draw)();
+    break;
   default:
     break;
   }
@@ -59,6 +63,10 @@ void main_loop()
     if (!spritely_editor_initialized)
       spritely_editor_initialized = sprite_editor_init();
     break;
+  case GAME:
+    if (js_update != NULL)
+      (*js_update)();
+    break;
   default:
     break;
   }
@@ -70,7 +78,6 @@ void emscripten_loop(void *arg)
 {
   main_loop();
 }
-
 
 void spritely_run()
 {
