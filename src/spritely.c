@@ -86,7 +86,6 @@ void spritely_run()
   App_State_set_state(spritely_state, SPRITE_EDITOR);
 
 #ifdef __EMSCRIPTEN__
-  App_State_set_state(spritely_state, SPRITE_EDITOR);
   emscripten_set_main_loop_arg(emscripten_loop, NULL, -1, 1);
 #else
   while (1)

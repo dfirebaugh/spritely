@@ -8,6 +8,7 @@
 #define _JS_API
 #include "entity.h"
 #include <stdint.h>
+#include "globals.h"
 
 extern void print_something();
 extern void render_char(char charcode, uint32_t x, uint32_t y);
