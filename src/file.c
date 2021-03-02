@@ -124,6 +124,7 @@ static void save_sprites(
 
             if (write_code == 0) {
                 Message_Queue_enqueue(command_message_queue, "Error outputting sprites", 0);
+                free(filename_buf);// Clean up
                 return;// Do not attempt to output any more images
             }
 
