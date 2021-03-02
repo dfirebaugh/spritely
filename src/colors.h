@@ -28,8 +28,9 @@ typedef enum color {
 } color_t;
 
 // A one-dimensional array holding RGBA components for all color_t values
-// e.g. color_components[color_t value] == Red component of that color
-//  immediately followed by green, blue, and alpha component values
+// e.g. color_values[color_t value * NUM_COLOR_COMPONENTS] is the red
+//  component of that color immediately followed by green, blue, and
+//  alpha component values
 extern uint8_t color_values[COLOR_VALUES_SIZE];
 
 #endif
