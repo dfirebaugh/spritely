@@ -7,14 +7,16 @@ static void toolbar_render(Context_t ctx)
 {
     uint8_t i;
 
-    Sprite_sheet_t icon_sprite_sheet = Sprite_sheet_make("assets/icons/icons.png");
+    static Sprite_sheet_t icon_sprite_sheet = NULL;
+
+    if (!icon_sprite_sheet)
+        icon_sprite_sheet = Sprite_sheet_make("assets/icons/icons.png");
 
 
     for (i = 0; i < TOOLBAR_ROW_SIZE; i++)
     {
         Context_render_sprite_in_context_scale(toolbar_ctx, icon_sprite_sheet, i, i, 6);
     }
-    Sprite_sheet_free(icon_sprite_sheet);
 }
 
 /**
