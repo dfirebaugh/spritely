@@ -37,6 +37,18 @@ void process_inputs(App_State_t spritely_state)
 
 static void render(App_State_t spritely_state)
 {
+  static Uint32 time_to_begin_render = 0;
+  static Uint32 ticks;
+
+  /* Limit rendering to 60Hz to save CPU and laptop battery life. */
+  ticks = SDL_GetTicks();
+  if (ticks < time_to_begin_render) {
+    Uint32 delay_time = time_to_begin_render - ticks;
+    if (delay_time > 16) /* in case of wrap-around, max delay is 16ms */
+      delay_time = 16;
+    SDL_Delay(delay_time);
+  }
+
   switch (App_State_get_state(spritely_state))
   {
   case SPRITE_EDITOR:
@@ -51,6 +63,8 @@ static void render(App_State_t spritely_state)
   }
 
   SDL_RenderPresent(renderer);
+  ticks = SDL_GetTicks();
+  time_to_begin_render = ticks + 16; /* 16.6666ms is 60Hz */
 }
 
 void main_loop()
