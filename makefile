@@ -17,10 +17,10 @@ $(PROG): $(OBJS)
 
 # cleaning everything that can be automatically recreated with "make"
 clean:
-	rm $(PROG) $(OBJS)
+	rm -f $(PROG) $(OBJS)
 
 clean-web:
-	rm web/index.js web/index.wasm
+	rm -f web/index.js web/index.wasm
 
 web:
 	emcc $(SRCS) -s WASM=1 -s USE_SDL=2 -s USE_SDL_TTF=2 \
