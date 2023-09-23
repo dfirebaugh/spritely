@@ -1,30 +1,33 @@
 /**
  * JS_API
  * Functions that will be exposed to javascript
- * 
+ *
  */
 
 #ifndef _JS_API
 #define _JS_API
 #include "entity.h"
-#include <stdint.h>
 #include "globals.h"
+#include <stdint.h>
 
 extern App_State_t spritely_state;
 
-
-extern void print_something();
+extern void print_something(void);
 extern void render_char(char charcode, uint32_t x, uint32_t y);
-extern void add_sprite_to_entity_manager(Entity_manager_t manager, uint8_t sprite_index, uint32_t x, uint32_t y);
+extern void add_sprite_to_entity_manager(Entity_manager_t manager,
+                                         uint8_t sprite_index, uint32_t x,
+                                         uint32_t y);
 extern void change_state(uint8_t new_state);
-extern Entity_manager_t new_entity_manager();
-extern void render_rect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t color);
-extern void render_rect_fill(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t color);
+extern Entity_manager_t new_entity_manager(void);
+extern void render_rect(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
+                        uint8_t color);
+extern void render_rect_fill(uint16_t x, uint16_t y, uint16_t width,
+                             uint16_t height, uint8_t color);
 extern void set_render_color(uint8_t color);
 
 extern void register_draw_fn(void (*f)(void));
 extern void register_update_fn(void (*f)(void));
-extern void clear();
+extern void clear(void);
 
 extern bool is_btn_pressed(uint8_t btn);
 extern void game_inputs(SDL_Event event);

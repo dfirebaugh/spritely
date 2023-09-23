@@ -5,3 +5,8 @@
 spritely
 
 _spritesheet.txt
+
+zig-cache
+zig-out
+obj
+.cache

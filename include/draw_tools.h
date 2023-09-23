@@ -2,12 +2,11 @@
 #define _DRAWTOOLS
 #include "context.h"
 #include "message_queue.h"
-typedef struct mouse
-{
-    int x;
-    int y;
-    int canvas_x;
-    int canvas_y;
+typedef struct mouse {
+  int x;
+  int y;
+  int canvas_x;
+  int canvas_y;
 } mouse_t;
 
 extern mouse_t mouse;
@@ -31,21 +30,21 @@ extern unsigned int pen_color;
 extern unsigned int lctrl;
 extern unsigned int lshift;
 
-extern void draw_tool_handle_open_file();
-extern void draw_tool_handle_undo();
-extern void draw_tool_handle_redo();
-extern void draw_tool_activate_fill();
-extern void draw_tool_activate_pen();
-extern void decrement_row_sprite_selector();
-extern void increment_row_sprite_selector();
-extern void decrement_sprite_selector();
-extern void increment_sprite_selector();
-extern void copy_sprite();
-extern void paste_sprite();
-extern void right_clicks();
-extern void left_clicks();
-extern void left_drags();
-extern void show_help();
+extern void draw_tool_handle_open_file(void);
+extern void draw_tool_handle_undo(void);
+extern void draw_tool_handle_redo(void);
+extern void draw_tool_activate_fill(void);
+extern void draw_tool_activate_pen(void);
+extern void decrement_row_sprite_selector(void);
+extern void increment_row_sprite_selector(void);
+extern void decrement_sprite_selector(void);
+extern void increment_sprite_selector(void);
+extern void copy_sprite(void);
+extern void paste_sprite(void);
+extern void right_clicks(void);
+extern void left_clicks(void);
+extern void left_drags(void);
+extern void show_help(void);
 extern void tool_sprite_selection(const unsigned int rect_index);
 
 #endif
