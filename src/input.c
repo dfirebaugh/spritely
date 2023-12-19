@@ -1,0 +1,123 @@
+
+#include <SDL2/SDL.h>
+#include <stdbool.h>
+
+#include "apprt.h"
+#include "input.h"
+#include "state.h"
+
+typedef struct mouse {
+  int x;
+  int y;
+  int canvas_x;
+  int canvas_y;
+} mouse_t;
+
+struct Input {
+  mouse_t mouse;
+  bool mousedown;
+  bool ctrl;
+  bool shift;
+};
+
+bool mousedown;
+mouse_t mouse;
+
+bool input_is_mouse_down(input i) { return mousedown; }
+
+void input_on_mouse_button_down(app_runtime a, unsigned char button) {
+  mousedown = true;
+
+  switch (button) {
+  case SDL_BUTTON_LEFT: {
+    on_mouse_down_left(a, mouse.x, mouse.y);
+    return;
+  }
+  case SDL_BUTTON_RIGHT:
+    on_mouse_down_right(a, mouse.x, mouse.y);
+    return;
+  case SDL_BUTTON_X1:
+    return;
+  default:
+    return;
+  }
+  return;
+}
+
+void input_on_mouse_button_up(app_runtime a, unsigned char button) {
+  mousedown = false;
+
+  switch (button) {
+  case SDL_BUTTON_LEFT:
+    on_mouse_up_left(a, mouse.x, mouse.y);
+    return;
+  case SDL_BUTTON_RIGHT:
+    on_mouse_up_right(a, mouse.x, mouse.y);
+    return;
+  case SDL_BUTTON_X1:
+    return;
+  default:
+    return;
+  }
+  if (mousedown)
+    mousedown = false;
+}
+
+void input_on_mouse_motion(app_runtime a, int x, int y) {
+  mouse.x = x;
+  mouse.y = y;
+  on_mouse_move(a, mouse.x, mouse.y);
+}
+
+void input_on_key_down(app_runtime a, int key_code) {
+  switch (key_code) {
+  case SDLK_ESCAPE:
+    state_set(SHOULD_EXIT);
+    return;
+  case SDLK_s:
+    return;
+  case SDLK_o:
+    return;
+  case SDLK_F1:
+    return;
+  case SDLK_LCTRL:
+    return;
+  case SDLK_LSHIFT:
+    return;
+  case SDLK_c:
+    return;
+  case SDLK_v:
+    return;
+  case SDLK_y:
+    return;
+  case SDLK_z:
+  case SDLK_f:
+    return;
+  case SDLK_SPACE:
+    return;
+  case SDLK_LEFT:
+    return;
+  case SDLK_RIGHT:
+    return;
+  case SDLK_DOWN:
+    return;
+  case SDLK_UP:
+    return;
+
+  default:
+    return;
+  }
+  return;
+}
+
+void input_on_key_up(app_runtime a, int key_code) {
+  switch (key_code) {
+  case SDLK_LCTRL:
+    break;
+  case SDLK_LSHIFT:
+    break;
+
+  default:
+    break;
+  }
+}

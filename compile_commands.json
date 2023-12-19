@@ -12,11 +12,11 @@
             "-Werror",
             "--pedantic",
             "-o",
-            "obj/src/message_queue.o",
-            "src/message_queue.c"
+            "obj/src/input.o",
+            "src/input.c"
         ],
         "directory": "/home/dfire/build/spritely-editor",
-        "file": "src/message_queue.c"
+        "file": "src/input.c"
     },
     {
         "arguments": [
@@ -31,182 +31,11 @@
             "-Werror",
             "--pedantic",
             "-o",
-            "obj/src/app_state.o",
-            "src/app_state.c"
+            "obj/src/color.o",
+            "src/color.c"
         ],
         "directory": "/home/dfire/build/spritely-editor",
-        "file": "src/app_state.c"
-    },
-    {
-        "arguments": [
-            "gcc",
-            "-c",
-            "-g",
-            "-I/usr/include/SDL2",
-            "-D_REENTRANT",
-            "-I./include",
-            "-fPIE",
-            "-Wall",
-            "-Werror",
-            "--pedantic",
-            "-o",
-            "obj/src/sprite_editor.o",
-            "src/sprite_editor.c"
-        ],
-        "directory": "/home/dfire/build/spritely-editor",
-        "file": "src/sprite_editor.c"
-    },
-    {
-        "arguments": [
-            "gcc",
-            "-c",
-            "-g",
-            "-I/usr/include/SDL2",
-            "-D_REENTRANT",
-            "-I./include",
-            "-fPIE",
-            "-Wall",
-            "-Werror",
-            "--pedantic",
-            "-o",
-            "obj/src/globals.o",
-            "src/globals.c"
-        ],
-        "directory": "/home/dfire/build/spritely-editor",
-        "file": "src/globals.c"
-    },
-    {
-        "arguments": [
-            "gcc",
-            "-c",
-            "-g",
-            "-I/usr/include/SDL2",
-            "-D_REENTRANT",
-            "-I./include",
-            "-fPIE",
-            "-Wall",
-            "-Werror",
-            "--pedantic",
-            "-o",
-            "obj/src/colors.o",
-            "src/colors.c"
-        ],
-        "directory": "/home/dfire/build/spritely-editor",
-        "file": "src/colors.c"
-    },
-    {
-        "arguments": [
-            "gcc",
-            "-c",
-            "-g",
-            "-I/usr/include/SDL2",
-            "-D_REENTRANT",
-            "-I./include",
-            "-fPIE",
-            "-Wall",
-            "-Werror",
-            "--pedantic",
-            "-o",
-            "obj/src/draw_tools.o",
-            "src/draw_tools.c"
-        ],
-        "directory": "/home/dfire/build/spritely-editor",
-        "file": "src/draw_tools.c"
-    },
-    {
-        "arguments": [
-            "gcc",
-            "-c",
-            "-g",
-            "-I/usr/include/SDL2",
-            "-D_REENTRANT",
-            "-I./include",
-            "-fPIE",
-            "-Wall",
-            "-Werror",
-            "--pedantic",
-            "-o",
-            "obj/src/sfd.o",
-            "src/sfd.c"
-        ],
-        "directory": "/home/dfire/build/spritely-editor",
-        "file": "src/sfd.c"
-    },
-    {
-        "arguments": [
-            "gcc",
-            "-c",
-            "-g",
-            "-I/usr/include/SDL2",
-            "-D_REENTRANT",
-            "-I./include",
-            "-fPIE",
-            "-Wall",
-            "-Werror",
-            "--pedantic",
-            "-o",
-            "obj/src/sprite_sheet.o",
-            "src/sprite_sheet.c"
-        ],
-        "directory": "/home/dfire/build/spritely-editor",
-        "file": "src/sprite_sheet.c"
-    },
-    {
-        "arguments": [
-            "gcc",
-            "-c",
-            "-g",
-            "-I/usr/include/SDL2",
-            "-D_REENTRANT",
-            "-I./include",
-            "-fPIE",
-            "-Wall",
-            "-Werror",
-            "--pedantic",
-            "-o",
-            "obj/src/js_api.o",
-            "src/js_api.c"
-        ],
-        "directory": "/home/dfire/build/spritely-editor",
-        "file": "src/js_api.c"
-    },
-    {
-        "arguments": [
-            "gcc",
-            "-c",
-            "-g",
-            "-I/usr/include/SDL2",
-            "-D_REENTRANT",
-            "-I./include",
-            "-fPIE",
-            "-Wall",
-            "-Werror",
-            "--pedantic",
-            "-o",
-            "obj/src/file.o",
-            "src/file.c"
-        ],
-        "directory": "/home/dfire/build/spritely-editor",
-        "file": "src/file.c"
-    },
-    {
-        "arguments": [
-            "gcc",
-            "-c",
-            "-g",
-            "-I/usr/include/SDL2",
-            "-D_REENTRANT",
-            "-I./include",
-            "-fPIE",
-            "-Wall",
-            "-Werror",
-            "--pedantic",
-            "-o",
-            "obj/src/context.o",
-            "src/context.c"
-        ],
-        "directory": "/home/dfire/build/spritely-editor",
-        "file": "src/context.c"
+        "file": "src/color.c"
     },
     {
         "arguments": [
@@ -240,11 +69,11 @@
             "-Werror",
             "--pedantic",
             "-o",
-            "obj/src/util.o",
-            "src/util.c"
+            "obj/src/graphics.o",
+            "src/graphics.c"
         ],
         "directory": "/home/dfire/build/spritely-editor",
-        "file": "src/util.c"
+        "file": "src/graphics.c"
     },
     {
         "arguments": [
@@ -259,11 +88,11 @@
             "-Werror",
             "--pedantic",
             "-o",
-            "obj/src/spritely.o",
-            "src/spritely.c"
+            "obj/src/grid.o",
+            "src/grid.c"
         ],
         "directory": "/home/dfire/build/spritely-editor",
-        "file": "src/spritely.c"
+        "file": "src/grid.c"
     },
     {
         "arguments": [
@@ -278,11 +107,11 @@
             "-Werror",
             "--pedantic",
             "-o",
-            "obj/src/entity.o",
-            "src/entity.c"
+            "obj/src/app.o",
+            "src/app.c"
         ],
         "directory": "/home/dfire/build/spritely-editor",
-        "file": "src/entity.c"
+        "file": "src/app.c"
     },
     {
         "arguments": [
@@ -297,10 +126,86 @@
             "-Werror",
             "--pedantic",
             "-o",
-            "obj/src/init.o",
-            "src/init.c"
+            "obj/src/palette.o",
+            "src/palette.c"
         ],
         "directory": "/home/dfire/build/spritely-editor",
-        "file": "src/init.c"
+        "file": "src/palette.c"
+    },
+    {
+        "arguments": [
+            "gcc",
+            "-c",
+            "-g",
+            "-I/usr/include/SDL2",
+            "-D_REENTRANT",
+            "-I./include",
+            "-fPIE",
+            "-Wall",
+            "-Werror",
+            "--pedantic",
+            "-o",
+            "obj/src/pixel_buffer.o",
+            "src/pixel_buffer.c"
+        ],
+        "directory": "/home/dfire/build/spritely-editor",
+        "file": "src/pixel_buffer.c"
+    },
+    {
+        "arguments": [
+            "gcc",
+            "-c",
+            "-g",
+            "-I/usr/include/SDL2",
+            "-D_REENTRANT",
+            "-I./include",
+            "-fPIE",
+            "-Wall",
+            "-Werror",
+            "--pedantic",
+            "-o",
+            "obj/src/event.o",
+            "src/event.c"
+        ],
+        "directory": "/home/dfire/build/spritely-editor",
+        "file": "src/event.c"
+    },
+    {
+        "arguments": [
+            "gcc",
+            "-c",
+            "-g",
+            "-I/usr/include/SDL2",
+            "-D_REENTRANT",
+            "-I./include",
+            "-fPIE",
+            "-Wall",
+            "-Werror",
+            "--pedantic",
+            "-o",
+            "obj/src/state.o",
+            "src/state.c"
+        ],
+        "directory": "/home/dfire/build/spritely-editor",
+        "file": "src/state.c"
+    },
+    {
+        "arguments": [
+            "gcc",
+            "-c",
+            "-g",
+            "-I/usr/include/SDL2",
+            "-D_REENTRANT",
+            "-I./include",
+            "-fPIE",
+            "-Wall",
+            "-Werror",
+            "--pedantic",
+            "-o",
+            "obj/src/sprite_editor.o",
+            "src/sprite_editor.c"
+        ],
+        "directory": "/home/dfire/build/spritely-editor",
+        "file": "src/sprite_editor.c"
     }
 ]
