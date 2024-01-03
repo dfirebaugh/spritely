@@ -14,10 +14,6 @@ typedef struct {
   int width, height;
 } *pixel_buffer;
 
-// color pixel_buffer_get_pixel(pixel_buffer pb, const unsigned int
-// pixel_index); void pixel_buffer_set_pixel(pixel_buffer pb, const unsigned
-// int pixel_index, color color);
-
 pixel_buffer pixel_buffer_create(int width, int height);
 extern void pixel_buffer_destroy(pixel_buffer pb);
 extern void pixel_buffer_set_pixel(pixel_buffer pb, int x, int y, RGBA c);
@@ -28,8 +24,7 @@ extern Rect *pixel_buffer_to_rects(pixel_buffer pb, int *num_rects,
                                    int scale_factor, int offset_x,
                                    int offset_y);
 extern void pixel_buffer_fill(pixel_buffer pb, RGBA c);
-extern void pixel_buffer_copy(pixel_buffer src, pixel_buffer dest,
-                              int sprite_index);
+extern void pixel_buffer_copy(pixel_buffer src, pixel_buffer dest);
 extern int pixel_buffer_get_height(pixel_buffer pb);
 extern int pixel_buffer_get_width(pixel_buffer pb);
 extern void pixel_buffer_render(pixel_buffer pb, graphics gfx, int scale_factor,

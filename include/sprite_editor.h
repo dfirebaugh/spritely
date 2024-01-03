@@ -7,7 +7,7 @@
 #include "input.h"
 #include "sprite_picker.h"
 
-struct editor {
+typedef struct {
   graphics graphics;
   input input;
   canvas color_picker;
@@ -16,9 +16,7 @@ struct editor {
   grid_context toolbar;
   color current_color;
   int selected_sprite;
-};
-
-typedef struct editor *sprite_editor;
+} *sprite_editor;
 
 extern sprite_editor sprite_editor_create(graphics g);
 extern void sprite_editor_destroy(sprite_editor e);

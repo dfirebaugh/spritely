@@ -37,9 +37,15 @@ void pixel_buffer_destroy(pixel_buffer pb) {
 }
 
 void pixel_buffer_set_pixel(pixel_buffer pb, int x, int y, RGBA c) {
-  if (x >= 0 && x < pb->width && y >= 0 && y < pb->height) {
-    pb->img[y][x] = c;
+  if (x < 0 || x >= pb->width || y < 0 || y >= pb->height) {
+    return;
   }
+
+  pb->img[y][x] = c;
+}
+
+static inline void set_pixel_inline(pixel_buffer pb, int x, int y, RGBA c) {
+  pb->img[y][x] = c;
 }
 
 RGBA pixel_buffer_get_rgba(pixel_buffer pb, int x, int y) {
@@ -78,12 +84,12 @@ int pixel_buffer_get_height(pixel_buffer pb) {
 void pixel_buffer_fill(pixel_buffer pb, RGBA c) {
   for (int y = 0; y < pb->height; y++) {
     for (int x = 0; x < pb->width; x++) {
-      pixel_buffer_set_pixel(pb, x, y, c);
+      set_pixel_inline(pb, x, y, c);
     }
   }
 }
 
-void pixel_buffer_copy(pixel_buffer src, pixel_buffer dest, int sprite_index) {
+void pixel_buffer_copy(pixel_buffer src, pixel_buffer dest) {
   for (int y = 0; y < src->height; y++) {
     for (int x = 0; x < src->width; x++) {
       RGBA color = pixel_buffer_get_rgba(src, x, y);

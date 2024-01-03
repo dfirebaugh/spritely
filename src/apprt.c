@@ -1,8 +1,8 @@
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "apprt.h"
-#include "event.h"
 #include "graphics.h"
 #include "input.h"
 #include "sprite_editor.h"
@@ -37,9 +37,18 @@ app_runtime app_runtime_init(void) {
 }
 
 void app_runtime_destroy_and_exit(app_runtime a) {
-  graphics_destroy(a->graphics);
-  sprite_editor_destroy(a->editor);
+  if (a->graphics != NULL) {
+    graphics_destroy(a->graphics);
+    a->graphics = NULL;
+  }
+  if (a->editor != NULL) {
+    sprite_editor_destroy(a->editor);
+    a->editor = NULL;
+  }
+  free(a->input);
   free(a);
+
+  printf("spritely has exited!\n");
   exit(0);
 }
 
@@ -48,13 +57,13 @@ bool app_runtime_should_exit(app_runtime a) {
 }
 
 void app_runtime_run(app_runtime a) {
-  if (do_event_polling(a)) {
+  if (do_polling(a)) {
     state_set(SHOULD_EXIT);
-    return;
   }
 
   switch (state_get()) {
   case SHOULD_EXIT:
+    app_runtime_destroy_and_exit(a);
     break;
   case RUNNING:
     break;

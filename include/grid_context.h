@@ -58,5 +58,9 @@ extern void grid_context_on_mouse_down(grid_context w, pixel_buffer pb,
                                        float click_x, float click_y,
                                        color *current_color,
                                        mouse_down_callback callback);
-
+extern coordinate grid_context_screen_to_grid_coordinate(grid_context w,
+                                                         int screen_x,
+                                                         int screen_y);
+extern bool grid_context_is_within_grid_context(grid_context w, int screen_x,
+                                                int screen_y);
 #endif // grid_context_H

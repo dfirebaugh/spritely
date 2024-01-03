@@ -13,4 +13,6 @@ extern void input_on_mouse_button_up(app_runtime a, unsigned char button);
 extern void input_on_key_down(app_runtime a, int key_code);
 extern void input_on_key_up(app_runtime a, int key_code);
 
+extern bool do_polling(app_runtime a);
+
 #endif // SPRITELY_INPUT_H

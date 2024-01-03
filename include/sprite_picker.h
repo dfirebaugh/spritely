@@ -1,16 +1,21 @@
 #ifndef SPRITE_PICKER_H
 #define SPRITE_PICKER_H
 
+#include "canvas.h"
 #include "grid_context.h"
 #include "pixel_buffer.h"
 
 typedef struct {
   graphics graphics;
-  pixel_buffer *pb;
   grid_context grid;
-  coordinate selected;
+  // coordinate selected;
   offset offset;
+  int col_count;
+  int row_count;
+  int scale_factor;
   int selected_sprite;
+  pixel_buffer *tiles;
+  int tile_count;
 } *sprite_picker;
 
 extern sprite_picker sprite_picker_create(graphics gfx, int col_count,

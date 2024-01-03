@@ -6,6 +6,7 @@
 #include "graphics.h"
 #include "grid_context.h"
 #include "pixel_buffer.h"
+#include "sprite_editor.h"
 
 coordinate grid_to_screen_coordinate(grid_context w, coordinate local_coord);
 
@@ -23,6 +24,7 @@ grid_context grid_context_create(graphics gfx, int col_count, int row_count,
   w->offset_x = offset_x;
   w->offset_y = offset_y;
   w->has_indicator = false;
+  w->selected = (coordinate){.x = 0, .y = 0};
 
   w->pixel_buffer = pixel_buffer_create(w->col_count, w->row_count);
   RGBA c = {0, 0, 0, 255};
@@ -96,4 +98,25 @@ void grid_context_on_mouse_down(grid_context w, pixel_buffer pb, float click_x,
   coordinate local_coord = grid_to_local_coordinate(w, coord);
   w->selected = local_coord;
   callback(pb, local_coord, current_color);
+}
+
+coordinate grid_context_screen_to_grid_coordinate(grid_context w, int screen_x,
+                                                  int screen_y) {
+  coordinate grid_coord;
+  int adjusted_x = screen_x - w->offset_x;
+  int adjusted_y = screen_y - w->offset_y;
+
+  grid_coord.x = adjusted_x / w->scale_factor;
+  grid_coord.y = adjusted_y / w->scale_factor;
+
+  return grid_coord;
+}
+
+bool grid_context_is_within_grid_context(grid_context w, int screen_x,
+                                         int screen_y) {
+  coordinate local_coord =
+      grid_context_screen_to_grid_coordinate(w, screen_x, screen_y);
+
+  return local_coord.x >= 0 && local_coord.x < w->col_count &&
+         local_coord.y >= 0 && local_coord.y < w->row_count;
 }

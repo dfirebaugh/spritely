@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "apprt.h"
 #include "graphics.h"
 #include "grid_context.h"
 #include "pixel_buffer.h"
-
 #include "sprite_picker.h"
 
 sprite_picker sprite_picker_create(graphics gfx, int col_count, int row_count,
@@ -15,58 +15,80 @@ sprite_picker sprite_picker_create(graphics gfx, int col_count, int row_count,
   if (!sp)
     return NULL;
 
-  // Initialization
   sp->graphics = gfx;
   sp->selected_sprite = 0;
+  sp->offset.y = offset_y;
+  sp->offset.x = offset_x;
+  sp->scale_factor = scale_factor;
   sp->grid = grid_context_create(gfx, col_count, row_count, scale_factor,
                                  offset_x, offset_y);
   grid_enable_indicator(sp->grid);
 
-  int nelements = col_count * row_count;
+  sp->col_count = col_count;
+  sp->row_count = row_count;
 
-  sp->pb = (pixel_buffer *)malloc(nelements * sizeof(pixel_buffer));
-  for (int i = 0; i < nelements; i++) {
-    pixel_buffer pb = pixel_buffer_create(sprite_col_count, sprite_row_count);
+#if 1
+  sp->tile_count = col_count * row_count;
+  sp->tiles = calloc(sp->tile_count, sp->tile_count * sizeof(canvas));
+  for (int i = 0; i < sp->tile_count; i++) {
+    sp->tiles[i] = pixel_buffer_create(sprite_row_count, sprite_col_count);
     RGBA rgba = {0, 0, 0, 255};
-    pixel_buffer_fill(pb, rgba);
-    sp->pb[i] = pb;
+    pixel_buffer_fill(sp->tiles[i], rgba);
   }
+#endif
 
   return sp;
 }
 
 void sprite_picker_destroy(sprite_picker sp) {
-  int nelements = sp->grid->col_count * sp->grid->row_count;
-  for (int i = 0; i < nelements; i++) {
-    pixel_buffer_destroy(sp->pb[i]);
+  if (sp->grid != NULL) {
+    grid_context_destroy(sp->grid);
+    sp->grid = NULL;
   }
-  grid_context_destroy(sp->grid);
-  free(sp->pb);
-  free(sp);
+
+#if 1
+  if (sp->tiles != NULL) {
+    for (int i = 0; i < sp->tile_count; i++) {
+      pixel_buffer_destroy(sp->tiles[i]);
+    }
+    free(sp->tiles);
+    sp->tiles = NULL;
+  }
+#endif
+
+  // if (sp != NULL) {
+  //   free(sp);
+  //   sp = NULL;
+  // }
 }
 
 void sprite_picker_render(sprite_picker sp) {
-  if (!sp)
+  if (!sp || !sp->tiles)
     return;
+#if 1
 
-  if (!sp->pb)
-    return;
+  int scale_factor = sp->scale_factor / sp->col_count;
+  int sprite_col_count = 8;
+  int sprite_row_count = 8;
+  int sprite_width = sprite_col_count;
+  int sprite_height = sprite_row_count;
 
-  int nelements = sp->grid->col_count * sp->grid->row_count;
-  for (int i = 0; i < nelements; i++) {
-    if (!sp->pb[i]) {
+  for (int i = 0; i < sp->tile_count; i++) {
+    if (!sp->tiles[i]) {
       continue;
     }
 
-    pixel_buffer pb = sp->pb[i];
+    int col = i % sp->col_count * (scale_factor * sprite_width);
+    int row = i / sp->col_count * (scale_factor * sprite_height);
+    int x = col + sp->offset.x;
+    int y = row + sp->offset.y;
 
-    int row = i / sp->grid->col_count;
-    int col = i % sp->grid->col_count;
-    int render_x = col * sp->grid->scale_factor + sp->grid->offset_x;
-    int render_y = row * sp->grid->scale_factor + sp->grid->offset_y;
-
-    pixel_buffer_render(pb, sp->graphics, sp->grid->scale_factor, render_x,
-                        render_y);
+    pixel_buffer_render(sp->tiles[i], sp->graphics, scale_factor, x, y);
   }
+#endif
+
+  if (!sp->grid)
+    return;
+
   grid_context_render(sp->grid);
 }
