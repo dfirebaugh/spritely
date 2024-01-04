@@ -5,14 +5,14 @@
 #include "graphics.h"
 #include "grid_context.h"
 #include "input.h"
-#include "sprite_picker.h"
+#include "sprite_sheet.h"
 
 typedef struct {
   graphics graphics;
   input input;
   canvas color_picker;
   canvas canvas;
-  sprite_picker sprite_picker;
+  sprite_sheet sprite_sheet;
   grid_context toolbar;
   color current_color;
   int selected_sprite;

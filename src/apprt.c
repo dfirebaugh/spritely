@@ -94,18 +94,18 @@ void on_mouse_move(app_runtime a, int x, int y) {
 }
 
 void copy_buffer_to_canvas(app_runtime a) {
-  pixel_buffer_copy(a->editor->sprite_picker
-                        ->tiles[a->editor->sprite_picker->selected_sprite],
-                    a->editor->canvas->pixel_buffer);
+  pixel_buffer_copy(
+      a->editor->sprite_sheet->tiles[a->editor->sprite_sheet->selected_sprite],
+      a->editor->canvas->pixel_buffer);
 }
 
 void copy_sprite_to_buffer(app_runtime a) {
-  sprite_picker sp = a->editor->sprite_picker;
+  sprite_sheet sp = a->editor->sprite_sheet;
   pixel_buffer_copy(sp->tiles[sp->selected_sprite], sp->copy_buffer);
 }
 
 void paste_sprite_from_buffer(app_runtime a) {
-  sprite_picker sp = a->editor->sprite_picker;
+  sprite_sheet sp = a->editor->sprite_sheet;
   pixel_buffer_copy(sp->copy_buffer, sp->tiles[sp->selected_sprite]);
   copy_buffer_to_canvas(a);
 }

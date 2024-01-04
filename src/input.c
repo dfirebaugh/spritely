@@ -6,7 +6,7 @@
 #include "SDL_keycode.h"
 #include "apprt.h"
 #include "input.h"
-#include "sprite_picker.h"
+#include "sprite_sheet.h"
 #include "state.h"
 
 typedef struct mouse {

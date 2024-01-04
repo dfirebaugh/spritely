@@ -10,3 +10,5 @@ zig-cache
 zig-out
 obj
 .cache
+
+compile_commands.json

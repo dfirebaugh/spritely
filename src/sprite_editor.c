@@ -4,11 +4,11 @@
 #include "editor_tool.h"
 #include "palette.h"
 #include "pixel_buffer.h"
-#include "sprite_picker.h"
+#include "sprite_sheet.h"
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define SPRITE_PICKER_ENABLED 1
+#define sprite_sheet_ENABLED 1
 
 #if 0
 static void init_toolbar(sprite_editor e, graphics g);
@@ -25,8 +25,8 @@ sprite_editor sprite_editor_create(graphics g) {
   e->graphics = g;
   e->canvas = canvas_create(g, row_count, row_count, scale_factor, 0, 0);
 
-#if SPRITE_PICKER_ENABLED
-  e->sprite_picker = sprite_picker_create(g, 8, 8, 3, 1, 420, 8, 8);
+#if sprite_sheet_ENABLED
+  e->sprite_sheet = sprite_sheet_create(g, 8, 8, 3, 1, 420, 8, 8);
 #endif
 
   e->color_picker = color_picker_create(g);
@@ -50,8 +50,8 @@ static void init_toolbar(sprite_editor e, graphics g) {
 #endif
 
 void sprite_editor_destroy(sprite_editor e) {
-#if SPRITE_PICKER_ENABLED
-  sprite_picker_destroy(e->sprite_picker);
+#if sprite_sheet_ENABLED
+  sprite_sheet_destroy(e->sprite_sheet);
 #endif
   if (e->canvas != NULL) {
     canvas_destroy(e->canvas);
@@ -68,8 +68,8 @@ void sprite_editor_destroy(sprite_editor e) {
 }
 
 void handle_mouse_click(sprite_editor e, int x, int y) {
-#if SPRITE_PICKER_ENABLED
-  grid_context_on_mouse_down(e->sprite_picker->grid, NULL, x, y,
+#if sprite_sheet_ENABLED
+  grid_context_on_mouse_down(e->sprite_sheet->grid, NULL, x, y,
                              &e->current_color, editor_tool_select_sprite);
 #endif
   grid_context_on_mouse_down(e->canvas->grid, e->canvas->pixel_buffer, x, y,
@@ -78,21 +78,19 @@ void handle_mouse_click(sprite_editor e, int x, int y) {
                              e->color_picker->pixel_buffer, x, y,
                              &e->current_color, editor_tool_set_current_color);
 
-  if (grid_context_is_within_grid_context(e->sprite_picker->grid, x, y)) {
+  if (grid_context_is_within_grid_context(e->sprite_sheet->grid, x, y)) {
     coordinate grid_coord =
-        grid_context_screen_to_grid_coordinate(e->sprite_picker->grid, x, y);
-    int index = grid_coord.y * e->sprite_picker->col_count + grid_coord.x;
-    e->sprite_picker->selected_sprite = index;
+        grid_context_screen_to_grid_coordinate(e->sprite_sheet->grid, x, y);
+    int index = grid_coord.y * e->sprite_sheet->col_count + grid_coord.x;
+    e->sprite_sheet->selected_sprite = index;
 
-    pixel_buffer_copy(
-        e->sprite_picker->tiles[e->sprite_picker->selected_sprite],
-        e->canvas->pixel_buffer);
+    pixel_buffer_copy(e->sprite_sheet->tiles[e->sprite_sheet->selected_sprite],
+                      e->canvas->pixel_buffer);
   }
 
   if (grid_context_is_within_grid_context(e->canvas->grid, x, y)) {
-    pixel_buffer_copy(
-        e->canvas->pixel_buffer,
-        e->sprite_picker->tiles[e->sprite_picker->selected_sprite]);
+    pixel_buffer_copy(e->canvas->pixel_buffer,
+                      e->sprite_sheet->tiles[e->sprite_sheet->selected_sprite]);
   }
 }
 
@@ -104,8 +102,8 @@ void sprite_editor_render(sprite_editor e) {
   graphics_set_draw_color(e->graphics, 74, 50, 110, 255);
   graphics_clear(e->graphics);
 
-#if SPRITE_PICKER_ENABLED
-  sprite_picker_render(e->sprite_picker);
+#if sprite_sheet_ENABLED
+  sprite_sheet_render(e->sprite_sheet);
 #endif
 
   canvas_render(e->canvas);

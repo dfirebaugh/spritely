@@ -58,5 +58,5 @@ const c_src_files = [_][]const u8{
     "src/pixel_buffer.c",
     "src/editor_tool.c",
     "src/canvas.c",
-    "src/sprite_picker.c",
+    "src/sprite_sheet.c",
 };

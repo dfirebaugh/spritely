@@ -23,7 +23,7 @@ void editor_tool_select_sprite(pixel_buffer pb, coordinate local_coord,
 #if 0
   sprite_editor e = current_editor_context;
 
-  pixel_buffer_copy(e->sprite_picker->pixel_buffer, e->canvas->pixel_buffer,
+  pixel_buffer_copy(e->sprite_sheet->pixel_buffer, e->canvas->pixel_buffer,
                     e->selected_sprite);
 #endif
 }
