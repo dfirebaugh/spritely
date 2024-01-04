@@ -10,8 +10,6 @@
 
 #define SPRITE_PICKER_ENABLED 1
 
-static sprite_editor current_editor_context = NULL;
-void handle_mouse_click(sprite_editor e, int x, int y);
 #if 0
 static void init_toolbar(sprite_editor e, graphics g);
 #endif
@@ -69,6 +67,35 @@ void sprite_editor_destroy(sprite_editor e) {
   // }
 }
 
+void handle_mouse_click(sprite_editor e, int x, int y) {
+#if SPRITE_PICKER_ENABLED
+  grid_context_on_mouse_down(e->sprite_picker->grid, NULL, x, y,
+                             &e->current_color, editor_tool_select_sprite);
+#endif
+  grid_context_on_mouse_down(e->canvas->grid, e->canvas->pixel_buffer, x, y,
+                             &e->current_color, editor_tool_draw_to_canvas);
+  grid_context_on_mouse_down(e->color_picker->grid,
+                             e->color_picker->pixel_buffer, x, y,
+                             &e->current_color, editor_tool_set_current_color);
+
+  if (grid_context_is_within_grid_context(e->sprite_picker->grid, x, y)) {
+    coordinate grid_coord =
+        grid_context_screen_to_grid_coordinate(e->sprite_picker->grid, x, y);
+    int index = grid_coord.y * e->sprite_picker->col_count + grid_coord.x;
+    e->sprite_picker->selected_sprite = index;
+
+    pixel_buffer_copy(
+        e->sprite_picker->tiles[e->sprite_picker->selected_sprite],
+        e->canvas->pixel_buffer);
+  }
+
+  if (grid_context_is_within_grid_context(e->canvas->grid, x, y)) {
+    pixel_buffer_copy(
+        e->canvas->pixel_buffer,
+        e->sprite_picker->tiles[e->sprite_picker->selected_sprite]);
+  }
+}
+
 void sprite_editor_on_mouse_up(sprite_editor e, int x, int y) {}
 
 void sprite_editor_update(void) {}
@@ -91,20 +118,15 @@ void sprite_editor_render(sprite_editor e) {
 }
 
 void sprite_editor_on_mouse_down_left(sprite_editor e, int x, int y) {
-  current_editor_context = e;
-#if SPRITE_PICKER_ENABLED
-  grid_context_on_mouse_down(e->sprite_picker->grid, NULL, x, y,
-                             &e->current_color, editor_tool_select_sprite);
-#endif
-#if 0
-  grid_context_on_mouse_down(e->canvas->grid, e->canvas->pixel_buffer, x, y,
-                             &e->current_color, editor_tool_draw_to_canvas);
-  grid_context_on_mouse_down(e->color_picker->grid,
-                             e->color_picker->pixel_buffer, x, y,
-                             &e->current_color, editor_tool_set_current_color);
-#endif
   handle_mouse_click(e, x, y);
 }
+
+void sprite_editor_on_mouse_move(sprite_editor e, int x, int y) {
+  if (!input_is_mouse_down(e->input))
+    return;
+  handle_mouse_click(e, x, y);
+}
+
 void sprite_editor_on_mouse_down_right(sprite_editor e, int x, int y) {
   grid_context_on_mouse_down(e->canvas->grid, e->canvas->pixel_buffer, x, y,
                              &e->current_color, editor_tool_set_current_color);
@@ -115,37 +137,3 @@ void sprite_editor_on_mouse_down_right(sprite_editor e, int x, int y) {
 
 void sprite_editor_on_mouse_up_left(sprite_editor e, int x, int y) {}
 void sprite_editor_on_mouse_up_right(sprite_editor e, int x, int y) {}
-
-void sprite_editor_on_mouse_move(sprite_editor e, int x, int y) {
-  if (!input_is_mouse_down(e->input))
-    return;
-#if SPRITE_PICKER_ENABLED
-  grid_context_on_mouse_down(e->sprite_picker->grid, NULL, x, y,
-                             &e->current_color, editor_tool_select_sprite);
-#endif
-  grid_context_on_mouse_down(e->canvas->grid, e->canvas->pixel_buffer, x, y,
-                             &e->current_color, editor_tool_draw_to_canvas);
-  grid_context_on_mouse_down(e->color_picker->grid,
-                             e->color_picker->pixel_buffer, x, y,
-                             &e->current_color, editor_tool_set_current_color);
-  handle_mouse_click(e, x, y);
-}
-
-void handle_mouse_click(sprite_editor e, int x, int y) {
-  if (grid_context_is_within_grid_context(e->sprite_picker->grid, x, y)) {
-    coordinate grid_coord =
-        grid_context_screen_to_grid_coordinate(e->sprite_picker->grid, x, y);
-    int index = grid_coord.y * e->sprite_picker->col_count + grid_coord.x;
-    e->sprite_picker->selected_sprite = index;
-
-    pixel_buffer_copy(
-        e->sprite_picker->tiles[e->sprite_picker->selected_sprite],
-        e->canvas->pixel_buffer);
-  }
-
-  if (grid_context_is_within_grid_context(e->canvas->grid, x, y)) {
-    pixel_buffer_copy(
-        e->canvas->pixel_buffer,
-        e->sprite_picker->tiles[e->sprite_picker->selected_sprite]);
-  }
-}
