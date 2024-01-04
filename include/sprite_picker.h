@@ -8,12 +8,12 @@
 typedef struct {
   graphics graphics;
   grid_context grid;
-  // coordinate selected;
   offset offset;
   int col_count;
   int row_count;
   int scale_factor;
   int selected_sprite;
+  pixel_buffer copy_buffer;
   pixel_buffer *tiles;
   int tile_count;
 } *sprite_picker;

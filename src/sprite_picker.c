@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "apprt.h"
 #include "graphics.h"
 #include "grid_context.h"
 #include "pixel_buffer.h"
@@ -20,12 +19,16 @@ sprite_picker sprite_picker_create(graphics gfx, int col_count, int row_count,
   sp->offset.y = offset_y;
   sp->offset.x = offset_x;
   sp->scale_factor = scale_factor;
-  sp->grid = grid_context_create(gfx, col_count, row_count, scale_factor,
-                                 offset_x, offset_y);
+  sp->grid = grid_context_create(gfx, col_count, row_count,
+                                 scale_factor * col_count, offset_x, offset_y);
   grid_enable_indicator(sp->grid);
 
   sp->col_count = col_count;
   sp->row_count = row_count;
+
+  sp->copy_buffer = pixel_buffer_create(sprite_row_count, sprite_col_count);
+  RGBA rgba = {0, 0, 0, 255};
+  pixel_buffer_fill(sp->copy_buffer, rgba);
 
 #if 1
   sp->tile_count = col_count * row_count;
@@ -67,9 +70,9 @@ void sprite_picker_render(sprite_picker sp) {
     return;
 #if 1
 
-  int scale_factor = sp->scale_factor / sp->col_count;
-  int sprite_col_count = 8;
-  int sprite_row_count = 8;
+  int scale_factor = sp->scale_factor;
+  int sprite_col_count = sp->col_count;
+  int sprite_row_count = sp->row_count;
   int sprite_width = sprite_col_count;
   int sprite_height = sprite_row_count;
 

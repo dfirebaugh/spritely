@@ -3,8 +3,10 @@
 #include <stdbool.h>
 
 #include "SDL_events.h"
+#include "SDL_keycode.h"
 #include "apprt.h"
 #include "input.h"
+#include "sprite_picker.h"
 #include "state.h"
 
 typedef struct mouse {
@@ -70,6 +72,8 @@ void input_on_mouse_motion(app_runtime a, int x, int y) {
   on_mouse_move(a, mouse.x, mouse.y);
 }
 
+bool is_left_control_down = false;
+
 void input_on_key_down(app_runtime a, int key_code) {
   switch (key_code) {
   case SDLK_ESCAPE:
@@ -82,12 +86,19 @@ void input_on_key_down(app_runtime a, int key_code) {
   case SDLK_F1:
     return;
   case SDLK_LCTRL:
+    is_left_control_down = true;
     return;
   case SDLK_LSHIFT:
     return;
   case SDLK_c:
+    if (is_left_control_down) {
+      copy_sprite_to_buffer(a);
+    }
     return;
   case SDLK_v:
+    if (is_left_control_down) {
+      paste_sprite_from_buffer(a);
+    }
     return;
   case SDLK_y:
     return;
@@ -141,9 +152,14 @@ bool do_polling(app_runtime a) {
       break;
     case SDL_KEYDOWN:
       input_on_key_down(a, event.key.keysym.sym);
-      printf("keydown %d\n", event.key.keysym.sym == SDLK_o);
+      // printf("keydown %d\n", event.key.keysym.sym == SDLK_o);
       break;
     case SDL_KEYUP:
+      switch (event.key.keysym.sym) {
+      case SDLK_LCTRL:
+        is_left_control_down = false;
+        break;
+      }
       break;
     case SDL_USEREVENT:
       break;

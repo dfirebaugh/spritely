@@ -3,6 +3,7 @@
 #ifndef APP_RUNTIME_H
 #define APP_RUNTIME_H
 
+#include "pixel_buffer.h"
 #include <stdbool.h>
 
 typedef struct app_runtime *app_runtime;
@@ -17,5 +18,8 @@ extern void on_mouse_down_left(app_runtime a, int x, int y);
 extern void on_mouse_up_right(app_runtime a, int x, int y);
 extern void on_mouse_up_left(app_runtime a, int x, int y);
 extern void on_mouse_move(app_runtime a, int x, int y);
+
+extern void copy_sprite_to_buffer(app_runtime a);
+extern void paste_sprite_from_buffer(app_runtime a);
 
 #endif // APP_RUNTIME_H

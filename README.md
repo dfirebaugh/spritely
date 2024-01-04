@@ -12,20 +12,25 @@ A limited demo can be found here: https://dfirebaugh.github.io/spritely-editor/
 ## Build Requirements
 
 ```
-$ apt-get install libsdl2-ttf-dev libsdl2-image-dev python3.9-dev
+$ apt-get install libsdl2-ttf-dev libsdl2-image-dev python3.9-dev libpng-dev
 ```
 
 
 ## Build with zig
 
 You can build this project with [zig](https://ziglang.org/download/).
-(i'm using zig version 0.12.0)
+(i'm using zig version 0.11.0)
 
 ```bash
 zig build
 ```
 
 This will build a binary at `./zig-out/bin/spritely`
+
+You can also use the following command to run the app.
+```bash
+zig build run
+```
 
 ## Webassembly build
 

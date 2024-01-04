@@ -11,7 +11,7 @@
 #define SPRITE_PICKER_ENABLED 1
 
 static sprite_editor current_editor_context = NULL;
-
+void handle_mouse_click(sprite_editor e, int x, int y);
 #if 0
 static void init_toolbar(sprite_editor e, graphics g);
 #endif
@@ -28,7 +28,7 @@ sprite_editor sprite_editor_create(graphics g) {
   e->canvas = canvas_create(g, row_count, row_count, scale_factor, 0, 0);
 
 #if SPRITE_PICKER_ENABLED
-  e->sprite_picker = sprite_picker_create(g, 8, 8, 16, 1, 380, 8, 8);
+  e->sprite_picker = sprite_picker_create(g, 8, 8, 3, 1, 420, 8, 8);
 #endif
 
   e->color_picker = color_picker_create(g);
@@ -101,9 +101,9 @@ void sprite_editor_on_mouse_down_left(sprite_editor e, int x, int y) {
                              &e->current_color, editor_tool_draw_to_canvas);
   grid_context_on_mouse_down(e->color_picker->grid,
                              e->color_picker->pixel_buffer, x, y,
-                             &e->current_color,
-                             editor_tool_set_current_color);
+                             &e->current_color, editor_tool_set_current_color);
 #endif
+  handle_mouse_click(e, x, y);
 }
 void sprite_editor_on_mouse_down_right(sprite_editor e, int x, int y) {
   grid_context_on_mouse_down(e->canvas->grid, e->canvas->pixel_buffer, x, y,
@@ -128,7 +128,10 @@ void sprite_editor_on_mouse_move(sprite_editor e, int x, int y) {
   grid_context_on_mouse_down(e->color_picker->grid,
                              e->color_picker->pixel_buffer, x, y,
                              &e->current_color, editor_tool_set_current_color);
+  handle_mouse_click(e, x, y);
+}
 
+void handle_mouse_click(sprite_editor e, int x, int y) {
   if (grid_context_is_within_grid_context(e->sprite_picker->grid, x, y)) {
     coordinate grid_coord =
         grid_context_screen_to_grid_coordinate(e->sprite_picker->grid, x, y);
