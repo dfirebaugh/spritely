@@ -15,6 +15,6 @@ typedef struct {
 extern canvas canvas_create(const graphics gfx, int col_count, int row_count,
                             int scale_factor, int offset_x, int offset_y);
 extern void canvas_destroy(canvas c);
-extern void canvas_render(canvas c);
+extern void canvas_render(canvas c, graphics g);
 
 #endif // CANVAS_H

@@ -51,7 +51,7 @@ extern grid_context grid_context_create(graphics gfx, int col_count,
                                         int row_count, int scale_factor,
                                         int offset_x, int offset_y);
 extern void grid_context_destroy(grid_context w);
-extern void grid_context_render(grid_context w);
+extern void grid_context_render(grid_context w, graphics g);
 extern void grid_enable_indicator(grid_context w);
 extern void grid_disable_indicator(grid_context w);
 extern void grid_context_on_mouse_down(grid_context w, pixel_buffer pb,

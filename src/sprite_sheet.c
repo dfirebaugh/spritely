@@ -96,5 +96,5 @@ void sprite_sheet_render(sprite_sheet s, graphics g) {
   if (!s->grid)
     return;
 
-  grid_context_render(s->grid);
+  grid_context_render(s->grid, g);
 }

@@ -41,9 +41,7 @@ void grid_context_destroy(grid_context w) {
   w = NULL;
 }
 
-void draw_pixel(graphics g, int x, int y, RGBA c) {}
-
-void draw_indicator(grid_context w) {
+static void draw_indicator(grid_context w, graphics g) {
   if (!w->has_indicator)
     return;
 
@@ -53,15 +51,15 @@ void draw_indicator(grid_context w) {
   r.y = screen_coord.y;
   r.w = w->scale_factor;
   r.h = w->scale_factor;
-  graphics_set_draw_color(w->graphics, 255, 255, 255, 255);
-  graphics_draw_rect(w->graphics, &r);
+  graphics_set_draw_color(g, 255, 255, 255, 255);
+  graphics_draw_rect(g, &r);
 }
 
-void grid_context_render(grid_context w) {
+void grid_context_render(grid_context w, graphics g) {
   if (!w)
     return;
 
-  draw_indicator(w);
+  draw_indicator(w, g);
 }
 
 void grid_enable_indicator(grid_context w) { w->has_indicator = true; }

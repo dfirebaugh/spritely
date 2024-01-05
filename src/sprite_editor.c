@@ -115,8 +115,8 @@ void sprite_editor_render(sprite_editor e, graphics g) {
   sprite_sheet_render(e->sprite_sheet, g);
 #endif
 
-  canvas_render(e->canvas);
-  canvas_render(e->color_picker);
+  canvas_render(e->canvas, g);
+  canvas_render(e->color_picker, g);
 
 #if 0
   grid_context_render(e->toolbar);

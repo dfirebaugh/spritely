@@ -38,11 +38,11 @@ void canvas_destroy(canvas c) {
   free(c);
 }
 
-void canvas_render(canvas c) {
+void canvas_render(canvas c, graphics g) {
   if (!c)
     return;
 
   pixel_buffer_render(c->pixel_buffer, c->graphics, c->grid->scale_factor,
                       c->grid->offset_x, c->grid->offset_y);
-  grid_context_render(c->grid);
+  grid_context_render(c->grid, g);
 }
