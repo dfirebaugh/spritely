@@ -10,11 +10,10 @@
 sprite_sheet sprite_sheet_create(graphics gfx, int col_count, int row_count,
                                  int scale_factor, int offset_x, int offset_y,
                                  int sprite_col_count, int sprite_row_count) {
-  sprite_sheet s = malloc(sizeof(sprite_sheet));
+  sprite_sheet s = malloc(sizeof(*s));
   if (!s)
     return NULL;
 
-  s->graphics = gfx;
   s->selected_sprite = 0;
   s->offset.y = offset_y;
   s->offset.x = offset_x;
@@ -32,40 +31,44 @@ sprite_sheet sprite_sheet_create(graphics gfx, int col_count, int row_count,
 
 #if 1
   s->tile_count = col_count * row_count;
-  s->tiles = calloc(s->tile_count, s->tile_count * sizeof(canvas));
+  s->tiles = calloc(s->tile_count, sizeof(pixel_buffer));
+  if (!s->tiles) {
+    free(s);
+    return NULL;
+  }
   for (int i = 0; i < s->tile_count; i++) {
     s->tiles[i] = pixel_buffer_create(sprite_row_count, sprite_col_count);
     RGBA rgba = {0, 0, 0, 255};
     pixel_buffer_fill(s->tiles[i], rgba);
   }
+
 #endif
 
   return s;
 }
 
 void sprite_sheet_destroy(sprite_sheet s) {
-  if (s->grid != NULL) {
-    grid_context_destroy(s->grid);
-    s->grid = NULL;
-  }
+  if (!s)
+    return;
 
-#if 1
-  if (s->tiles != NULL) {
+  if (s->grid)
+    grid_context_destroy(s->grid);
+
+  if (s->tiles) {
     for (int i = 0; i < s->tile_count; i++) {
-      pixel_buffer_destroy(s->tiles[i]);
+      if (s->tiles[i])
+        pixel_buffer_destroy(s->tiles[i]);
     }
     free(s->tiles);
-    s->tiles = NULL;
   }
-#endif
 
-  // if (sp != NULL) {
-  //   free(sp);
-  //   sp = NULL;
-  // }
+  if (s->copy_buffer)
+    pixel_buffer_destroy(s->copy_buffer);
+
+  free(s);
 }
 
-void sprite_sheet_render(sprite_sheet s) {
+void sprite_sheet_render(sprite_sheet s, graphics g) {
   if (!s || !s->tiles)
     return;
 #if 1
@@ -86,7 +89,7 @@ void sprite_sheet_render(sprite_sheet s) {
     int x = col + s->offset.x;
     int y = row + s->offset.y;
 
-    pixel_buffer_render(s->tiles[i], s->graphics, scale_factor, x, y);
+    pixel_buffer_render(s->tiles[i], g, scale_factor, x, y);
   }
 #endif
 

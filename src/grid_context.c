@@ -38,6 +38,7 @@ void grid_context_destroy(grid_context w) {
     return;
   pixel_buffer_destroy(w->pixel_buffer);
   free(w);
+  w = NULL;
 }
 
 void draw_pixel(graphics g, int x, int y, RGBA c) {}

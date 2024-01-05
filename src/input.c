@@ -26,7 +26,7 @@ struct Input {
 bool mousedown;
 mouse_t mouse;
 
-bool input_is_mouse_down(input i) { return mousedown; }
+bool input_is_mouse_down(void) { return mousedown; }
 
 void input_on_mouse_button_down(app_runtime a, unsigned char button) {
   mousedown = true;

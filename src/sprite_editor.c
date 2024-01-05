@@ -2,6 +2,7 @@
 #include "canvas.h"
 #include "color_picker.h"
 #include "editor_tool.h"
+#include "input.h"
 #include "palette.h"
 #include "pixel_buffer.h"
 #include "sprite_sheet.h"
@@ -15,14 +16,14 @@ static void init_toolbar(sprite_editor e, graphics g);
 #endif
 
 sprite_editor sprite_editor_create(graphics g) {
-  sprite_editor e = malloc(sizeof(sprite_editor));
+  sprite_editor e = malloc(sizeof(*e));
   if (!e)
     return NULL;
 
   int row_count = 8;
   float scale_factor = 42;
 
-  e->graphics = g;
+  // e->graphics = g;
   e->canvas = canvas_create(g, row_count, row_count, scale_factor, 0, 0);
 
 #if sprite_sheet_ENABLED
@@ -39,6 +40,17 @@ sprite_editor sprite_editor_create(graphics g) {
                                 (coordinate){.x = 0, .y = 0},
                                 &e->current_color);
 #endif
+
+  if (!e->canvas || !e->sprite_sheet || !e->color_picker) {
+    if (e->canvas)
+      canvas_destroy(e->canvas);
+    if (e->sprite_sheet)
+      sprite_sheet_destroy(e->sprite_sheet);
+    if (e->color_picker)
+      canvas_destroy(e->color_picker);
+    free(e);
+    return NULL;
+  }
 
   return e;
 }
@@ -61,10 +73,10 @@ void sprite_editor_destroy(sprite_editor e) {
     canvas_destroy(e->color_picker);
     e->color_picker = NULL;
   }
-  // if (e != NULL) {
-  //   free(e);
-  //   e = NULL;
-  // }
+  if (e != NULL) {
+    free(e);
+    e = NULL;
+  }
 }
 
 void handle_mouse_click(sprite_editor e, int x, int y) {
@@ -98,12 +110,9 @@ void sprite_editor_on_mouse_up(sprite_editor e, int x, int y) {}
 
 void sprite_editor_update(void) {}
 
-void sprite_editor_render(sprite_editor e) {
-  graphics_set_draw_color(e->graphics, 74, 50, 110, 255);
-  graphics_clear(e->graphics);
-
+void sprite_editor_render(sprite_editor e, graphics g) {
 #if sprite_sheet_ENABLED
-  sprite_sheet_render(e->sprite_sheet);
+  sprite_sheet_render(e->sprite_sheet, g);
 #endif
 
   canvas_render(e->canvas);
@@ -112,7 +121,6 @@ void sprite_editor_render(sprite_editor e) {
 #if 0
   grid_context_render(e->toolbar);
 #endif
-  graphics_render_present(e->graphics);
 }
 
 void sprite_editor_on_mouse_down_left(sprite_editor e, int x, int y) {
@@ -120,7 +128,7 @@ void sprite_editor_on_mouse_down_left(sprite_editor e, int x, int y) {
 }
 
 void sprite_editor_on_mouse_move(sprite_editor e, int x, int y) {
-  if (!input_is_mouse_down(e->input))
+  if (!input_is_mouse_down())
     return;
   handle_mouse_click(e, x, y);
 }

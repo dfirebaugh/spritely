@@ -14,7 +14,8 @@ typedef struct {
   int width, height;
 } *pixel_buffer;
 
-pixel_buffer pixel_buffer_create(int width, int height);
+extern pixel_buffer pixel_buffer_create(int width, int height);
+extern pixel_buffer pixel_buffer_from_hex(const char *hex, RGBA *palette);
 extern void pixel_buffer_destroy(pixel_buffer pb);
 extern void pixel_buffer_set_pixel(pixel_buffer pb, int x, int y, RGBA c);
 extern RGBA pixel_buffer_get_rgba(pixel_buffer pb, int x, int y);

@@ -4,23 +4,19 @@
 #include "canvas.h"
 #include "graphics.h"
 #include "grid_context.h"
-#include "input.h"
 #include "sprite_sheet.h"
 
 typedef struct {
-  graphics graphics;
-  input input;
   canvas color_picker;
   canvas canvas;
   sprite_sheet sprite_sheet;
-  grid_context toolbar;
   color current_color;
   int selected_sprite;
 } *sprite_editor;
 
 extern sprite_editor sprite_editor_create(graphics g);
 extern void sprite_editor_destroy(sprite_editor e);
-extern void sprite_editor_render(sprite_editor e);
+extern void sprite_editor_render(sprite_editor e, graphics g);
 extern void sprite_editor_on_mouse_down_right(sprite_editor e, int x, int y);
 extern void sprite_editor_on_mouse_down_left(sprite_editor e, int x, int y);
 extern void sprite_editor_on_mouse_up_right(sprite_editor e, int x, int y);

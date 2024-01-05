@@ -1,6 +1,7 @@
 
 #include <stdlib.h>
 
+#include "color.h"
 #include "graphics.h"
 #include "grid_context.h"
 #include "pixel_buffer.h"
@@ -16,6 +17,10 @@ canvas canvas_create(const graphics gfx, int col_count, int row_count,
   c->graphics = gfx;
   c->grid = grid_context_create(gfx, row_count, row_count, scale_factor,
                                 offset_x, offset_y);
+  if (!c->grid) {
+    free(c);
+    return NULL;
+  }
   c->grid->has_indicator = false;
 
   c->pixel_buffer = pixel_buffer_create(c->grid->col_count, c->grid->row_count);

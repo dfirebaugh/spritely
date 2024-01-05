@@ -14,7 +14,6 @@
 
 struct app_runtime {
   graphics graphics;
-  input input;
   sprite_editor editor;
 };
 
@@ -38,15 +37,16 @@ app_runtime app_runtime_init(void) {
 }
 
 void app_runtime_destroy_and_exit(app_runtime a) {
-  if (a->graphics != NULL) {
+  if (!a)
+    return;
+  if (a->graphics) {
     graphics_destroy(a->graphics);
     a->graphics = NULL;
   }
-  if (a->editor != NULL) {
+  if (a->editor) {
     sprite_editor_destroy(a->editor);
     a->editor = NULL;
   }
-  free(a->input);
   free(a);
   exit(0);
 }
@@ -67,7 +67,10 @@ void app_runtime_run(app_runtime a) {
   case RUNNING:
     break;
   case SPRITE_EDITOR:
-    sprite_editor_render(a->editor);
+    graphics_set_draw_color(a->graphics, 74, 50, 110, 255);
+    graphics_clear(a->graphics);
+    sprite_editor_render(a->editor, a->graphics);
+    graphics_render_present(a->graphics);
     break;
   default:
     break;

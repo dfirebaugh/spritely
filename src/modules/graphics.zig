@@ -68,6 +68,7 @@ export fn graphics_init(screen_width: i32, screen_height: i32) ?*Graphics {
 export fn graphics_destroy(g: *Graphics) void {
     c.SDL_DestroyWindow(g.window);
     c.SDL_DestroyRenderer(g.renderer);
+    c.SDL_Quit();
 }
 
 export fn graphics_set_draw_color(g: *Graphics, r: u8, g1: u8, b: u8, a: u8) void {

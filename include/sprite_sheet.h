@@ -6,7 +6,6 @@
 #include "pixel_buffer.h"
 
 typedef struct {
-  graphics graphics;
   grid_context grid;
   offset offset;
   int col_count;
@@ -24,6 +23,6 @@ extern sprite_sheet sprite_sheet_create(graphics gfx, int col_count,
                                         int sprite_col_count,
                                         int sprite_row_count);
 extern void sprite_sheet_destroy(sprite_sheet sp);
-extern void sprite_sheet_render(sprite_sheet sp);
+extern void sprite_sheet_render(sprite_sheet sp, graphics g);
 
 #endif // sprite_sheet_H

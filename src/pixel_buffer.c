@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "graphics.h"
 #include "pixel_buffer.h"
@@ -17,20 +18,62 @@ pixel_buffer pixel_buffer_create(int width, int height) {
   pb->width = width;
   pb->height = height;
   pb->img = (RGBA **)malloc(height * sizeof(RGBA *));
-  if (!pb->img)
+  if (!pb->img) {
+    free(pb);
     return NULL;
+  }
 
   for (int i = 0; i < height; i++) {
     pb->img[i] = (RGBA *)malloc(width * sizeof(RGBA));
-    if (!pb->img[i])
+    if (!pb->img[i]) {
+      for (int j = 0; j < i; j++) {
+        free(pb->img[j]);
+      }
+      free(pb->img);
+      free(pb);
       return NULL;
+    }
   }
   return pb;
 }
 
+static int hex_char_to_int(char hex) {
+  if (hex >= '0' && hex <= '9')
+    return hex - '0';
+  if (hex >= 'A' && hex <= 'F')
+    return hex - 'A' + 10;
+  if (hex >= 'a' && hex <= 'f')
+    return hex - 'a' + 10;
+  return 0;
+}
+
+pixel_buffer pixel_buffer_from_hex(const char *hex, RGBA *palette) {
+  pixel_buffer pb = pixel_buffer_create(8, 8);
+  if (!pb)
+    return NULL;
+  int width, height;
+  pixel_buffer_get_size(pb, &width, &height);
+
+  int hex_len = strlen(hex);
+  for (int i = 0; i < hex_len && i < width * height; ++i) {
+    int color_index = hex_char_to_int(hex[i]);
+    if (color_index >= 0 && color_index < COLOR_VALUES_SIZE) {
+      int x = i % width;
+      int y = i / width;
+      pixel_buffer_set_pixel(pb, x, y, palette[color_index]);
+    }
+  }
+
+  return pb;
+}
+
 void pixel_buffer_destroy(pixel_buffer pb) {
-  for (int i = 0; i < pb->height; i++)
+  if (!pb)
+    return;
+
+  for (int i = 0; i < pb->height; i++) {
     free(pb->img[i]);
+  }
 
   free(pb->img);
   free(pb);

@@ -4,9 +4,7 @@
 
 #include "apprt.h"
 
-typedef struct Input *input;
-
-extern bool input_is_mouse_down(input i);
+extern bool input_is_mouse_down(void);
 extern void input_on_mouse_motion(app_runtime a, int x, int y);
 extern void input_on_mouse_button_down(app_runtime a, unsigned char button);
 extern void input_on_mouse_button_up(app_runtime a, unsigned char button);
