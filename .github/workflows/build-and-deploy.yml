@@ -7,31 +7,30 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: mymindstorm/setup-emsdk@v7
+      - uses: actions/checkout@v2
+      - uses: mymindstorm/setup-emsdk@v13
 
-    - name: Verify emscripten installation
-      run: emcc -v
-    
-    - name: Install build requirements
-      run: sudo apt-get install libsdl2-ttf-dev libsdl2-image-dev
+      - name: Verify emscripten installation
+        run: emcc -v
 
-    - name: Build the project
-      run: make web
-    
-    # Publish the website
-    - name: GitHub Pages action
-      if: ${{ github.ref == 'refs/heads/master' }} # Publish only when the push is on master
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_branch: gh-pages
-        publish_dir: web
-        allow_empty_commit: false
-        keep_files: false
-        exclude_assets: '.gitignore'
-        force_orphan: true
+      - name: Install build requirements
+        run: sudo apt-get install libsdl2-ttf-dev libsdl2-image-dev
+
+      - name: Build the project
+        run: make web
+
+      # Publish the website
+      - name: GitHub Pages action
+        if: ${{ github.ref == 'refs/heads/main' }} # Publish only when the push is on master
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: web
+          allow_empty_commit: false
+          keep_files: false
+          exclude_assets: ".gitignore"
+          force_orphan: true
