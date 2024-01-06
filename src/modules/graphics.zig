@@ -69,6 +69,7 @@ export fn graphics_destroy(g: *Graphics) void {
     c.SDL_DestroyWindow(g.window);
     c.SDL_DestroyRenderer(g.renderer);
     c.SDL_Quit();
+    std.heap.page_allocator.destroy(g);
 }
 
 export fn graphics_set_draw_color(g: *Graphics, r: u8, g1: u8, b: u8, a: u8) void {
