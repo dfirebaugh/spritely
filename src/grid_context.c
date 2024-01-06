@@ -12,7 +12,7 @@ coordinate grid_to_screen_coordinate(grid_context w, coordinate local_coord);
 
 grid_context grid_context_create(graphics gfx, int col_count, int row_count,
                                  int scale_factor, int offset_x, int offset_y) {
-  grid_context w = malloc(sizeof(grid_context));
+  grid_context w = malloc(sizeof(*w));
   if (!w)
     return NULL;
 

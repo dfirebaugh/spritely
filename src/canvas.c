@@ -10,7 +10,7 @@
 
 canvas canvas_create(const graphics gfx, int col_count, int row_count,
                      int scale_factor, int offset_x, int offset_y) {
-  canvas c = malloc(sizeof(canvas));
+  canvas c = malloc(sizeof(*c));
   if (!c)
     return NULL;
 

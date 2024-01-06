@@ -11,7 +11,7 @@ void pixel_buffer_set_pixel(pixel_buffer pb, int x, int y, RGBA c);
 void pixel_buffer_get_size(pixel_buffer pb, int *width, int *height);
 
 pixel_buffer pixel_buffer_create(int width, int height) {
-  pixel_buffer pb = (pixel_buffer)malloc(sizeof(pixel_buffer));
+  pixel_buffer pb = (pixel_buffer)malloc(sizeof(*pb));
   if (!pb)
     return NULL;
 
