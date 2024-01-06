@@ -42,7 +42,7 @@ graphics graphics_init(int screen_width, int screen_height) {
 
   SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
 
-  graphics g = malloc(sizeof(graphics));
+  graphics g = malloc(sizeof(*g));
   if (g == NULL) {
     fprintf(stderr, "Failed to allocate memory for Graphics\n");
     SDL_DestroyRenderer(renderer);
