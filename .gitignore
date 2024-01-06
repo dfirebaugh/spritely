@@ -4,6 +4,9 @@
 
 spritely
 
+a.out.js
+a.out.wasm
+
 _spritesheet.txt
 
 zig-cache

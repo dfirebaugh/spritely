@@ -17,6 +17,7 @@ int main(int argc, char *args[]) {
 void main_loop(void) { app_runtime_run(a); }
 
 #ifdef __EMSCRIPTEN__
+#include <emscripten.h>
 void emscripten_loop(void *arg) { main_loop(); }
 #endif
 

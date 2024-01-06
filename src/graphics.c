@@ -78,12 +78,12 @@ SDL_Rect rect_to_sdl_rect(const Rect *rect) {
   return sdlRect;
 }
 
-void graphics_draw_rect(graphics g, Rect *rect) {
+void graphics_draw_rect(graphics g, const Rect *rect) {
   SDL_Rect r = rect_to_sdl_rect(rect);
   SDL_RenderDrawRect(g->renderer, &r);
 }
 
-void graphics_fill_rect(graphics g, Rect *rect) {
+void graphics_fill_rect(graphics g, const Rect *rect) {
   SDL_Rect r = rect_to_sdl_rect(rect);
   SDL_RenderFillRect(g->renderer, &r);
 }

@@ -33,3 +33,17 @@ You can also use the following command to run the app.
 ```bash
 zig build run
 ```
+
+## Webassembly build
+
+Running `make web` will build spritely using emscripten. So in order to run it, you need to download it from : https://emscripten.org/docs/getting_started/downloads.html
+
+`make web` will create two files: `index.js` and `index.wasm`. Using the given `index.html` and a simple web server you can use spritely in your web browser!
+> note: chrome doesn't support `file://` XHR request
+
+### run the wasm build
+```bash
+make run-wasm
+```
+
+> You can run a simple web server by going to the `web` folder and then run a web server using python2 with `python2 -m SimpleHTTPServer 8080` or python3 with `python -m http.server 8080`

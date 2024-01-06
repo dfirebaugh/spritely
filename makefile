@@ -19,7 +19,7 @@ obj/%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # cleaning everything that can be automatically recreated with "make"
-clean:
+clean: 
 	rm -f $(PROG) $(OBJS)
 	rm -rf zig-cache
 	rm -rf zig-out
@@ -33,11 +33,14 @@ web:
 	-s ALLOW_MEMORY_GROWTH=1 \
 	-s SDL2_IMAGE_FORMATS='["png"]' -s USE_SDL_IMAGE=2 --use-preload-plugins --preload-file assets --preload-file fonts \
 	-s ERROR_ON_UNDEFINED_SYMBOLS=0 -s LLD_REPORT_UNDEFINED \
-	-s EXPORTED_FUNCTIONS='["_print_something", "_is_btn_pressed", "_render_rect", "_render_rect_fill", "_set_render_color", "_render_char", "_change_state", "_new_entity_manager", "_Entity_free", "_add_sprite_to_entity_manager", "_clear", "_register_draw_fn", "_register_update_fn", "_main"]' \
+	-s EXPORTED_FUNCTIONS='["_main"]' \
 	-s EXPORTED_RUNTIME_METHODS='["ccall","cwrap","addFunction"]' \
 	-s RESERVED_FUNCTION_POINTERS=10 \
 	-s EXPORT_NAME="'MyEmscriptenModule'" -s EXPORT_ES6=1 -s MODULARIZE=1 -s ALLOW_TABLE_GROWTH=1 \
 	-o web/index.js -Os && cp web/index* web/examples/
+
+run-wasm: ## serve up the wasm file (and index.html) and open a browser
+	emrun --port 8080 web/index.html
 
 .PHONY: web
 

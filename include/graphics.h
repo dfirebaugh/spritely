@@ -14,8 +14,8 @@ typedef struct Rect {
 } Rect;
 
 extern graphics graphics_init(int screen_width, int screen_height);
-extern void graphics_draw_rect(graphics g, Rect *rect);
-extern void graphics_fill_rect(graphics g, Rect *rect);
+extern void graphics_draw_rect(graphics g, const Rect *rect);
+extern void graphics_fill_rect(graphics g, const Rect *rect);
 extern void graphics_destroy(graphics gfx);
 extern void graphics_clear(graphics g);
 extern void graphics_render_present(graphics g);
