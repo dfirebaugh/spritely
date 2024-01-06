@@ -1,9 +1,9 @@
 CFLAGS   = -g `sdl2-config --cflags` -I./include -fPIE -Wall -Werror --pedantic
-LDFLAGS  = `sdl2-config --libs` -lSDL2 -lSDL2_ttf -lSDL2_image -lm
+LDFLAGS  = `sdl2-config --libs` -lSDL2 -lm
 PROG = spritely
 CC = gcc
 
-SRCS = $(addprefix src/,  apprt.c canvas.c color_picker.c color.c editor_tool.c event.c grid_context.c input.c main.c palette.c pixel_buffer.c sprite_editor.c sprite_sheet.c state.c)
+SRCS = $(addprefix src/,  apprt.c canvas.c color_picker.c color.c editor_tool.c graphics.c grid_context.c input.c main.c palette.c pixel_buffer.c sprite_editor.c sprite_sheet.c state.c)
 OBJS = $(addprefix obj/, $(SRCS:.c=.o))
 
 # top-level rule to create the program.
